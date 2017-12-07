@@ -1,0 +1,127 @@
+/*general*/
+.bold{
+	font-weight:bold;
+}
+.btn-info-text{
+	pointer-events: none!important;
+	color: #fff;
+	min-width:30px;
+	text-align:right!important;
+}
+.right{
+	text-align:right!important;
+}
+.left{
+	text-align:left!important;
+}
+
+/*loading spinner*/
+.fa-spinner.fa-spin{
+    color: #337ab7!important;
+}
+
+
+/* tablas */
+div.box-body-catalogo{
+	height:calc(100vh - 252px)!important;
+}
+div.box-body-list{
+	height:calc(100vh - 215px)!important;
+}
+
+div.box,table.fixed,div.box-body table{
+	margin:0px!important;
+}
+td.opt-td{
+	text-align:center!important;
+	padding:0px!important;
+}
+div.box-body table.table-body td:not(.opt-td){
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 1px;
+}
+div.box.catalog{	
+   padding: 0px 5px;
+}
+.table-body blockquote{
+	margin: 5px!important;
+}
+/* form */
+form .form-group input {
+	border-width:0px 0px 1px 0px!important;
+}
+em.error.help-block{
+	position: absolute;
+    margin: 0px!important;
+    font-size: 12px;
+}
+.separator{
+	border-top:1px solid #d2d6de;
+	font-weight: 600;
+}
+.bootstrap-select button{
+	background: #FFFFFF;
+	border-width:0px 0px 1px 0px!important;
+}
+/*modals*/
+.modal-header{
+	color:#FFFFFF;
+	font-weight:400;
+    background-color: #3c8dbc;
+}
+.modal-productos-almacen{
+	width: calc(100vw - 60px);
+	height:calc(100vh - 60px);
+	position:relative;
+}
+
+.modal-productos-almacen .modal-content{
+	width: 100%;
+	height:100%;
+	position:relative;
+}
+.modal-productos-almacen .box.main-box{
+	margin:0px;
+	padding:0px 5px;
+	height:100%;
+	position:relative;	
+}
+.modal-productos-almacen .box-body-modal{
+	height:calc(100% - 115px)!important;
+}
+/*catalogo de productos */
+.widget-user-2.almacenes-sucursal .widget-user-header{
+	padding:1px!important
+}
+/*advanced filter*/
+.box-filter-parent{
+	position:relative
+}
+.box-filter {
+	position: absolute;
+	top: 40px;
+	right: -2px;
+	width: 400px;
+	display: none;
+	background: #F9F9F9;	
+	color: #333;
+	border-bottom: 3px solid #3c8dbc;
+}
+.input-group .box-filter label{
+	font-size:14px!important;
+	display:block;
+}
+.close-filter {
+	text-align: center;
+	padding: 5px;
+	font-size:14px!important;
+	background-color: #f9f9f9;
+	color: #3e3e3e;
+	cursor: pointer;
+}
+.close-filter:hover {
+	background-color: #3e3e3e;
+	color: #f9f9f9;
+}
