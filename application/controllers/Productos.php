@@ -24,6 +24,10 @@ class Productos extends CI_Controller {
 		echo $this->load->view('productos/productosAlmacen',array('alm'=>$alm[0],'um'=>$this->prd->getUnidadesDeMedida(),'dep'=>$this->cls->getDepartamentos(),'cat'=>$this->cls->getCategorias()),TRUE);
 	}
 	
+	function claveUnica(){
+		echo $this->prd->claveUnica($this->input->post());
+	}
+	
 	function productosTable(){
 		$prd = $this->prd->getProductos($this->input->post());
 		echo $this->load->view('productos/productosTable',array('prd'=>$prd),TRUE);

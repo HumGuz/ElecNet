@@ -1,7 +1,6 @@
 <?php 
-if(!empty($prd)){
-	foreach ($prd as $k => $p) {
-		
+if(!empty($prd)){		
+	foreach ($prd as $k => $p) {		
 		echo '
 			<tr><td width="150px">'.$p['clave'].'</td>
 			<td>'.$p['concepto'].'</td>
@@ -23,7 +22,9 @@ if(!empty($prd)){
 		     	</div>
 	        </td></tr>';
 	}
-}elseif(isset($d['busqueda'])){
+}elseif(isset($d['busqueda']) && isset($d['limit']) && $d['limit']==50 ){
 	echo '<blockquote><p><i class="fa fa-info text-aqua"></i> No se encontraron resultados</p></blockquote>';
+}elseif(isset($d['limit'])  && $d['limit']==50){
+	echo '<blockquote><p><i class="fa fa-info text-aqua"></i> No hay información para mostrar</p></blockquote>';
 }
 

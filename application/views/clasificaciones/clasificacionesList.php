@@ -3,7 +3,7 @@
 		echo '<div class="list-group">';	
 			if($d['dump']=="depList"){
 				foreach ($obj as $key => $s) {			
-					echo '	<li class="list-group-item" data-fnc="elementsList" data-id_departamento="'.$s['id_departamento'].'" data-id_categoria_padre="0" data-dump="catList">
+					echo '	<li class="list-group-item" data-fnc="elementsList" data-id_departamento="'.$s['id_departamento'].'" data-id_categoria_padre="0" data-dump="catList" data-empty="#catList,#subCatList">
 								 <div class="btn-group btn-group-xs pull-right">
 								 	 <button type="button" class="btn btn-default bg-gray-active btn-info-text" >'.$s['categorias'].'</button>
 							         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
@@ -18,13 +18,13 @@
 				}				
 			}elseif($d['dump']=="catList"){
 				foreach ($obj as $key => $s) {			
-					echo '	 <li class="list-group-item" data-fnc="elementsList" data-id_departamento="'.$s['id_departamento'].'" data-id_categoria_padre="'.$s['id_categoria'].'" data-dump="subCatList">
+					echo '	 <li class="list-group-item" data-fnc="elementsList" data-id_departamento="'.$s['id_departamento'].'" data-id_categoria_padre="'.$s['id_categoria'].'" data-dump="subCatList" data-empty="#subCatList"> 
 								 <div class="btn-group btn-group-xs pull-right">
 								 	 <button type="button" class="btn btn-default bg-gray-active btn-info-text" >'.$s['subcategorias'].'</button>
 							         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
 							         <ul class="dropdown-menu pull-right" role="menu">
 					                   	<li><a href="#" data-id_categoria="'.$s['id_categoria'].'" data-fn="nuevaClasificacion" data-op="2"><span class="fa fa-pencil"></span> Editar </a></li>
-					                    '.( $s['borrar'] ? '<li><a href="#" data-id_categoria="'.$s['id_categoria'].'" data-fn="borrarClasificacion" data-op="2"> <span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
+					                    '.( $s['borrar'] ? '<li><a href="#" data-id_departamento="'.$s['id_departamento'].'"  data-id_categoria="'.$s['id_categoria'].'" data-fn="borrarClasificacion" data-op="2"> <span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
 					                  </ul>
 					             </div>
 								 <h4 class="list-group-item-heading">['.$s['clave'].']  '.$s['nombre'].'</h4>
@@ -38,7 +38,7 @@
 							         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
 							         <ul class="dropdown-menu pull-right" role="menu">
 					                   	<li><a href="#" data-id_categoria="'.$s['id_categoria'].'" data-fn="nuevaClasificacion" data-op="3"><span class="fa fa-pencil"></span> Editar </a></li>
-					                    '.( $s['borrar'] ? '<li><a href="#" data-id_categoria="'.$s['id_categoria'].'" data-fn="borrarClasificacion" data-op="3"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
+					                    '.( $s['borrar'] ? '<li><a href="#" data-id_departamento="'.$s['id_departamento'].'" data-id_categoria_padre="'.$s['id_categoria_padre'].'" data-id_categoria="'.$s['id_categoria'].'" data-fn="borrarClasificacion" data-op="3"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
 					                  </ul>
 					             </div>
 								 <h4 class="list-group-item-heading">['.$s['clave'].']  '.$s['nombre'].'</h4>

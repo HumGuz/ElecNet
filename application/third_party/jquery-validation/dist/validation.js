@@ -27,7 +27,7 @@
 					element.parents('.form-group').append( error );				
 			},	
 			highlight: function ( element, errorClass, validClass ) {$( element ).parents( ".form-group" ).addClass( "has-error" ) /*.removeClass( "has-success" )*/;},
-			unhighlight: function (element, errorClass, validClass) {$( element ).parents( ".form-group" ).removeClass( "has-error" )/*addClass( "has-success" ) */;},
+			unhighlight: function (element, errorClass, validClass) {$( element ).parents( ".form-group" ).removeClass( "has-error" ).find( "em.error" ).remove();},
 			submitHandler : function(form) {				
 				options = $(form).data('options');				
 				form = options.id_form;

@@ -7,21 +7,20 @@
 			</div>
 			<form id="nvoPrdFrm" class="nvo">
 				<div class="modal-body modal-info">					
-					<div class="row">
-						
+					<div class="row">						
 						<div class="clearfix"></div>
 						<p class="margin ">Información Principal </p>
 												
 						<div class="col-sm-4">
 							<div class="form-group">
 			                  <label for="clave">Clave</label>
-			                  <input type="text" class="form-control required" id="clave" name="clave">
+			                  <input type="text" class="form-control required alphanumeric nowhitespace" id="clave" name="clave">
 			                </div>
 						</div>						
 						<div class="col-sm-4">
 							<div class="form-group">
 			                  <label for="clave_secundaria">Clave Secundaria</label>
-			                  <input type="text" class="form-control required" id="clave_secundaria" name="clave_secundaria">
+			                  <input type="text" class="form-control required  alphanumeric nowhitespace" id="clave_secundaria" name="clave_secundaria">
 			                </div>
 						</div>	
 						
@@ -67,7 +66,7 @@
 			                  			echo '<option value="">-- seleccione --</option>';
 			                  			foreach ($cat as $key => $s) {
 			                  				if($s['id_categoria_padre']==0)
-												echo '  <option value="'.$s['id_sucursal'].'" data-id_departamento="'.$s['id_departamento'].'" > [ '.$s['clave'].' ] '.$s['nombre'].'</option> ';
+												echo '<option value="'.$s['id_categoria'].'" data-id_departamento="'.$s['id_departamento'].'" > [ '.$s['clave'].' ] '.$s['nombre'].'</option> ';
 										}
 			                  		}
 			                  	?>
@@ -119,7 +118,7 @@
 			                  				ksort($ums);
 			                  				echo '<optgroup  label="'.$mg.'">';
 											foreach ($ums as $k => $u) {
-												echo '  <option value="'.$s['id_unidad_medida'].'"> [ '.$s['id_unidad_medida'].' ] '.$s['nombre'].'</option> ';
+												echo '  <option value="'.$u['id_unidad_medida'].'"> [ '.$u['id_unidad_medida'].' ] '.$u['nombre'].'</option> ';
 											}														                  				
 											echo '</optgroup>';
 										}
@@ -141,7 +140,7 @@
 			                  				ksort($ums);
 			                  				echo '<optgroup  label="'.$mg.'">';
 											foreach ($ums as $k => $u) {
-												echo '  <option value="'.$s['id_unidad_medida'].'"> [ '.$s['id_unidad_medida'].' ] '.$s['nombre'].'</option> ';
+												echo '  <option value="'.$u['id_unidad_medida'].'"> [ '.$u['id_unidad_medida'].' ] '.$u['nombre'].'</option> ';
 											}														                  				
 											echo '</optgroup>';
 										}

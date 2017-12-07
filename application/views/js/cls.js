@@ -2,41 +2,54 @@ cls = {
 	init:function(){		
 		$("#clasTbl").on('click','[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn,delete d['bs.tooltip'],delete d.toggle,delete d.trigger,cls[f](d)});
 		$("#depSrchFrm").validation({extend:{dump:'depList'},success:function(o){$("#depList").empty(),cls.elementsList(o)}}),
+		cls.clearDep(),
 		$("#catSrchFrm").validation({extend:{dump:'catList'},success:function(o){$("#catList").empty(),cls.elementsList(o)}}),
-		$("#subCatSrchFrm").validation({extend:{dump:'subCatList'},success:function(o){$("#subCatList").empty(),cls.elementsList(o)}})
-		cls.clear({});		
+		$("#subCatSrchFrm").validation({extend:{dump:'subCatList'},success:function(o){$("#subCatList").empty(),cls.elementsList(o)}})			
 		$("#clasTbl").on('click','li[data-fnc]',function(e){	
 			tis = $(this)		
 			if(!tis.hasClass('active') && $(e.currentTarget).hasClass('list-group-item')){
 				tis.siblings("li[data-fnc].active").removeClass('active');				
 				tis.addClass('active');
 				d = $.extend({},tis.data()),
-				f = d.fnc,delete d.fnc,$("#"+d.dump).empty(),cls[f](d)
+				f = d.fnc,delete d.fnc,				
+				$(d.empty).empty(),cls[f](d)
 			}
 		});
 	},
-	clear:function(o){	
-		cls.clearDep(o),cls.clearClas(o),cls.clearSubclas(o)
-	},
-	clearDep:function(o){
+	clearG:function(o){
+		$("#depList").empty(),$("#catList").empty(),$("#subCatList").empty(),
+		(o.id_departamento && cls.elementsList({dump:'depList'},o)),
+		(o.id_departamento && o.id_categoria_padre && cls.elementsList({dump:'catList',id_departamento:o.id_departamento,id_categoria_padre:0},o)),
+		(o.id_departamento && o.id_categoria_padre && o.id_categoria && cls.elementsList({dump:'subCatList',id_departamento:o.id_departamento,id_categoria_padre:o.id_categoria_padre},o))
+	},	
+	
+	clearD:function(o){	
+		(o.op==1 && cls.clearDep())
+		if(o.op==2){
+			$("#depList").empty(),
+			cls.elementsList({dump:'depList'},o),
+			$("#catList").empty(),$("#subCatList").empty(),
+			cls.elementsList({dump:'catList',id_departamento:o.id_departamento})
+		} 
+		if(o.op==3){
+			$("#catList").empty(),$("#subCatList").empty(),
+			cls.elementsList({dump:'catList',id_departamento:o.id_departamento,id_categoria_padre:0},o),
+			cls.elementsList({dump:'subCatList',id_departamento:o.id_departamento,id_categoria_padre:o.id_categoria_padre})
+		}  
+	},	
+	
+	clearDep:function(){
 		$("#depSrchFrm").resetForm(),
-		$("#depList").empty(),cls.elementsList({dump:'depList'},o)
+		$("#depList").empty(),$("#catList").empty(),$("#subCatList").empty(),cls.elementsList({dump:'depList'})
 	},
-	clearClas:function(o){
-		$("#catSrchFrm").resetForm(),
-		$("#catList").empty(),cls.elementsList({dump:'catList'},o)
-	},
-	clearSubclas:function(o){
-		$("#subCatSrchFrm").resetForm(),
-		$("#subCatList").empty(),cls.elementsList({dump:'subCatList'},o)
-	},
+	
 	elementsList:function(o,p){
 		console.log(o,p);
 		$.ajax({type : "POST",url : "elementsList",dataType : "html",data : o})
 		.done(function(r) {
-			$("#"+o.dump).append(r);						
-			(o && p && o.dump=='depList' && p.id_departamento && $("li[data-id_departamento='"+p.id_departamento+"']").click()),	
-			(o && p && o.dump=='catList' && p.id_categoria_padre && $("li[data-id_categoria_padre='"+p.id_categoria_padre+"']").click())			 
+			$("#"+o.dump).append(r),									
+			(o && p && o.dump=='depList' && p.id_departamento && $("#depList li[data-id_departamento='"+p.id_departamento+"']").addClass('active')),	
+			(o && p && o.dump=='catList' && p.id_categoria_padre && $("#catList li[data-id_categoria_padre='"+p.id_categoria_padre+"']").addClass('active'))						 
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
 	nuevaClasificacion:function(o){		
@@ -47,8 +60,7 @@ cls = {
 		$.ajax({type:"POST",url :  "nuevaClasificacion",dataType : "html",data:o}).done(function(r) {
 			$('body').append(r);  
 			$('#nuevaClasificacion').modal({show:true,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});		
-			s = $('#nuevaClasificacion .modal-content').data();			
-			
+			s = $('#nuevaClasificacion .modal-content').data();	
 			if($("#id_departamento").length && $("#id_categoria_padre").length){
 				$("#id_departamento").change(function(){
 					vl =$(this).val(),
@@ -70,14 +82,12 @@ cls = {
 			$("#nvoClasFrm").validation({extend:o,success:function(ob){cls.guardarClasificacion(ob)}})
 		});
 	},
-	guardarClasificacion:function(o){			
+	guardarClasificacion:function(o){
+		console.log(o);			
 		$.ajax({type : "POST",url : "guardarClasificacion",dataType : "json",data : o})
 		.done(function(r) {
 			1 == r.status ? (				
-				toastr["success"]("Cambios guardados con éxito"),$('#nuevaClasificacion').modal('hide'),				
-				(o.op==1 && cls.clear(r)),
-				(o.op==2  && cls.clearDep(r)),
-				(o.op==3  && cls.clearClas(r))
+				toastr["success"]("Cambios guardados con éxito"),$('#nuevaClasificacion').modal('hide'),cls.clearG(r)
 			) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
@@ -93,7 +103,7 @@ cls = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarClasificacion",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),cls.clear({})) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),cls.clearD(o)) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});

@@ -20,6 +20,17 @@ class Productos_model extends CI_Model {
 		$q = $this -> db -> query("select * from t_productos p  where 1=1 ".$c);		
 		$r = $q->result_array();
 		return $r;		
+	}
+	
+	function claveUnica($d){		
+		$c = '';
+		if($d['clave'])
+			$c .= " and p.clave = '".$d['clave']."'";
+		if($d['clave_secundaria'])		
+			$c .= " and p.clave_secundaria = '".$d['clave_secundaria']."'";				
+		$q = $this -> db -> query("select id_producto from t_productos p  where 1=1  ".$c);		
+		$r = $q->result_array();
+		return empty($r)?'true':'false';		
 	}	
 	
 	function guardarProducto($d){
@@ -41,7 +52,7 @@ class Productos_model extends CI_Model {
 	
 	function getUnidadesDeMedida($d= null){			
 		$sql = "select id_unidad_medida,nombre,magnitud from t_unidades_medida ";		
-		$q = $this -> db -> query("select * from t_productos p  where 1=1 ".$c);		
+		$q = $this -> db -> query($sql);		
 		$r = $q->result_array();			
 		if(!empty($r)){
 			$aux = array();

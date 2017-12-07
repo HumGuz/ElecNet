@@ -30,11 +30,10 @@ class Clasificaciones_model extends CI_Model {
 		if($d['busqueda'])
 			$c .= " and (  c.clave like '%".$d['busqueda']."%' or c.nombre like '%".$d['busqueda']."%' or c.descripcion like '%".$d['descripcion']."%'  )  ";
 		$c .= " order by c.clave asc";		
-		$q = $this -> db -> query("select c.id_categoria,c.id_departamento,c.clave,c.nombre,c.descripcion,subcategorias(id_categoria) as subcategorias,IF(subcategorias(id_categoria) > 0 , 0 , 1) as borrar from t_categorias c  where 1=1 ".$c);		
+		$q = $this -> db -> query("select c.id_categoria,c.id_categoria_padre,c.id_departamento,c.clave,c.nombre,c.descripcion,subcategorias(id_categoria) as subcategorias,IF(subcategorias(id_categoria) > 0 , 0 , 1) as borrar from t_categorias c  where 1=1 ".$c);		
 		$r = $q->result_array();
 		return $r;		
-	}	
-	
+	}		
 	
 	function guardarClasificacion($d){
 		$d['id_usuario_cambio'] = $this->s['usuario']['id_usuario'];
@@ -66,7 +65,7 @@ class Clasificaciones_model extends CI_Model {
 	            $this->db->where('id_categoria', $id_categoria);			
 	            $this->db->update('t_categorias', $d);	
 	        } 
-			return $op==2 ? array('status'=>1,'id_departamento'=>$d['id_departamento'],'id_categoria'=>$id_categoria) : array('status'=>1,'id_departamento'=>$d['id_departamento'],'id_categoria_padre'=>$d['id_categoria_padre'],'id_categoria'=>$id_categoria);
+			return $o==2 ? array('status'=>1,'id_departamento'=>$d['id_departamento'],'id_categoria_padre'=>$id_categoria) : array('status'=>1,'id_departamento'=>$d['id_departamento'],'id_categoria_padre'=>$d['id_categoria_padre'],'id_categoria'=>$id_categoria);
 		}
 		  	
 		
