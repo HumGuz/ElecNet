@@ -8,11 +8,17 @@
 	min-width:30px;
 	text-align:right!important;
 }
-.right{
+.right,input.number,input.digits{
 	text-align:right!important;
 }
 .left{
 	text-align:left!important;
+}
+.center{
+	text-align:center!important;
+}
+.margin-up-down{
+	margin:10px 0px;
 }
 
 /*loading spinner*/
@@ -107,6 +113,7 @@ em.error.help-block{
 	background: #F9F9F9;	
 	color: #333;
 	border-bottom: 3px solid #3c8dbc;
+	z-index: 1055;
 }
 .input-group .box-filter label{
 	font-size:14px!important;

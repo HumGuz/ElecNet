@@ -50,7 +50,8 @@ var app = function() {
 	        $('body').on('click', 'button.filter,a.filter', function(e) { e.stopPropagation(),$(this).siblings('div.box-filter').slideToggle(200); });
 	        //auto close filters
 	        $('body').on('click', 'div.box-filter,.bootstrap-select', function(e) { if($(".bootstrap-select.open:visible").length==0) e.stopPropagation();});
-	        $('body').click(function(e){ if($(".bootstrap-select.open:visible").length==0)$('div.box-filter:visible').slideUp(200);});
+	        $('body').click(function(e){if($(".bootstrap-select.open:visible").length==0)$('div.box-filter:visible').slideUp(200);});
+	        $('body').on('click','div.daterangepicker.dropdown-menu.ltr',function(e){e.stopPropagation()});
 	        $('body').on('click', 'div.close-filter', function(e) {$(this).parents('div.box-filter').slideUp(200);});			
 		},
 		getUniqueID : function(t) { return (t || "") + Math.floor(Math.random() * (new Date).getTime()) },

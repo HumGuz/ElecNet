@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct almipt access allowed');
 class Almacenes extends CI_Controller {
-	private $s = null;
+	public $s = null;
 	function __construct() {
 		parent::__construct();
 		date_default_timezone_set("America/Mexico_City");

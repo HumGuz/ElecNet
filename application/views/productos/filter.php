@@ -14,7 +14,7 @@
 			<p class="margin ">Clasificación</p>
 			<div class="form-group col-sm-4">
 				<label for="id_departamento">Departamento</label>
-				<select  class="form-control selectpicker" id="id_departamento" name="id_departamento" data-container="body">
+				<select  class="form-control selectpicker" id="id_departamento" name="id_departamento" data-container="body" data-live-search="true">
 					<?php
 						if(!empty($dep)) {
 							echo '<option value="">-- seleccione --</option>';
@@ -27,7 +27,7 @@
 			</div>
 			<div class="form-group col-sm-4">
 				<label for="id_categoria_padre">Categoría</label>
-				<select  class="form-control selectpicker  categorias" id="id_categoria_padre" name="id_categoria_padre" data-container="body" data-hide-disabled="true">
+				<select  class="form-control selectpicker  categorias" id="id_categoria_padre" name="id_categoria_padre" data-container="body" data-live-search="true" data-hide-disabled="true">
 					<?php
 						if(!empty($cat)) {
 							echo '<option value="">-- seleccione --</option>';
@@ -41,7 +41,7 @@
 			</div>
 			<div class="form-group col-sm-4">
 				<label for="id_categoria">Subcategoría</label>
-				<select  class="form-control selectpicker  categorias" id="id_categoria" name="id_categoria" data-container="body"  data-hide-disabled="true">
+				<select  class="form-control selectpicker  categorias" id="id_categoria" name="id_categoria" data-container="body" data-live-search="true"  data-hide-disabled="true">
 					<?php
 						if(!empty($cat)) {
 							echo '<option value="">-- seleccione --</option>';
@@ -60,7 +60,7 @@
 			</p>
 			<div class="form-group col-sm-6">
 				<label for="id_unidad_medida_entrada">Unidad de entrada</label>
-				<select  class="form-control selectpicker " id="id_unidad_medida_entrada" name="id_unidad_medida_entrada" data-container="body">
+				<select  class="form-control selectpicker " id="id_unidad_medida_entrada" name="id_unidad_medida_entrada" data-container="body" data-live-search="true">
 					<?php
 						if(!empty($um)) {
 							ksort($um);
@@ -69,7 +69,7 @@
 								ksort($ums);
 								echo '<optgroup  label="'.$mg.'">';
 								foreach($ums as $k=>$u) {
-									echo '  <option value="'.$s['id_unidad_medida'].'"> [ '.$s['id_unidad_medida'].' ] '.$s['nombre'].'</option> ';
+									echo '  <option value="'.$u['id_unidad_medida'].'"> [ '.$u['id_unidad_medida'].' ] '.$u['nombre'].'</option> ';
 								}
 								echo '</optgroup>';
 							}
@@ -80,7 +80,7 @@
 
 			<div class="form-group col-sm-6">
 				<label for="id_unidad_medida_salida">Unidad de salida</label>
-				<select  class="form-control selectpicker " id="id_unidad_medida_salida" name="id_unidad_medida_salida" data-container="body">
+				<select  class="form-control selectpicker " id="id_unidad_medida_salida" name="id_unidad_medida_salida" data-container="body" data-live-search="true">
 					<?php
 						if(!empty($um)) {
 							ksort($um);
@@ -89,7 +89,7 @@
 								ksort($ums);
 								echo '<optgroup  label="'.$mg.'">';
 								foreach($ums as $k=>$u) {
-									echo '  <option value="'.$s['id_unidad_medida'].'"> [ '.$s['id_unidad_medida'].' ] '.$s['nombre'].'</option> ';
+									echo '  <option value="'.$u['id_unidad_medida'].'"> [ '.$u['id_unidad_medida'].' ] '.$u['nombre'].'</option> ';
 								}
 								echo '</optgroup>';
 							}

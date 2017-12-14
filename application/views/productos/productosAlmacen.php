@@ -23,19 +23,19 @@
 	                  <th width="150px">Clave</th>		                 
 	                  <th>Nombre / Descripción</th>
 	                  <th width="130px">Marca</th>	          
-	                  <th width="100px">Dep.-Cat.-Sub</th>
-	                  <th width="90px">Existencia</th>
-	                  <th width="100px">U.E - U.S</th>
-	                  <th width="70px">Factor</th>
-	                  <th width="110px" class="right">Precio Vta.</th>
-	                  <th width="110px">Costo Prom.</th>
+	                  <th width="100px" class="center">Dep.-Cat.-Sub</th>
+	                  <th width="90px" class="right">Existencia</th>
+	                  <th width="90px" class="right">Entradas</th>
+	                  <th width="90px" class="right">Salidas</th>
+	                  <th width="100px" class="right">Precio Vta.</th>
+	                  <th width="100px" class="right">Costo Prom.</th>
 	                  <th width="30px" align="center"><span class="glyphicon glyphicon-cog"></span> </th>
 	                </tr> 
                 </tbody>
             </table> 
             <!-- /.box-header -->
             <div class="box-body box-body-modal table-responsive no-padding" >
-              <table class="table table-hover table-condensed table-striped table-body" id="scrTbl">
+              <table class="table table-hover table-condensed table-striped table-bordered table-body" id="scrTbl">
                 <tbody> </tbody>
               </table>
             </div>

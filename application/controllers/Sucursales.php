@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Sucursales extends CI_Controller {
-	private $s = null;
+	public $s = null;
 	function __construct() {
 		parent::__construct();
 		date_default_timezone_set("America/Mexico_City");

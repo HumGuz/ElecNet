@@ -12,18 +12,48 @@ class Productos_model extends CI_Model {
 		if($d['id_almacen'])
 			$c .= ' and p.id_almacen = '.$d['id_almacen'];
 		if($d['id_producto'])		
-			$c .= ' and p.id_producto = '.$d['id_producto'];	
-		
+			$c .= ' and p.id_producto = '.$d['id_producto'];
+		if($d['id_departamento'])		
+			$c .= ' and p.id_departamento = '.$d['id_departamento'];	
+		if($d['id_categoria_padre'])		
+			$c .= ' and p.id_categoria_padre = '.$d['id_categoria_padre'];	
+		if($d['id_categoria'])		
+			$c .= ' and p.id_categoria = '.$d['id_categoria'];
+		if($d['id_unidad_medida_entrada'])		
+			$c .= " and p.id_unidad_medida_entrada ='".$d['id_unidad_medida_entrada']."' ";	
+		if($d['id_unidad_medida_salida'])		
+			$c .= " and p.id_unidad_medida_salida = '".$d['id_unidad_medida_salida']."' ";		
 		if($d['busqueda'])
-			$c .= " and (  p.clave like '%".$d['busqueda']."%' or p.clave_secundaria like '%".$d['busqueda']."%' or p.descripcion like '%".$d['busqueda']."%' or p.observaciones like '%".$d['busqueda']."%' or p.marca like '%".$d['busqueda']."%'  )  ";
+			$c .= " and (  p.clave like '%".$d['busqueda']."%' or p.clave_secundaria like '%".$d['busqueda']."%' or p.descripcion like '%".$d['busqueda']."%' or p.concepto like '%".$d['busqueda']."%' or p.marca like '%".$d['busqueda']."%'  )  ";
 		$c .= " order by p.clave asc";		
-		$q = $this -> db -> query("select * from t_productos p  where 1=1 ".$c);		
+		$q = $this -> db -> query("select 
+									p.id_almacen,p.id_producto,
+									p.clave,p.clave_secundaria,
+									p.concepto,p.marca,p.modelo,
+									p.descripcion,p.colores,p.dimensiones,p.peso,
+									p.id_departamento, d.clave as dep,
+									p.id_categoria_padre, cp. clave as cat,
+									p.id_categoria, c.clave as subcat,
+									p.stock_min,p.stock_max,
+									p.id_unidad_medida_entrada, p.id_unidad_medida_entrada as ue,
+									p.id_unidad_medida_salida,p.id_unidad_medida_salida as us,
+									p.factor_unidades,p.existencia,p.entradas,p.salidas,
+								 	p.precio_min_venta,p.costo_promedio,p.tiempo_garantia,								 	
+								 	borrarProducto(p.id_producto) as borrar							 	
+									from 
+									t_productos p 
+									inner join t_departamentos d on d.id_departamento = p.id_departamento
+									inner join t_categorias cp on cp.id_categoria = p.id_categoria_padre
+									inner join t_categorias c on c.id_categoria = p.id_categoria
+									 where 1=1 ".$c);		
 		$r = $q->result_array();
 		return $r;		
 	}
 	
 	function claveUnica($d){		
 		$c = '';
+		if($d['id_almacen'])
+			$c .= " and p.id_almacen = ".$d['id_almacen'];
 		if($d['clave'])
 			$c .= " and p.clave = '".$d['clave']."'";
 		if($d['clave_secundaria'])		
@@ -35,7 +65,8 @@ class Productos_model extends CI_Model {
 	
 	function guardarProducto($d){
 		$d['id_usuario_cambio'] = $this->s['usuario']['id_usuario'];
-		$d['fecha_cambio'] = date('Y-m-d H:i:s');	
+		$d['fecha_cambio'] = date('Y-m-d H:i:s');		  	
+	  	$d['colores'] = implode(',', $d['colores']);
 	  	if(empty($d['id_producto'])){	
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
 			$d['fecha_registro'] = $d['fecha_cambio'];						
