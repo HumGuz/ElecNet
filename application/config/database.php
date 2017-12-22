@@ -76,9 +76,9 @@ $query_builder = TRUE;
 //main database
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
+	'hostname' => '35.184.192.166',
 	'username' => 'root',
-	'password' => '',
+	'password' => 'AppCentral0629',
 	'database' => 'elecnet_app',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
@@ -98,9 +98,9 @@ $db['default'] = array(
 
 $db['elecnet'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
+	'hostname' => '35.184.192.166',
 	'username' => 'root',
-	'password' => '',
+	'password' => 'AppCentral0629',
 	'database' => 'elecnet',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

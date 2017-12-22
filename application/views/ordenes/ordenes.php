@@ -37,6 +37,7 @@
   <script src="<?php echo base_url();?>application/third_party/moment/es.js"></script>
   <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.css">
   <script src="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script src="<?php echo base_url();?>application/third_party/typeahead/typeahead.bundle.min.js"></script>
   <script>app.script('ord','init')</script>
 </div>
 <!-- ./wrapper -->

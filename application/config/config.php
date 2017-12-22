@@ -24,6 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['base_url'] = 'http://localhost/ElecNet/';
+//$config['base_url'] = 'http://192.168.15.9/ElecNet/';
 
 /*
 |--------------------------------------------------------------------------

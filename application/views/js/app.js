@@ -28,9 +28,9 @@ var app = function() {
 			})
 		},
 		init : function() {
-			$(document).ajaxSend(function(a,b,c) {  }),
-			$(document).ajaxStop(function() {setTimeout(function() { }, 1e3)}), 
-			$(document).ajaxComplete(function(t, a, e) {setTimeout(function() { }, 2e3)}), 
+			$(document).ajaxSend(function(a,b,c) {$(".spinner").show()  }),
+			$(document).ajaxStop(function() {setTimeout(function() { $(".spinner").hide(); }, 1e3)}), 
+			$(document).ajaxComplete(function(t, a, e) {setTimeout(function() {$(".spinner") }, 2e3)}), 
 			handleOnResize(), wrapper = $(".box.catalog");
 			$(".box.catalog .box-body.table-responsive").each(function(t, a) {
 					var e = function() {

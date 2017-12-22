@@ -41,3 +41,7 @@
 <!-- AdminLTE App -->
 <script src="<?php echo base_url();?>application/views/js/adminlte.min.js"></script>
 <script src="<?php echo base_url();?>application/views/js/app.js"></script>
+<div class="spinner">
+  <div class="double-bounce1"></div>
+  <div class="double-bounce2"></div>
+</div>
