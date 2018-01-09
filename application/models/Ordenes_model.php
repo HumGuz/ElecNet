@@ -6,11 +6,9 @@ class Ordenes_model extends CI_Model {
 		parent::__construct();
 		$this->s = $this -> session -> userdata();			
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
-	}	
+		$this->load->library('app');
+	}
 	
-	function replace($str){
-		return str_replace(array('á','é','í','ó','ú','Á','É','Í','Ó','Ú'), array('a','e','i','o','u','A','E','I','O','U'), $str);
-	}	
 	
 	function getProductos($d){
 		if($d['id_proveedor'])
@@ -32,6 +30,12 @@ class Ordenes_model extends CI_Model {
 	
 	function getOrdenes($d=null){		
 		$c = '';
+		
+		if($d['id_sucursal'])
+			$c .= ' and o.id_sucursal = '.$d['id_sucursal'];
+		else
+			$c = ' and o.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+		
 		if($d['id_orden_compra'])
 			$c .= ' and o.id_orden_compra = '.$d['id_orden_compra'];
 		if($d['id_proveedor']){
@@ -94,7 +98,8 @@ class Ordenes_model extends CI_Model {
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
 			$d['fecha_registro'] = $d['fecha_cambio'];						
             $this->db->insert('t_ordenes_compra', $d);			
-			$id_orden_compra = $this->db->insert_id();			
+			$id_orden_compra = $this->db->insert_id();				
+			$this->db->query("update t_ordenes_compra set folio = '".App::folio('OC',$id_orden_compra)."' where id_orden_compra =".$id_orden_compra);
         }else{
         	$id_orden_compra = $d['id_orden_compra'];
 			unset($d['id_orden_compra']);

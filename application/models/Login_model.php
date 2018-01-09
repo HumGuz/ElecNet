@@ -1,6 +1,9 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Login_model extends CI_Model {	
+	function __construct() {
+		parent::__construct();				
+	}	
 	function login($mail,$pass){
 		// $this->load->database();
 		$q = $this -> db -> query("select u.id_usuario from t_usuarios u  inner join t_clientes c on c.id_cliente = u.id_cliente 
@@ -16,7 +19,7 @@ class Login_model extends CI_Model {
 			if(isset($r)){				
 				$s = array('usuario'=>array(),'cliente'=>array(),'db'=>'');				
 				$q = $this -> db -> query("select 
-													u.id_usuario, u.nombre, u.apellidos, u.imagen, u.fecha_registro as fecha,
+													u.id_usuario_in as id_usuario, u.nombre, u.apellidos, u.imagen, u.fecha_registro as fecha,u.id_sucursal,
 											   		c.*  
 											   from 
 													t_usuarios u
@@ -27,14 +30,17 @@ class Login_model extends CI_Model {
 											   		and u.email = ".$this->db->escape($mail)." 
 											   		and u.pass = md5(".$this->db->escape($pass).") ");		
 				$r = $q->row_array();				
-				if(isset($r)){
-					$s['usuario'] = array('id_usuario'=>$r['id_usuario'],'nombre'=>$r['nombre'],'apellidos'=>$r['apellidos'],'imagen'=>$r['imagen'],'fecha_registro'=>$r['fecha']);		
+				if(isset($r)){		
+					$dbIn = $this -> load -> database($r['db_name'], TRUE);					
+					$q = $dbIn -> query("select sucursales from t_usuarios u where u.id_usuario = ".$r['id_usuario']);
+					$rIn = $q->row_array();					
+					$s['usuario'] = array('id_usuario'=>$r['id_usuario'],'nombre'=>$r['nombre'],'apellidos'=>$r['apellidos'],'imagen'=>$r['imagen'],'fecha_registro'=>$r['fecha'],'id_sucursal'=>$r['id_sucursal'],'sucursales'=>$rIn['sucursales']);		
 					foreach ($s['usuario'] as $k) {
 						unset($r[$k]);
 					}
 					unset($r['status']);
 					$s['db'] = $r['db_name']; 
-					unset($r['db']);
+					unset($r['db_name']);
 					$s['cliente'] = $r;
 					$this->session->set_userdata($s);
 					return array('code'=>1252);

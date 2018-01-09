@@ -1,8 +1,9 @@
 ord = {
+	id_sucursal:0,
 	init:function(){		
-		$("div.box-tools button.btn.btn-success").click(function(){ord.nuevaOrden({})});
+		$("div.box-tools button.btn.btn-success").click(function(){ord.nuevaOrden({id_sucursal:ord.id_sucursal})});
 		$("#ordTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,ord[f](d)});
-		$("#srchFrm").validation({success:function(o){$("#ordTbl tbody").empty(),ord.ordenesTable(o)}});		
+		$("#srchFrm").validation({success:function(o){$("#ordTbl tbody").empty(),ord.ordenesTable(o)}});	
 		strt = moment().subtract(6, 'days');
 		end =  moment();
 		cb =  function (start, end, lbl) {	      
@@ -11,12 +12,7 @@ ord = {
 	        $("#srchFrm").find("#fecha_final").val(start.format('YYYY-MM-DD'))
 	    };		
 		$("#srchFrm").find('#daterange-btn').daterangepicker({
-			locale:{format: 'YYYY-MM-DD'},
-			startDate: strt,
-        	endDate: end,
-	        opens: "left",
-    		drops: "up",		
-    		autoApply:true,
+			locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end, opens: "left",drops: "up",autoApply:true,
 	        ranges: {
 	          'Hoy'       : [moment(), moment()],
 	          'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -26,8 +22,9 @@ ord = {
 	          'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
 	        }	     
 	      },cb);		 
-		  cb(strt,end,'Últimos 7 Días');		 
-		  ord.clear({});
+		  cb(strt,end,'Últimos 7 Días');
+		  $("#id_sucursal").change(function(){ ord.id_sucursal =$(this).val(), ord.clear()})
+		  ord.id_sucursal =$("#id_sucursal").val(),ord.clear({});
 	},
 	clear:function(){
 		$("#srchFrm").resetForm();		
@@ -35,6 +32,7 @@ ord = {
 		ord.ordenesTable({});
 	},
 	ordenesTable:function(o){
+		o.id_sucursal = ord.id_sucursal;
 		console.log(o)
 		$.ajax({type : "POST",url : "ordenesTable",dataType : "html",data : o})
 		.done(function(r) {
@@ -49,7 +47,7 @@ ord = {
 			md.find("#id_proveedor").change(function(){
 				v = $(this).val();
 				if(v!=''){
-					$.ajax({type : "POST",url : "getProductos",dataType : "json",data : {id_proveedor:v}})
+					$.ajax({type : "POST",url : "getProductos",dataType : "json",data : {id_proveedor:v,id_sucursal:o.id_sucursal}})
 					.done(function(r) {
 						Object.keys(r).length ? ord.autocomplete(r) : ( $('#clve_ord').typeahead('destroy'), $('#conc_ord').typeahead('destroy'), $.alert({title: 'Sin productos',icon: 'fa fa-warning',content: 'No hay productos para generar la orden',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}}) )  ;
 					}).fail(function(e, t, i) {console.log(e, t, i)})
@@ -115,17 +113,14 @@ ord = {
 				else
 					md.modal('hide');
 			});
-			md.find("#gNO").click(function(){$("#nvaOrd").submit()});
-			
+			md.find("#gNO").click(function(){$("#nvaOrd").submit()});			
 			if(o && o.id_orden_compra){				
 				s = $('#nuevaOrden .modal-content').data();
-				console.log(s)
 				for(i in s)
 					(md.find("#"+i).length && md.find("#"+i).val(s[i]));					
 				for(p in ord.productosDS)
-					ord.addFilaProducto(ord.productosDS[p]);					
-				md.find("#id_proveedor").change();
-				md.find("#id_proveedor").selectpicker('refresh');
+					pr = ord.productosDS[p], pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),ord.addFilaProducto(ord.productosDS[p]);					
+				ord.totalGeneral(),md.find("#id_proveedor").change(),md.find("#id_proveedor").selectpicker('refresh');
 			}	
 			
 		});
@@ -162,29 +157,6 @@ ord = {
     	$("input.form-control.ignore.tt-hint").val('');
     },
 	
-	 totalGeneral:function(){
-    	dsc = $.trim($("#descuento_general").val());    	
-    	if(dsc ==''){
-    		$("#descuento_general").val(0);
-    		dsc = 0;
-    	}    	
-    	ord.subtotal = 0; 
-    	dsc = parseFloat(dsc);       
-        ord.total = 0;      
-        for( producto in ord.productos )        	
-        	ord.subtotal += ord.productos[ producto ].total; 
-        ord.subtotal += parseFloat($("#gastos_envio").val());
-        ord.total_descuento_general = dsc *  ord.subtotal / 100; 			
-		ord.total_descuento = ord.subtotal - ord.total_descuento_general;
-		ord.iva = ord.total_descuento*0.16;
-		ord.total = ord.iva + ord.total_descuento;	
-        $("#subtotal").html('$ ' + app.number_format(ord.subtotal,2));	
-		$("#descuento").html('$ ' + app.number_format(ord.descuento_general,2));	    
-    	$("#iva").html('$ ' + app.number_format(ord.iva,2)); 
-    	$("#total").html('$ ' + app.number_format(ord.total,2)); 	
-    	
-    },
-	
 	getCoincidence:function(val,dataSet){
     	$("span.tt-dropdown-menu").hide(); 	
     	val = $.trim(val).toLowerCase();
@@ -206,7 +178,7 @@ ord = {
 	    	$("#preciop").val(dat.precio);    		 		   		
     		$("#cantidadp").focus();
     		$("#descuentop").val(dat.descuento);   
-    		dat.descuento = 0;    		
+    		dat.descuento =  !dat.descuento ? 0 : dat.descuento;        		
             ord.producto = $.extend({},dat);
     		delete dat;	
     	}else{
@@ -215,16 +187,49 @@ ord = {
     	}
     },
     
-    totalProducto:function() {
-		v = ord.producto.cantidad;
-		if (Object.keys(ord.producto).length && !isNaN(v) && v > 0) {						
-			ord.producto.subtotal = (ord.producto.cantidad * ord.producto.precio);
-			ord.producto.total = (ord.producto.subtotal - ((ord.producto.descuento * ord.producto.subtotal) / 100));
-			$("#totalp").html('$ ' + app.number_format(ord.producto.total,2));
-		} else {
-			$("#totalp").html('$ 0.00');
-		}
+    totalProducto:function(p) {    	
+    	if(p){
+    		v = p.cantidad;
+			if (Object.keys(p).length && !isNaN(v) && v > 0) {						
+				p.subtotal = (p.cantidad * p.precio);
+				p.total = (p.subtotal - ((p.descuento * p.subtotal) / 100));				
+				$("#prtr"+p.id_producto).find('td').eq(5).html('$ ' + app.number_format(p.total,2));				
+			} else {
+				$("#totalp").html('$ 0.00');
+			}
+    	}else{
+    		v = ord.producto.cantidad;
+			if (Object.keys(ord.producto).length && !isNaN(v) && v > 0) {						
+				ord.producto.subtotal = (ord.producto.cantidad * ord.producto.precio);
+				ord.producto.total = (ord.producto.subtotal - ((ord.producto.descuento * ord.producto.subtotal) / 100));
+				$("#totalp").html('$ ' + app.number_format(ord.producto.total,2));
+			} else {
+				$("#totalp").html('$ 0.00');
+			}
+    	} 
 	},    
+	
+	totalGeneral:function(){
+    	dsc = $.trim($("#descuento_general").val());    	
+    	if(dsc ==''){
+    		$("#descuento_general").val(0);
+    		dsc = 0;
+    	}    	
+    	ord.subtotal = 0; 
+    	dsc = parseFloat(dsc);       
+        ord.total = 0;      
+        for( producto in ord.productos )        	
+        	ord.subtotal += parseFloat(ord.productos[ producto ].total); 
+        ord.subtotal += parseFloat($("#gastos_envio").val());
+        ord.total_descuento_general = dsc *  ord.subtotal / 100; 			
+		ord.total_descuento = ord.subtotal - ord.total_descuento_general;
+		ord.iva = ord.total_descuento*0.16;
+		ord.total = ord.iva + ord.total_descuento;	       
+        $("#subtotal").html('$ ' + app.number_format(ord.subtotal,2));	
+		$("#descuento").html('$ ' + app.number_format(ord.descuento_general,2));	    
+    	$("#iva").html('$ ' + app.number_format(ord.iva,2)); 
+    	$("#total").html('$ ' + app.number_format(ord.total,2)); 	    	
+    },	  
 	
 	addProducto:function(){		
 		if(Object.keys(ord.producto).length){
@@ -260,13 +265,81 @@ ord = {
 	},
 	
 	addFilaProducto:function(producto){				
-		$("#prdOrdTbl tbody").append('<tr id="prtr'+producto.id_producto+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right">'+app.number_format(producto.cantidad,2)+' '+(producto.um)+'</td><td class="bold right">'+app.number_format(producto.precio,2)+'</td><td class="bold right">'+(producto.descuento)+' %</td><td class="bold right">'+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="ord.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>');
+		$("#prdOrdTbl tbody").append(ord.getFilaProducto(producto));
+		ord.setEditablesProducto(producto);
 		ord.productos[producto.id_producto] = producto;
 	},
 	
 	replaceFilaProducto:function(producto){	
 		$("#prtr"+producto.id_producto).remove();	
-		$("#prdOrdTbl tbody").append('<tr id="prtr'+producto.id_producto+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right">'+app.number_format(producto.cantidad,2)+' '+(producto.um)+'</td><td class="bold right">'+app.number_format(producto.precio,2)+'</td><td class="bold right">'+(producto.descuento)+' %</td><td class="bold right">'+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="ord.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>');
+		$("#prdOrdTbl tbody").append(ord.getFilaProducto(producto));
+		ord.setEditablesProducto(producto);
+	},
+	
+	getFilaProducto:function(producto){
+		return '<tr id="prtr'+producto.id_producto+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'"> '+app.number_format(producto.cantidad,2)+'</a> '+(producto.um)+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">$ '+app.number_format(producto.precio,2)+'</a></td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">'+(producto.descuento)+' %</a></td><td class="bold right">$ '+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="ord.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>';
+	},
+	
+	setEditablesProducto:function(cn){		
+		$("#prtr"+cn.id_producto).find('td').eq(2).find('a').editable({type: 'text',title: 'Cantidad:',
+            validate: function(value) {				    	
+                if($.trim(value) == '') 
+                    return 'Capture la cantidad.';						    
+                vl = /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(value);
+                if(!vl)
+                      return 'Capture un valor numérico.';
+                if(value<=0)
+                      return 'La cantidad tiene que ser mayor a cero';	
+            },
+            value:parseFloat(parseFloat(cn.cantidad).toFixed(2)),
+            display: function(value) { $(this).html(app.number_format(value,2));}, 
+            success: function(response, newValue) {
+                id = $(this).data('id');	    	
+                ord.productos[id].cantidad = parseFloat(newValue);  
+                ord.totalProducto(ord.productos[id]);
+                ord.totalGeneral();
+            }
+        });
+		$("#prtr"+cn.id_producto).find('td').eq(3).find('a').editable({type: 'text',title: 'Precio unitario:',
+            validate: function(value) {						    	
+                    if($.trim(value) == '') 
+                        return 'Capture el valor del precio.';						    
+                    vl = /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(value);
+                    if(!vl)
+                          return 'Capture un valor numérico.';
+                    if(value<=0)
+                          return 'El precio tiene que ser mayor a cero';		
+            },
+            value:parseFloat(parseFloat(cn.precio).toFixed(2)),
+            display: function(value) { $(this).html('$ '+app.number_format(value,2));}, 
+            success: function(response, newValue) {
+                id = $(this).data('id');	    	
+                ord.productos[id].precio = parseFloat(newValue);  
+                ord.totalProducto(ord.productos[id]);
+                ord.totalGeneral();
+            }
+        });        
+        $("#prtr"+cn.id_producto).find('td').eq(4).find('a').editable({type: 'text', title: 'Descuento:',
+            validate: function(value) {						    	
+                    if($.trim(value) == '') 
+                        return 'Capture el valor del descuento.';						    
+                    vl = /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(value);
+                    if(!vl)
+                          return 'Capture un valor numerico.';
+                    if(value<0)
+                          return 'El descuento tiene que ser mayor o igual a cero';	
+                     if(value>=100)
+                          return 'El descuento tiene que menor a 100';		
+                },
+             value:parseFloat(parseFloat(cn.descuento).toFixed(2)),
+            display: function(value) { $(this).html(app.number_format(value,2)+' %');},     
+            success: function(response, newValue) {
+                id = $(this).data('id');	    	
+                ord.productos[id].descuento = parseFloat(newValue);  
+                ord.totalProducto(ord.productos[id]);
+                ord.totalGeneral();
+            }
+        });     
 	},
 	
 	quitar:function(id_producto){		
@@ -282,8 +355,7 @@ ord = {
 		o.subtotal = ord.total_descuento;
 		o.total_descuento = ord.total_descuento_general; 
 		o.iva = ord.iva;
-		o.total = ord.total;		
-		console.log(o);		
+		o.total = ord.total;
 		$.ajax({type : "POST",url : "guardarOrden",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevaOrden').modal('hide'),ord.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})
@@ -309,10 +381,11 @@ ord = {
 		});
 	},
 	
-	export : function(t,type) {
+	export : function(t,f,type) {
 		$.ajax({type : "POST",url : type,dataType : "json",data :{id_orden_compra: t}})
 		.done(function(a) {
-			1 == a.status ? window.open("application/files/" + a.folio + '.'+type, "_blank") :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
+			1 == a.status ? location.href = ('download?folio='+f+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
+			 // window.open('download?id_orden_compra='+t+'&type='+type, "_blank")
 		}).fail(function(t, a, e) {
 			 $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}}), console.log(t, a, e);
 		});

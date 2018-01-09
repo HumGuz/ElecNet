@@ -11,15 +11,29 @@ class Compras extends CI_Controller {
 			redirect(base_url());	
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);
 		$this->load->model('compras_model','cmp');
-	}		
-	function index(){
-		$this->load->view('compras/compras');		
 	}
+			
+	function index(){		
+		$this->load->model('proveedores_model','prv');
+		$this->load->model('sucursales_model','scr');
+		$prv = $this->prv->getProveedores($this->input->post());				
+		$this->load->view('compras/compras',array('prv'=>$prv,'sucursales_select'=>$this->scr->getSucursalesSelect()));				
+	}
+	
 	function comprasTable(){
 		$cmp = $this->cmp->getCompras($this->input->post());
 		echo $this->load->view('compras/comprasTable',array('cmp'=>$cmp),TRUE);
 	}	
+	function getFolioOrden(){
+		$d = $this->input->post();
+		echo json_encode($this->cmp->getFolioOrden($d));
+	}	
+	function getProductos(){
+		$this->load->model('ordenes_model','ord');
+		echo json_encode($this->ord->getProductos($this->input->post()));		
+	}
 	function nuevaCompra(){
+		$this->load->model('proveedores_model','prv');
 		$d = $this->input->post();
 		$attr = '';		  	
 		if($d['id_compra']){
@@ -27,8 +41,13 @@ class Compras extends CI_Controller {
 			foreach ($cmp[0] as $key => $v) {
 				$attr .= 'data-'.$key.'="'.htmlspecialchars($v).'" ';
 			}
-		}		
-		echo $this->load->view('compras/nuevaCompra',array('cmp'=>$attr),TRUE);
+			$prd = $this->cmp->getProductosXCompra($d);
+		}elseif($d['folio']){			
+			$this->load->model('ordenes_model','ord');
+			$ord = $this->ord->getOrdenes($d);
+			$poc = $this->cmp->getProductosXOrden(array('id_orden_compra'=>$ord[0]['id_orden_compra']));			
+		}			
+		echo $this->load->view('compras/nuevaCompra',array('cmp'=>$attr,'poc'=>$poc,'prd'=>$prd,'ord'=>$ord[0],'prv'=>$this->prv->getProveedores()),TRUE);
 	}	
 	function guardarCompra(){
 		echo json_encode($this->cmp->guardarCompra($this->input->post()));		
@@ -36,4 +55,5 @@ class Compras extends CI_Controller {
 	function borrarCompra(){
 		echo json_encode($this->cmp->borrarCompra($this->input->post()));		
 	}
+	
 }

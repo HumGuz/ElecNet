@@ -2,13 +2,19 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Almacenes_model extends CI_Model {
 	private $db = null;	
+	private $id_sucursal = null;
 	function __construct() {
 		parent::__construct();
 		$this->s = $this -> session -> userdata();			
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
+		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
 	}	
-	function getAlmacenes($d){		
-		$c = '';
+	function getAlmacenes($d){
+		if($d['id_sucursal'])
+			$c .= ' and a.id_sucursal = '.$d['id_sucursal'];
+		else
+			$c = ' and a.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+		
 		if($d['id_almacen'])
 			$c .= ' and a.id_almacen = '.$d['id_almacen'];
 		if($d['busqueda'])

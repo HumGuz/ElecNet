@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Sucursales_model extends CI_Model {
 	private $db = null;	
+	
 	function __construct() {
 		parent::__construct();
 		$this->s = $this -> session -> userdata();			
@@ -41,9 +42,11 @@ class Sucursales_model extends CI_Model {
 		 return array('status'=>1);
 	}	
 	function getAlmacenesPorSucursal($d=null){
-		$c = '';
+		
 		if($d['id_sucursal'])
 			$c .= ' and s.id_sucursal = '.$d['id_sucursal'];
+		else
+			$c = ' and s.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
 		if($d['id_almacen'])
 			$c .= ' and a.id_almacen = '.$d['id_almacen'];
 		$q = $this -> db -> query("
@@ -63,10 +66,29 @@ class Sucursales_model extends CI_Model {
 						'encargado_sucursal'=>$v['encargado_sucursal'],						
 						'a'=>array()
 					);					
-				$a[$v['clave_sucursal']]['a'][$v['clave']]= $v;					
+					
+				if(!empty($v['clave']))	
+					$a[$v['clave_sucursal']]['a'][$v['clave']]= $v;					
 			}
 			$r = $a;
 		}		
 		return $r;
 	}
+	
+	function getSucursalesSelect($d= null){
+		$c = ' and s.id_sucursal in ('. $this->s['usuario']['sucursales'].') ';		
+		$c .= " order by s.clave asc";		
+		$q = $this -> db -> query("select s.id_sucursal,s.clave,s.nombre from t_sucursales s  where 1=1 ".$c);		
+		$r = $q->result_array();
+		if(!empty($r)){						
+			$res = '<select  class="form-control selectpicker div-sucursal " id="id_sucursal" name="id_sucursal" data-container="body" data-width="200px">';		
+			foreach ($r as $k => $v) {
+				$res .= '<option value="'.$v['id_sucursal'].'" '.( $v['id_sucursal'] ==  $this->s['usuario']['id_sucursal'] ? 'selected':'' ).' >[ '.$v['clave'].' ]  '.$v['nombre'].' </option> ';
+			}
+			$res .="</select>";
+			$r = $res;
+		}		
+		return $r;		
+	}
+	
 }

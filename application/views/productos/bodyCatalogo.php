@@ -15,7 +15,7 @@
 					  	echo '<ul class="nav nav-stacked">';
 					  	ksort($s['a']);
 						foreach ($s['a'] as $clave => $a) {
-							echo '<li><a href="#" data-fn="productosAlmacen" data-id_almacen="'.$a['id_almacen'].'">[ <b>'.$clave.'</b> ] '.$a['almacen'].' <span class="pull-right badge bg-blue">'.$a['elementos'].'</span></a></li>';
+							echo '<li><a href="#" data-fn="productosAlmacen" data-id_almacen="'.$a['id_almacen'].'"  data-id_sucursal="'.$a['id_sucursal'].'">[ <b>'.$clave.'</b> ] '.$a['almacen'].' <span class="pull-right badge bg-blue">'.$a['elementos'].'</span></a></li>';
 						}
 						echo '</ul>';
 					  }

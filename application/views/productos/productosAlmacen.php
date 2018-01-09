@@ -10,7 +10,7 @@
 	                  <div class="input-group-btn box-filter-parent">
 	                    <button type="button" class="btn btn-default filter" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="Filtro avanzado"><i class="fa fa-filter"></i> <i class="fa fa-caret-down"></i></button>
 	                    <?php include_once FCPATH.'application/views/productos/filter.php';?>
-                    	<button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"  title="Nuevo producto" data-id_almacen="<?php echo $alm['id_almacen'] ?>" data-fn="nuevoProducto"><i class="fa fa-plus"></i></button>
+                    	<button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"  title="Nuevo producto" data-id_almacen="<?php echo $alm['id_almacen'] ?>" data-id_sucursal="<?php echo $alm['id_sucursal'] ?>" data-fn="nuevoProducto"><i class="fa fa-plus"></i></button>
                        </div>
 	                </div> 
 		    </div>

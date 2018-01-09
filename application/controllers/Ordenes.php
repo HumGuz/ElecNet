@@ -15,8 +15,9 @@ class Ordenes extends CI_Controller {
 	}		
 	function index(){
 		$this->load->model('proveedores_model','prv');
+		$this->load->model('sucursales_model','scr');
 		$prv = $this->prv->getProveedores($this->input->post());		
-		$this->load->view('ordenes/ordenes',array('prv'=>$prv));		
+		$this->load->view('ordenes/ordenes',array('prv'=>$prv,'sucursales_select'=>$this->scr->getSucursalesSelect()));		
 	}
 	function ordenesTable(){
 		$cmp = $this->cmp->getOrdenes($this->input->post());
@@ -53,11 +54,7 @@ class Ordenes extends CI_Controller {
 		$d = $this->input->post();
 		$cmp = $this->cmp->getOrdenes($d);	
 		$prd = $this->cmp->getProductosXOrden($d);
-		
-		
 		if(!empty($prd)){
-			$folio = App::folio('OC',$cmp[0]['id_orden_compra']);
-		
 			$this->load->library('pdf');
 			$pdf = $this->pdf->load('utf-8',array(216,279.4),0,'"Helvetica Neue",Helvetica,Arial,sans-serif',10,10,7,10,10,4,"P");
 							
@@ -77,7 +74,7 @@ class Ordenes extends CI_Controller {
 						<htmlpageheader name="myHeader" style="display:none;">						
 								<h2 align="left" style="margin:0;"><b>Orden de compra</b></h2>
 								<div align="left">
-									Folio: <b>'.$folio.'</b> <br>
+									Folio: <b>'.$cmp[0]['folio'].'</b> <br>
 									Proveedor: <b>'.$cmp[0]['nombre_proveedor'].'</b>									
 								</div>							
 						</htmlpageheader>
@@ -119,7 +116,7 @@ class Ordenes extends CI_Controller {
 								'.$u['concepto'].'
 							</td>
 							<td style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;'.$border.'">
-								'.$u['cantidad_pedido'].'
+								'.$u['cantidad'].'
 							</td>
 							<td style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;'.$border.'">
 								'.$u['um'].'
@@ -143,13 +140,16 @@ class Ordenes extends CI_Controller {
 			}
 			$html .= '</tbody></table></body></html>';			
 			$pdf->WriteHTML($html); 			
-			$pdf->Output('./application/files/'.$folio.'.pdf', 'F');			
-			
-			echo json_encode(array('status'=>1,'folio'=>$folio));
+			$pdf->Output('./application/files/'.$folio.'.pdf', 'F');
+			echo json_encode(array('status'=>1));
 		}else{
 			echo json_encode(array('status'=>2));
-		}
-		
+		}		
 	}
-	
+
+	function download(){			
+		$d = $this->input->get();
+		$f =$d['folio'];			
+		App::downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
+	}	
 }

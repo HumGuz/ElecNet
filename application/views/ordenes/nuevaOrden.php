@@ -5,6 +5,8 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 				<h4 class="modal-title">Nueva orden de compra</h4>
 			</div>
+			<script src="<?php echo base_url();?>application/third_party/bootstrap-editable/js/bootstrap-editable.min.js"></script>
+			<link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-editable/css/bootstrap-editable.css">  
 			<script>ord.productosDS = <?php echo json_encode($prd); ?></script>
 				<div class="modal-body">					
 					<div class="row">				

@@ -21,6 +21,11 @@
 	margin:10px 0px;
 }
 
+.widget-user-username,.widget-user-desc{
+	margin-left:0px!important;
+	text-align:center!important;
+}
+
 /*loading spinner*/
 .fa-spinner.fa-spin{
     color: #337ab7!important;
@@ -66,10 +71,13 @@ em.error.help-block{
 	border-top:1px solid #d2d6de;
 	font-weight: 600;
 }
-.bootstrap-select button{
+
+
+.bootstrap-select button:not(.div-sucursal button){
 	background: #FFFFFF;
 	border-width:0px 0px 1px 0px!important;
 }
+
 
 .prd-form{
 	margin-bottom:10px;
@@ -121,6 +129,18 @@ em.error.help-block{
 	padding:1px!important
 }
 /*advanced filter*/
+
+.div-sucursal{
+	position:relative;
+	height:30px!important;
+	vertical-align:middle!important;
+}
+
+.div-sucursal button{
+	padding:5px 10px!important;
+	font-size:13px!important;
+}
+
 .box-filter-parent{
 	position:relative
 }
