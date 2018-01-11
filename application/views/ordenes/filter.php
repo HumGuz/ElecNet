@@ -20,7 +20,7 @@
 			<div class="clearfix"></div>	
 			
 			<div class="form-group col-sm-12">
-				<label for="id_departamento">Proveedor</label>
+				<label for="id_proveedor">Proveedor</label>
 				<select  class="form-control selectpicker" id="id_proveedor" name="id_proveedor" data-container="body" data-live-search="true" multiple="multiple">
 					<?php
 						if(!empty($prv)) {							

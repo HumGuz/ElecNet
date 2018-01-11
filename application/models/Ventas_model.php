@@ -1,6 +1,6 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Compras_model extends CI_Model {
+class Ventas_model extends CI_Model {
 	private $db = null;	
 	function __construct() {
 		parent::__construct();
@@ -9,7 +9,7 @@ class Compras_model extends CI_Model {
 		$this->load->library('app');
 	}
 	
-	function getCompras($d=null){		
+	function getVentas($d=null){		
 		$c = '';
 		
 		if($d['id_sucursal'])
@@ -17,13 +17,13 @@ class Compras_model extends CI_Model {
 		else
 			$c = ' and c.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
 		
-		if($d['id_compra'])
-			$c .= ' and c.id_compra = '.$d['id_compra'];
-		if($d['id_proveedor']){
-			if(is_array($d['id_proveedor']))
-			$c .= ' and c.id_proveedor in ('.implode(',', $d['id_proveedor']).') ' ;
+		if($d['id_venta'])
+			$c .= ' and c.id_venta = '.$d['id_venta'];
+		if($d['id_cliente']){
+			if(is_array($d['id_cliente']))
+			$c .= ' and c.id_cliente in ('.implode(',', $d['id_cliente']).') ' ;
 			else
-				$c .= ' and c.id_proveedor = '.$d['id_proveedor'];
+				$c .= ' and c.id_cliente = '.$d['id_cliente'];
 		}
 			
 		if($d['fecha_inicial'] && $d['fecha_final'])
@@ -38,10 +38,10 @@ class Compras_model extends CI_Model {
 									c.*,IF(c.status=2,1,0) as borrar,
 									o.folio as folio_orden,
 									o.fecha_registro as fecha_orden,
-									pr.clave clave_proveedor,pr.nombre  nombre_proveedor
-								    from t_compras c 
-								    inner join t_proveedores pr on pr.id_proveedor = c.id_proveedor 	
-									 left join t_ordenes_compra o on c.id_orden_compra = o.id_orden_compra											
+									pr.clave clave_cliente,pr.nombre  nombre_cliente
+								    from t_ventas c 
+								    inner join t_clientes pr on pr.id_cliente = c.id_cliente 	
+									 left join t_ordenes_venta o on c.id_orden_venta = o.id_orden_venta											
 								    where 1=1 ".$c);		
 		$r = $q->result_array();
 		return $r;		
@@ -50,15 +50,15 @@ class Compras_model extends CI_Model {
 	function facturaUnica($d){			
 		if($d['factura'])
 			$c .= " and c.factura = '".trim($d['factura'])."'";			
-		$q = $this -> db -> query("select id_compra from t_compras c  where 1=1  ".$c);		
+		$q = $this -> db -> query("select id_venta from t_ventas c  where 1=1  ".$c);		
 		$r = $q->result_array();
 		return empty($r)?'true':'false';		
 	}	
 	
 	function getProductosXOrden($d){
 				
-		if($d['id_orden_compra'])
-			$c .= ' and r.id_orden_compra = '.$d['id_orden_compra'];
+		if($d['id_orden_venta'])
+			$c .= ' and r.id_orden_venta = '.$d['id_orden_venta'];
 		
 		$q = $this -> db -> query("
 			select 
@@ -71,7 +71,7 @@ class Compras_model extends CI_Model {
 			r.precio,
 			r.subtotal,
 			r.total
-			from r_orden_compra_productos r
+			from r_orden_venta_productos r
 			inner join t_productos p on p.id_producto = r.id_producto
 			where 1=1 ".$c);
 		$r = $q->result_array();
@@ -80,10 +80,10 @@ class Compras_model extends CI_Model {
 	}
 	
 	
-	function getProductosXCompra($d){
+	function getProductosXVenta($d){
 				
-		if($d['id_compra'])
-			$c .= ' and r.id_compra = '.$d['id_compra'];
+		if($d['id_venta'])
+			$c .= ' and r.id_venta = '.$d['id_venta'];
 		
 		$q = $this -> db -> query("
 			select 
@@ -96,7 +96,7 @@ class Compras_model extends CI_Model {
 			r.precio,
 			r.subtotal,
 			r.total
-			from r_compra_productos r
+			from r_venta_productos r
 			inner join t_productos p on p.id_producto = r.id_producto
 			where 1=1 ".$c);
 		$r = $q->result_array();
@@ -105,46 +105,46 @@ class Compras_model extends CI_Model {
 	}
 	
 	function getFolioOrden($d){
-		$q = $this -> db -> query("select  id_orden_compra from t_ordenes_compra where folio = '".$d['folio']."' ");
+		$q = $this -> db -> query("select  id_orden_venta from t_ordenes_venta where folio = '".$d['folio']."' ");
 		$r = $q->result_array();
 		return   empty($r)? array('status'=>2) : array('status'=>1);
 	}
 	
 	
 	
-	function guardarCompra($d){
+	function guardarVenta($d){
 		$d['id_usuario_cambio'] = $this->s['usuario']['id_usuario'];
 		$d['fecha_cambio'] = date('Y-m-d H:i:s');
 		
 		$p = $d['productos'];
 		$d['productos'] = count($p);
 			
-	  	if(empty($d['id_compra'])){	
+	  	if(empty($d['id_venta'])){	
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
 			$d['fecha_registro'] = $d['fecha_cambio'];						
-            $this->db->insert('t_compras', $d);			
-			$id_compra = $this->db->insert_id();	
-			$this->db->query("update t_compras set folio = '".App::folio('CM',$id_compra)."' where id_compra =".$id_compra);		
+            $this->db->insert('t_ventas', $d);			
+			$id_venta = $this->db->insert_id();	
+			$this->db->query("update t_ventas set folio = '".App::folio('CM',$id_venta)."' where id_venta =".$id_venta);		
         }else{
-        	$id_compra = $d['id_compra'];
-			unset($d['id_compra']);
-            $this->db->where('id_compra', $id_compra);			
-            $this->db->update('t_compras', $d);            
-            $this->db->where('id_compra', $id_compra);			
-         	$this->db->delete('r_compra_productos');
+        	$id_venta = $d['id_venta'];
+			unset($d['id_venta']);
+            $this->db->where('id_venta', $id_venta);			
+            $this->db->update('t_ventas', $d);            
+            $this->db->where('id_venta', $id_venta);			
+         	$this->db->delete('r_venta_productos');
         }        
         
         if(!empty($p)){        				
         	foreach ($p as $k => $v) {						
-				$this->db->insert('r_compra_productos', array('id_compra' =>$id_compra,'id_proveedor' =>$d['id_proveedor'],'id_orden_compra' =>$d['id_orden_compra'],'id_producto'=>$v['id_producto'],'cantidad'=>$v['cantidad'],'disponible'=>$v['cantidad'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
+				$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_orden_venta' =>$d['id_orden_venta'],'id_producto'=>$v['id_producto'],'cantidad'=>$v['cantidad'],'disponible'=>$v['cantidad'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
 			}
         }
         		
-		return array('status'=>1,'id_compra'=>$id_compra);
+		return array('status'=>1,'id_venta'=>$id_venta);
 	}	
-	function borrarCompra($d){
-		 $this->db->where('id_compra', $d['id_compra']);			
-         $this->db->delete(array('t_compras','r_compra_productos'));	
+	function borrarVenta($d){
+		 $this->db->where('id_venta', $d['id_venta']);			
+         $this->db->delete(array('t_ventas','r_venta_productos'));	
 		 return array('status'=>1);
 	}
 }

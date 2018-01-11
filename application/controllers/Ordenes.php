@@ -36,9 +36,7 @@ class Ordenes extends CI_Controller {
 		}		
 		echo $this->load->view('ordenes/nuevaOrden',array('obj'=>$attr,'prd'=>$prd,'prv'=>$this->prv->getProveedores()),TRUE);
 	}	
-	function getProductos(){
-		echo json_encode($this->cmp->getProductos($this->input->post()));		
-	}
+	
 	function guardarOrden(){
 		echo json_encode($this->cmp->guardarOrden($this->input->post()));		
 	}		

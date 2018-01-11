@@ -10,13 +10,11 @@ class Productos_model extends CI_Model {
 		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
 	}
 		
-	function getProductos($d){		
-			
+	function getProductos($d){					
 		if($d['id_sucursal'])
 			$c = ' and p.id_sucursal =  '.$d['id_sucursal'];
 		else 
-			$c = ' and p.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
-		
+			$c = ' and p.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
 		if($d['id_almacen'])
 			$c .= ' and p.id_almacen = '.$d['id_almacen'];
 		if($d['id_producto'])		
@@ -72,7 +70,7 @@ class Productos_model extends CI_Model {
 			$c = ' and p.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
 			
 		if($d['id_proveedor'])
-			$c .= ' and r.id_proveedor = '.$d['id_proveedor']." or r.id_producto is null";		
+			$c .= ' and r.id_proveedor = '.$d['id_proveedor']." or r.clave is null";		
 		
 		$c .= " group by p.id_producto order by p.clave asc";
 		
@@ -88,7 +86,7 @@ class Productos_model extends CI_Model {
 									 group_concat(a.clave SEPARATOR '-|-') as clave_almacen,
 									 group_concat(a.nombre SEPARATOR '-|-') as almacen
 								    from t_productos p 
-								    left join r_proveedor_productos r on r.id_producto = p.id_producto	
+								    left join r_proveedor_productos r on r.clave = p.clave
 								    left join t_almacenes a on a.id_almacen = p.id_almacen	
 								    where 1=1 ".$c);		
 		$result = $q->result_array();

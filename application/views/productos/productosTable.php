@@ -17,6 +17,7 @@ if(!empty($prd)){
 		                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"> <span class="caret"></span></button>
 		                  <ul class="dropdown-menu pull-right" role="menu">
 		                    <li><a href="#" ><span class="fa fa-info-circle text-info"></span> Detalles </a></li>
+		                    <li><a href="#" data-id_producto="'.$p['id_producto'].'" data-fn="imagenes"><span class="fa fa-picture-o text-primary"></span> Imagenes </a></li>
 		                    <li><a href="#" data-id_producto="'.$p['id_producto'].'" data-fn="nuevoProducto"><span class="fa fa-pencil"></span> Editar </a></li>
 		                    '.( $p['borrar'] ? '<li class="divider"></li><li><a href="#"  data-id_producto="'.$p['id_producto'].'" data-fn="borrarProducto"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
 		                  </ul>

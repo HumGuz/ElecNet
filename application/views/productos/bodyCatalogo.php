@@ -6,7 +6,11 @@
 			echo '
 				<div class="col-md-4">		         
 		          <div class="box box-widget widget-user-2 almacenes-sucursal">		            
-		            <div class="widget-user-header bg-aqua">
+		            <div class="widget-user-header bg-aqua" style="position:relative">
+		            
+					  <button type="button" class="btn btn-sm btn-success absolute-right" data-toggle="tooltip" title="Nuevo almacén"><i class="fa fa-plus"></i></button>
+					
+					
 		              <h3 class="widget-user-username">[ '.$s['clave_sucursal'].' ]  '.$s['sucursal'].' </h3>
 		              <h5 class="widget-user-desc">'.$s['encargado_sucursal'].'</h5>
 		            </div>

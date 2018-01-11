@@ -47,7 +47,7 @@ ord = {
 			md.find("#id_proveedor").change(function(){
 				v = $(this).val();
 				if(v!=''){
-					$.ajax({type : "POST",url : "getProductos",dataType : "json",data : {id_proveedor:v,id_sucursal:o.id_sucursal}})
+					$.ajax({type : "POST",url : "../productos/getProductosXProveedor",dataType : "json",data : {id_proveedor:v,id_sucursal:o.id_sucursal}})
 					.done(function(r) {
 						Object.keys(r).length ? ord.autocomplete(r) : ( $('#clve_ord').typeahead('destroy'), $('#conc_ord').typeahead('destroy'), $.alert({title: 'Sin productos',icon: 'fa fa-warning',content: 'No hay productos para generar la orden',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}}) )  ;
 					}).fail(function(e, t, i) {console.log(e, t, i)})

@@ -115,54 +115,60 @@
 						<p class="margin ">Datos de pago </p>
 							
 							
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<div class="form-group">
 			                  <label for="banco">Banco</label>
 			                  <input type="text" class="form-control" id="banco" name="banco">
 			                </div>
 						</div>		
 						
+						<div class="col-sm-3">
+							<div class="form-group">
+			                  <label for="sucursal">Sucursal</label>
+			                  <input type="text" class="form-control" id="sucursal" name="sucursal">
+			                </div>
+						</div>		
 						
-						<div class="col-sm-4">
+						
+						<div class="col-sm-3">
 							<div class="form-group">
 			                  <label for="no_cuenta">Num. Cuenta</label>
 			                  <input type="text" class="form-control digits" id="no_cuenta" name="no_cuenta">
 			                </div>
 						</div>	
 						
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<div class="form-group">
-			                  <label for="cable">Cable</label>
+			                  <label for="cable">Clabe</label>
 			                  <input type="text" class="form-control digits" id="cable" name="cable">
 			                </div>
 						</div>	
 						
 						<div class="clearfix"></div>
 						
-						<div class="col-sm-4 col-sm-offset-2">
+						<div class="col-sm-3">
 							<div class="form-group">
 			                  <label for="referencia">Referencia</label>
 			                  <input type="text" class="form-control" id="referencia" name="referencia">
 			                </div>
 						</div>	
 						
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<div class="form-group">
 			                  <label for="no_tarjeta">No. Tarjeta</label>
 			                  <input type="text" class="form-control digits" id="no_tarjeta" name="no_tarjeta">
 			                </div>
 						</div>
 						
-						<div class="clearfix"></div>
 						
-						<div class="col-sm-4  col-sm-offset-2">
+						<div class="col-sm-3  ">
 							<div class="form-group">
 			                  <label for="dias_credito">Días crédito</label>
 			                  <input type="text" class="form-control digits" id="dias_credito" name="dias_credito">
 			                </div>
 						</div>	
 						
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<div class="form-group">
 			                  <label for="monto_credito">Monto crédito</label>
 			                  <input type="text" class="form-control number" id="monto_credito" name="monto_credito">

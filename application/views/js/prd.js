@@ -120,5 +120,58 @@ prd = {
 		        }}		        
 		    }
 		});
-	}	
+	},
+	
+	imagenes:function(o){
+		$.ajax({type : "POST",url : "imagenes",dataType : "html",data : o})
+		.done(function(r) {
+			$('body').append(r),md = $("#prodImg-modal"),		
+			md.modal({backdrop:'static',show:true}).on('hidden.bs.modal',function(){$(this).remove();}).on('shown.bs.modal',function(){
+				
+			});				
+		}).fail(function(e, t, i) {console.log(e, t, i)});
+	},	
+	
+	
+	/*almacenes light*/
+	nuevoAlmacen:function(o){
+		$.ajax({type:"POST",url :  "nuevoAlmacen",dataType : "html",data:o}).done(function(r) {
+			$('body').append(r);  
+			$('#nuevoAlmacen').modal({show:true,backdrop:'static'});
+			$('#nuevoAlmacen').on('hidden.bs.modal',function(){$(this).remove();});		
+			if(o && o.id_almacen){				
+				s = $('#nuevoAlmacen .modal-content').data();
+				for(i in s)
+					($("#"+i).length && $("#"+i).val(s[i]));
+			}
+			$("#nvoAlmFrm .selectpicker").selectpicker({}),
+			$("#nvoAlmFrm").validation({extend:o,success:function(ob){prd.guardarAlmacen(ob)}})
+		});
+	},
+	guardarAlmacen:function(o){		
+		console.log(o)
+		$.ajax({type : "POST",url : "guardarAlmacen",dataType : "json",data : o})
+		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoAlmacen').modal('hide'),location.reload()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		.fail(function(e, a, r) {console.log(e, a, r)})
+	},
+	borrarAlmacen:function(o){
+		$.confirm({ title: 'Borrar Almacén',content: '¿Esta seguro de querer borrar este almacén?', type: 'orange',theme:"dark",
+		    buttons: {
+		    	a: {text: 'Cancelar'},
+		        b: {text: 'Borrar',btnClass: 'btn-orange', action: function(r){ 
+		        	$.confirm({ title: 'Borrar',content: 'Al borrar, se perderá toda la información relacionada con el almacén, ¿Continuar?',
+					    type: 'red',theme:"dark",
+					    buttons: {
+					    	a: {text: 'Cancelar'},
+					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
+					        	$.ajax({type : "POST",url : "borrarAlmacen",dataType : "json",data : o})
+								.done(function(r) {
+									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),location.reload()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+								}).fail(function(e, t, i) {console.log(e, t, i)})
+					        }}		        
+					}});
+		        }}		        
+		    }
+		});
+	}		
 };

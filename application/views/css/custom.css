@@ -21,6 +21,13 @@
 	margin:10px 0px;
 }
 
+.absolute-right{
+	position:absolute;
+	top:5px;
+	right:5px;
+}
+
+
 .widget-user-username,.widget-user-desc{
 	margin-left:0px!important;
 	text-align:center!important;
@@ -124,6 +131,11 @@ em.error.help-block{
 .modal-productos-almacen .box-body-modal{
 	height:calc(100% - 115px);
 }
+
+.box-body-modal-fixed{
+	height:calc(100% - 84px);
+}
+
 /*catalogo de productos */
 .widget-user-2.almacenes-sucursal .widget-user-header{
 	padding:1px!important

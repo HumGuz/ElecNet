@@ -9,25 +9,6 @@ class Ordenes_model extends CI_Model {
 		$this->load->library('app');
 	}
 	
-	
-	function getProductos($d){
-		if($d['id_proveedor'])
-			$c .= ' and r.id_proveedor = '.$d['id_proveedor']." or r.id_producto is null";
-		$c .= " group by p.id_producto order by p.clave asc";				
-		$q = $this -> db -> query("select 
-									p.id_producto,p.clave,p.concepto,p.id_unidad_medida_entrada as um, r.precio,r.descuento
-								    from t_productos p 
-								    left join r_proveedor_productos r on r.id_producto = p.id_producto		
-								    where 1=1 ".$c);		
-		$result = $q->result_array();
-						if(!empty($result)){
-							foreach ($result as $key => $v) {											
-								$result[$key]['nombre'] = $this->replace($v['nombre']);
-							}
-						}
-						return $result;			
-	}
-	
 	function getOrdenes($d=null){		
 		$c = '';
 		

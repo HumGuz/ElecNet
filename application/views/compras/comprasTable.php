@@ -5,7 +5,7 @@ if(!empty($cmp)){
 			<tr >
 			<td width="120px" class="bold">'.App::dateFormat($p['fecha_cambio'],2).'</td>			
 			<td width="80px"  class="bold">'.$p['folio'].'</td>			
-			<td width="120px" class="bold">'.App::dateFormat($p['fecha_orden'],2).'</td>			
+			<td width="90px" class="bold">'.$p['factura'].'</td>			
 			<td width="80px"  class="bold">'.$p['folio_orden'].'</td>
 			<td>[ '.$p['clave_proveedor'].' ] '.$p['nombre_proveedor'].'</td>
 			<td width="70px" class="right">'.$p['productos'].'</td>

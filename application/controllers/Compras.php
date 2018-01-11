@@ -32,6 +32,9 @@ class Compras extends CI_Controller {
 		$this->load->model('ordenes_model','ord');
 		echo json_encode($this->ord->getProductos($this->input->post()));		
 	}
+	function facturaUnica(){
+		echo $this->cmp->facturaUnica($this->input->post());
+	}
 	function nuevaCompra(){
 		$this->load->model('proveedores_model','prv');
 		$d = $this->input->post();

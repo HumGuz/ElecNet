@@ -33,6 +33,10 @@ class Productos extends CI_Controller {
 		echo $this->load->view('productos/productosTable',array('prd'=>$prd),TRUE);
 	}
 	
+	function getProductosXProveedor(){
+		echo json_encode($this->prd->getProductosXProveedor($this->input->post()));		
+	}
+	
 	function nuevoProducto(){
 		$d = $this->input->post();
 		$this->load->model('clasificaciones_model','cls');
@@ -52,5 +56,12 @@ class Productos extends CI_Controller {
 		
 	function borrarProducto(){
 		echo json_encode($this->prd->borrarProducto($this->input->post()));		
+	}
+	
+	function imagenes(){
+		$d = $this->input->post();
+		$prd = $this->prd->getProductos($d);
+		$img = $this->alm->getImagenesProducto($d);
+		echo $this->load->view('productos/imagenes',array('img'=>$img,'prd'=>$prd[0]),TRUE);
 	}
 }

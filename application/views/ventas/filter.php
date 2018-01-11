@@ -20,12 +20,12 @@
 			<div class="clearfix"></div>	
 			
 			<div class="form-group col-sm-12">
-				<label for="id_proveedor">Proveedor</label>
-				<select  class="form-control selectpicker" id="id_proveedor" name="id_proveedor" data-container="body" data-live-search="true" multiple="multiple">
+				<label for="id_cliente">Cliente</label>
+				<select  class="form-control selectpicker" id="id_cliente" name="id_cliente" data-container="body" data-live-search="true" multiple="multiple">
 					<?php
-						if(!empty($prv)) {							
-							foreach($prv as $key=>$s) {
-								echo '  <option value="'.$s['id_proveedor'].'" > [ '.$s['clave'].' ] '.$s['nombre'].'</option> ';
+						if(!empty($clt)) {							
+							foreach($clt as $key=>$s) {
+								echo '  <option value="'.$s['id_cliente'].'" > [ '.$s['clave'].' ] '.$s['nombre'].'</option> ';
 							}
 						}
 					?>

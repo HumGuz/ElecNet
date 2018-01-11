@@ -2,15 +2,15 @@
  	<div class="col-xs-12">
           <div class="box box-info catalog">
             <div class="box-header">
-              <h3 class="box-title"> Lista de compras</h3>
+              <h3 class="box-title"> Lista de ventas</h3>
               	<div class="box-tools pull-right">		      
 	                <div class="input-group input-group-sm" style="width: 500px;">
 	                  <input type="text" name="busqueda_out" id="busqueda_out" class="form-control pull-right" placeholder="buscar....">
 	                  <div class="input-group-btn box-filter-parent">
 	                    <?php echo $sucursales_select; ?>
 	                    <button type="button" class="btn btn-default filter" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="Filtro avanzado"><i class="fa fa-filter"></i> <i class="fa fa-caret-down"></i></button>
-	                    <?php include_once FCPATH.'application/views/compras/filter.php';?>
-                    	<button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"  title="Nueva compra" data-fn="nuevaCompraDialog"><i class="fa fa-plus"></i></button>
+	                    <?php include_once FCPATH.'application/views/ventas/filter.php';?>
+                    	<button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"  title="Nueva venta" data-fn="nuevaVentaDialog"><i class="fa fa-plus"></i></button>
                        </div>
 	                </div> 
 		    	</div>                         
@@ -20,12 +20,9 @@
                 <tbody>
                 	<tr>	
                 	  <th width="120px">Fecha Reg.</th> 					              
-	                  <th width="80px">Folio</th>	
-	                  
-	                  <th width="90px">Factura</th> 					              
-	                  <th width="80px">Folio O.C</th>	
-	                                       
-	                  <th>Proveedor</th>
+	                  <th width="80px">Folio</th>		                   					              
+	                  <th width="80px">Pedido</th>	
+	                  <th>Cliente</th>
 	                  <th width="45px" class="right">Prod.</th>	                  
 	                  <th width="100px"  class="right">Subtotal</th>
 	                  <th width="77px"  class="right">Descuento</th>

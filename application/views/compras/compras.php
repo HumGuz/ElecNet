@@ -11,7 +11,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        <i class="fa fa-file-text"></i> Compras
+        <i class="fa fa-cart-arrow-down"></i> Compras
         <small></small>
       </h1>
       <ol class="breadcrumb">
