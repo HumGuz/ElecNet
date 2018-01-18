@@ -44,6 +44,7 @@
         
         <li><a href="<?php echo base_url().'ordenes/' ?>"><i class="fa fa-file-text"></i> <span>Ordenes de compra</span> </a></li>
         <li><a href="<?php echo base_url().'compras/' ?>"><i class="fa fa-cart-arrow-down"></i> <span>Compras</span> </a></li>
+        <li><a href="<?php echo base_url().'cotizaciones/' ?>"><i class="fa fa-file-text-o"></i> <span>Cotizaciones</span> </a></li>
        	<li><a href="<?php echo base_url().'ventas/' ?>"><i class="fa fa-money"></i> <span>Ventas</span> </a></li>
         
       </ul>

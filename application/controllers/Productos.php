@@ -37,6 +37,10 @@ class Productos extends CI_Controller {
 		echo json_encode($this->prd->getProductosXProveedor($this->input->post()));		
 	}
 	
+	function getPrecioXProducto(){
+		echo json_encode($this->prd->getPrecioXProducto($this->input->post()));		
+	}
+	
 	function nuevoProducto(){
 		$d = $this->input->post();
 		$this->load->model('clasificaciones_model','cls');

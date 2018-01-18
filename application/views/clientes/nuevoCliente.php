@@ -1,6 +1,6 @@
 <div class="modal fade" id="nuevoCliente">
 	<div class="modal-dialog">
-		<div class="modal-content" <?php echo $prv ?>>
+		<div class="modal-content" <?php echo $clt ?>>
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 				<h4 class="modal-title">Nuevo Cliente</h4>

@@ -97,6 +97,39 @@ class Productos_model extends CI_Model {
 		}
 		return $result;			
 	}
+
+	function getPrecioXProducto(){
+				
+		if($d['id_sucursal'])
+			$c .= ' and p.id_sucursal = '.$d['id_sucursal'];
+		else
+			$c = ' and p.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+		
+		$c .= " group by p.id_producto order by p.clave asc";		
+						
+		$q = $this -> db -> query("select 
+									 group_concat(p.id_producto SEPARATOR '-|-') as id_producto, 
+									 p.clave,
+									 group_concat(p.concepto SEPARATOR '-|-') as concepto,
+									 group_concat(p.id_unidad_medida_salida SEPARATOR '-|-') as um, 
+									 group_concat( p.precio_min_venta  SEPARATOR '-|-') as precio,								
+									 group_concat(p.id_almacen SEPARATOR '-|-') as id_almacen, 
+									 group_concat(a.clave SEPARATOR '-|-') as clave_almacen,
+									 group_concat(a.nombre SEPARATOR '-|-') as almacen
+								    from t_productos p 
+								    left join r_proveedor_productos r on r.clave = p.clave
+								    left join t_almacenes a on a.id_almacen = p.id_almacen	
+								    where 1=1  ".$c);		
+		$result = $q->result_array();
+		if(!empty($result)){
+			foreach ($result as $key => $v) {											
+				$result[$key]['nombre'] = $this->replace($v['nombre']);
+			}
+		}
+		return $result;		
+		
+	}
+
 	
 	
 	function claveUnica($d){	

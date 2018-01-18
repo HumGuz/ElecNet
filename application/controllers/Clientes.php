@@ -11,10 +11,12 @@ class Clientes extends CI_Controller {
 			redirect(base_url());	
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);
 		$this->load->model('clientes_model','clt');
-	}		
+	}	
+		
 	function index(){
 		$this->load->view('clientes/clientes');		
 	}
+	
 	function clientesTable(){
 		$clt = $this->clt->getClientes($this->input->post());
 		echo $this->load->view('clientes/clientesTable',array('clt'=>$clt),TRUE);

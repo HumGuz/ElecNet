@@ -1,4 +1,6 @@
 <?php
+if (!defined('BASEPATH'))
+	exit('No direct script access allowed');
 class App {
 	public static function dateFormat($date,$op=0){
 		if(date('Y-m-d',strtotime($date)) == '1969-12-31' ||  $date =='' || $date == '0000-00-00')    
