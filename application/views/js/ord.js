@@ -33,7 +33,6 @@ ord = {
 	},
 	ordenesTable:function(o){
 		o.id_sucursal = ord.id_sucursal;
-		console.log(o)
 		$.ajax({type : "POST",url : "ordenesTable",dataType : "html",data : o})
 		.done(function(r) {
 			$("#ordTbl tbody").append(r);

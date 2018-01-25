@@ -16,7 +16,7 @@ class Ventas extends CI_Controller {
 	function index(){		
 		$this->load->model('clientes_model','clt');
 		$this->load->model('sucursales_model','scr');
-		$clt = $this->clt->getProveedores($this->input->post());				
+		$clt = $this->clt->getClientes($this->input->post());				
 		$this->load->view('ventas/ventas',array('clt'=>$clt,'sucursales_select'=>$this->scr->getSucursalesSelect()));				
 	}
 	
@@ -24,17 +24,11 @@ class Ventas extends CI_Controller {
 		$vnt = $this->vnt->getVentas($this->input->post());
 		echo $this->load->view('ventas/ventasTable',array('vnt'=>$vnt),TRUE);
 	}	
-	function getFolioOrden(){
+	function getFolioCotizacion(){
 		$d = $this->input->post();
-		echo json_encode($this->vnt->getFolioOrden($d));
+		echo json_encode($this->vnt->getFolioCotizacion($d));
 	}	
-	function getProductos(){
-		$this->load->model('ordenes_model','ord');
-		echo json_encode($this->ord->getProductos($this->input->post()));		
-	}
-	function facturaUnica(){
-		echo $this->vnt->facturaUnica($this->input->post());
-	}
+	
 	function nuevaVenta(){
 		$this->load->model('clientes_model','clt');
 		$d = $this->input->post();
@@ -46,11 +40,11 @@ class Ventas extends CI_Controller {
 			}
 			$prd = $this->vnt->getProductosXVenta($d);
 		}elseif($d['folio']){			
-			$this->load->model('ordenes_model','ord');
-			$ord = $this->ord->getOrdenes($d);
-			$poc = $this->vnt->getProductosXOrden(array('id_orden_venta'=>$ord[0]['id_orden_venta']));			
+			$this->load->model('cotizaciones_model','cot');
+			$cot = $this->cot->getCotizaciones($d);
+			$pcot = $this->cot->getProductosXCotizacion(array('id_cotizacion'=>$cot[0]['id_cotizacion']));			
 		}			
-		echo $this->load->view('ventas/nuevaVenta',array('vnt'=>$attr,'poc'=>$poc,'prd'=>$prd,'ord'=>$ord[0],'clt'=>$this->clt->getProveedores()),TRUE);
+		echo $this->load->view('ventas/nuevaVenta',array('vnt'=>$attr,'pcot'=>$pcot,'prd'=>$prd,'cot'=>$cot[0],'clt'=>$this->clt->getClientes()),TRUE);
 	}	
 	function guardarVenta(){
 		echo json_encode($this->vnt->guardarVenta($this->input->post()));		

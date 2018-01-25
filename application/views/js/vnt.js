@@ -29,32 +29,32 @@ vnt = {
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},	
 	nuevaVentaDialog:function(o){	
-		if(Object.keys(o).length){
+		if(o.id_venta){
 			vnt.nuevaVenta(o);
 		}else{
-			$.confirm({title : 'Nueva venta',icon : 'fa fa-question',content : '¿Registrara una venta basado en una orden de venta previamente registrada?',type : 'blue',theme : "dark",
+			$.confirm({title : 'Nueva venta',icon : 'fa fa-question',content : '¿Registrara una venta basado en una cotizacion de venta previamente registrada?',type : 'blue',theme : "dark",
 				buttons : {
 					a : {
-						text : 'Registrar con orden de venta',btnClass : 'btn-blue',
+						text : 'Registrar con cotizacion',btnClass : 'btn-blue',
 						action :function(r){
-							$.confirm({ title: 'Orden de venta',icon : 'fa fa-file-text',type : 'blue',theme : "dark",
-							    content: '<form action="" class="formName"><div class="form-group"><label>Folio de orden de venta:</label><input type="text" placeholder="OCXXXXXX" class="form-control" required id="folioNC" /></div></form>',
+							$.confirm({ title: 'Cotizacion',icon : 'fa fa-file-text',type : 'blue',theme : "dark",
+							    content: '<form action="" class="formName"><div class="form-group"><label>Folio de la cotizacion:</label><input type="text" placeholder="CTXXXXXX" class="form-control" required id="folioCT" /></div></form>',
 							    buttons: {
 							        formSubmit: {
-							            text: 'Buscar Orden de venta', btnClass: 'btn-blue',
+							            text: 'Buscar Cotizacion', btnClass: 'btn-blue',
 							            action: function () {							            	
-							                var folio = $.trim(this.$content.find('#folioNC').val());
+							                var folio = $.trim(this.$content.find('#folioCT').val());
 							                if(!folio){
 							                    $.alert('Capture el folio');
 							                    return false;
 							                }else{								                								                	
 							                	var rs;							                							                	
-								               	$.ajax({type : "POST",url : "getFolioOrden",async:false,dataType : "json",data : {folio:folio}})
+								               	$.ajax({type : "POST",url : "getFolioCotizacion",async:false,dataType : "json",data : {folio:folio}})
 												.done(function(r) {rs = r;}).fail(function(e, t, i) {console.log(e, t, i); return false;});													
 												if(rs.status==1){
 													vnt.nuevaVenta({folio:folio,id_sucursal:vnt.id_sucursal})
 												}else{
-													$.alert({title: 'Folio',icon: 'fa fa-warning',content: 'El folio capturado no existe, favor de validarlo',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter'],action:function(){$("#folioNC").focus()}}}});
+													$.alert({title: 'Folio',icon: 'fa fa-warning',content: 'El folio capturado no existe, favor de validarlo',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter'],action:function(){$("#folioCT").focus()}}}});
 													return false
 												}							                ;
 							                }
@@ -77,17 +77,18 @@ vnt = {
 	},	
 	
 	nuevaVenta:function(o){
-		vnt.producto = {},vnt.productos = {},vnt.productosDS = {},vnt.productosOC = {},vnt.orden={};
+		vnt.producto = {},vnt.productos = {},vnt.productosDS = {},vnt.productosCT = {},vnt.cotizacion={};
 		$.ajax({type:"POST",url :  "nuevaVenta",dataType : "html",data:o}).done(function(r) {
 			$('body').append(r),md = $('#nuevaVenta');			 
 			md.modal({show:true,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});				
-			md.find("#id_proveedor").change(function(){
+			md.find("#id_cliente").change(function(){
 				v = $(this).val();
 				if(v!=''){
-					$.ajax({type : "POST",url : "../productos/getProductosXProveedor",dataType : "json",data : {id_proveedor:v,id_sucursal:o.id_sucursal}})
+					$.ajax({type : "POST",url : "../productos/getPrecioXProducto",dataType : "json",data : {id_cliente:v,id_sucursal:o.id_sucursal}})
 					.done(function(r) {
 						Object.keys(r).length ? vnt.autocomplete(r) : ( $('#clve_vnt').typeahead('destroy'), $('#conc_vnt').typeahead('destroy'), $.alert({title: 'Sin productos',icon: 'fa fa-warning',content: 'No hay productos para generar la venta',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}}) )  ;
-					}).fail(function(e, t, i) {console.log(e, t, i)})
+					}).fail(function(e, t, i) {console.log(e, t, i)});					
+					$("#descuento_general").val( o.id_venta && Object.keys(s).length ? s.descuento_general:$(this).find('option:selected').data('descuento'));					
 				}else{
 					$("#prdVntTbl").css('opacity',0).eq(0).find('body').empty(),vnt.productos = {},vnt.prdDtSt = [],vnt.keys = [],vnt.names = []
 				}
@@ -106,8 +107,8 @@ vnt = {
 				(event.keyCode==13 && vnt.getCoincidence($(this).val(),vnt.names)),
 				(event.keyCode==27 && vnt.clearForm())				
 			});
-			md.find("#preciop,#cantidadp,#descuentop,#descuento_general").keypress(function() {v = $(this).val();return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46;});		
-			md.find("#descuento_general").keyup(function() { 			
+			md.find("#preciop,#cantidadp,#descuentop,#descuento_general,#gastos_envio").keypress(function() {v = $(this).val();return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46;});		
+			md.find("#descuento_general,#gastos_envio").keyup(function() { 			
 				vl = $(this).val();
 				if(vl!='' && Object.keys(vnt.productos).length)
 			    	vnt.totalGeneral();  				
@@ -130,6 +131,16 @@ vnt = {
 				vl = $(this).val();
 				if(vl!=''){vnt.producto.descuento = parseFloat(vl),vnt.totalProducto()}
 			});
+			md.find("#umc").change(function() {
+				if(Object.keys(vnt.producto).length){				
+					vnt.producto.precio = parseFloat($(this).find('option:selected').data('precio')),
+					vnt.producto.existencia = parseFloat($(this).find('option:selected').data('existencia')),
+					vnt.producto.um = $(this).val(),					
+					$("#preciop").val(vnt.producto.precio);
+		    		$("#existenciap").val(vnt.producto.existencia);
+		    		vnt.totalProducto()	
+				}
+			});	
 			md.find("#add-btn").click(function(){vnt.addProducto()});
 			md.find("#subtotal").html('$ 0.00'),$("#descuento").html('$ 0.00'),$("#iva").html('$ 0.00'),$("#total").html('$ 0.00');	
 			md.find('#conc_vnt,#clve_vnt').off('blur');			
@@ -139,35 +150,50 @@ vnt = {
 				else
 					md.modal('hide');
 			});
-			md.find("#gNO").click(function(){$("#nvaVnt").submit()});	
-			o.id_orden_venta = 0;	
-			
-			rls = {factura:{remote:{ url: "facturaUnica",type: "POST",data: {factura: function() {return $.trim(md.find( "#factura" ).val())}}}}};
-					
+			md.find("#gNO").click(function(){$("#nvaVnt").submit()});				
 			if(o && o.id_venta){				
 				s = $('#nuevaVenta .modal-content').data();
 				for(i in s)
 					(md.find("#"+i).length && md.find("#"+i).val(s[i]));					
 				for(p in vnt.productosDS)
-					pr = vnt.productosDS[p], pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),vnt.addFilaProducto(vnt.productosDS[p]);					
+					pr = vnt.productosDS[p], pr.existencia = parseFloat(pr.existencia), pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),vnt.addFilaProducto(vnt.productosDS[p]);					
 				vnt.totalGeneral(),md.find( "#factura" ).attr('disabled','disabled'),
-				md.find("#id_proveedor").change(),rls={};				
+				md.find("#id_cliente").change()		
 			}else if(!o.id_venta && o.folio){
-				o.id_orden_venta = vnt.orden.id_orden_venta;
+				o.id_cotizacion = vnt.cotizacion.id_cotizacion;
 				delete o.folio;
-				md.find("#id_proveedor").val(vnt.orden.id_proveedor);
-				md.find("#id_proveedor").attr('disabled','disabled');				
-				md.find("#id_proveedor").change();
-				md.find("#descuento_general").val(vnt.orden.descuento_general);
-				for(p in vnt.productosOC)
-					pr = vnt.productosOC[p], pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),vnt.addFilaProducto(vnt.productosOC[p]);					
+				md.find("#id_cliente").val(vnt.cotizacion.id_cliente);
+				md.find("#id_cliente").attr('disabled','disabled');				
+				md.find("#id_cliente").change();
+				md.find("#descuento_general").val(vnt.cotizacion.descuento_general);
+				md.find("#gastos_envio").val(vnt.cotizacion.gastos_envio);
+				for(p in vnt.productosCT)
+					pr = vnt.productosCT[p], pr.existencia = parseFloat(pr.existencia), pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),vnt.addFilaProducto(vnt.productosCT[p]);					
 				vnt.totalGeneral()
 			}			
-			md.find("#nvaVnt").validation({rules:rls,messages:{factura:{remote:"Esta factura ya fue capturada"}},extend:o,success:function(ob){
-				if(!Object.keys(vnt.productos).length){
-						$.confirm({ title: 'Sin productos',content: 'No hay productos cargados a la venta', type: 'orange',theme:"dark",buttons: {a: {text: 'Aceptar',btnClass: 'btn-orange'} }});
-				}else				
+			md.find("#nvaVnt").validation({extend:o,success:function(ob){
+				l = Object.keys(vnt.productos).length;
+				if(!l){
+					$.confirm({ title: 'Sin productos',content: 'No hay productos cargados a la venta', type: 'orange',theme:"dark",buttons: {a: {text: 'Aceptar',btnClass: 'btn-orange'} }});
+				}else{
+					s = 0;
+					c = 0;
+					for(i in vnt.productos){
+						p = vnt.productos[i];
+						s = (  p.existencia < p.cantidad ? s + 1 : s );
+						c = (  p.precio < p.costo_promedio ? c + 1 : c );
+					}					
+					if(s > 0){
+						$.confirm({ title: 'Sin existencias',content: s+' de los '+l+' Productos en la venta no cuentan con existencias suficientes para realizar la venta, favor de revizar', type: 'orange',theme:"dark",buttons: {a: {text: 'Aceptar',btnClass: 'btn-orange'} }});
+						return 0;
+					}					
+					if(c > 0){
+						$.confirm({ title: 'Precio',content: c+' de los '+l+' Productos en la venta no tienen un precio establecido menor al costo promedio, por lo que se generarán perdidas al realizar la venta, favor de revisar', type: 'orange',theme:"dark",buttons: {a: {text: 'Aceptar',btnClass: 'btn-orange'} }});
+						return 0;
+					}
 					vnt.guardarVenta(ob)
+					
+				}	
 			}});
 			md.find(".selectpicker").selectpicker('refresh');				
 		});
@@ -195,9 +221,16 @@ vnt = {
     	$('#conc_vnt').typeahead('val', '');  
     	$('#clve_vnt').typeahead('val', '');      			
     	$("#preciop").val(''); 
-    	$("#umc").text('---');    	
-    	$("#cantidadp").val(''); 
-    	$("#totalp").html('--');    	
+    	$("#umc").empty();
+    	$("#umc").selectpicker('refresh');        	
+    	$("#cantidadp").val('');
+    	
+    	$("#subtotalp").html('--');  
+    	$("#costo_promediop").html('--');  
+    	$("#truputp").html('--');  
+    	 
+    	$("#totalp").html('--');  
+    	$("#existenciap").html('--');    	
     	$("#descuentop").val(0);	     
     	$('#clve_vnt').focus(); 
     	$("input.form-control.tt-hint.ignore").val('');
@@ -213,18 +246,34 @@ vnt = {
             vnt.totalProducto();
 		}
     },
-    
 	setPrdData:function(dat){
     	if(dat){    		
     		$('#clve_vnt').val(dat.clave);    		
     		$('#conc_vnt').val(dat.concepto);     		
-    		$("#umc").text(dat.um);		
-    		if(vnt.productos[dat.id_producto] )	           	
-	           	dat.precio = vnt.productos[dat.id_producto].precio;
-	    	$("#preciop").val(dat.precio);    		 		   		
-    		$("#cantidadp").focus();
-    		$("#descuentop").val(dat.descuento);   
-    		dat.descuento =  !dat.descuento ? 0 : dat.descuento;    		
+    		$("#umc").empty();
+    		if(dat.ue != dat.us){    			
+    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'"  data-existencia="'+dat.existencia_ue+'" >'+dat.ue+'</option><option value="'+dat.us+'"  data-precio="'+dat.precio_us+'"  data-existencia="'+dat.existencia_us+'">'+dat.us+'</option>');    			
+    		}else{
+    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'"  data-existencia="'+dat.existencia_ue+'">'+dat.ue+'</option>');  
+    		} 
+	    	if(vnt.productos[dat.id_producto] ){
+    			dat.precio = vnt.productos[dat.id_producto].precio;
+    			dat.descuento = vnt.productos[dat.id_producto].descuento;
+    			dat.um = vnt.productos[dat.id_producto].um;
+    			dat.existencia = vnt.productos[dat.id_producto].existencia;
+    		}else{
+    			dat.precio = parseFloat(dat.precio_ue);
+    			dat.um = dat.ue;
+    			dat.descuento =  !dat.descuento ? 0 : dat.descuento;   
+    			dat.existencia = parseFloat(dat.existencia_ue); 		
+    		}	
+    		
+    		$("#existenciap").text(dat.existencia);   
+    		$("#cantidadp").focus(); 
+    		$("#umc").selectpicker('refresh');  	
+	    	$("#preciop").val(dat.precio);     		  
+    		$("#descuentop").val(dat.descuento);       		
+    		$("#costo_promediop").val(dat.costo_promedio);     		
             vnt.producto = $.extend({},dat);
     		delete dat;	
     	}else{
@@ -248,6 +297,14 @@ vnt = {
 			if (Object.keys(vnt.producto).length && !isNaN(v) && v > 0) {						
 				vnt.producto.subtotal = (vnt.producto.cantidad * vnt.producto.precio);
 				vnt.producto.total = (vnt.producto.subtotal - ((vnt.producto.descuento * vnt.producto.subtotal) / 100));
+				
+				
+				
+				$("#subtotalp").val(dat.precio - (  dat.descuento * dat.precio / 100 ) ); 
+    			$("#truputp").val(dat.precio - (  dat.descuento * dat.precio / 100 ) ); 
+				
+				
+				
 				$("#totalp").html('$ ' + app.number_format(vnt.producto.total,2));
 			} else {
 				$("#totalp").html('$ 0.00');
@@ -267,19 +324,25 @@ vnt = {
         for( producto in vnt.productos )        	
         	vnt.subtotal += vnt.productos[ producto ].total;        
         vnt.total_descuento_general = dsc *  vnt.subtotal / 100; 			
-		vnt.total_descuento = vnt.subtotal - vnt.total_descuento_general;
+		vnt.total_descuento = vnt.subtotal - vnt.total_descuento_general;		
+		env = $.trim($("#gastos_envio").val()), env = ( env !=''? parseFloat(env) :0 ),
+        (env == 0 && $("#gastos_envio").val(0)),		
+		vnt.total_descuento += env,	
 		vnt.iva = vnt.total_descuento*0.16;
 		vnt.total = vnt.iva + vnt.total_descuento;	
         $("#subtotal").html('$ ' + app.number_format(vnt.subtotal,2));	
 		$("#descuento").html('$ ' + app.number_format(vnt.total_descuento_general,2));	    
     	$("#iva").html('$ ' + app.number_format(vnt.iva,2)); 
+    	$("#envio").html('$ ' + app.number_format(env,2)); 
     	$("#total").html('$ ' + app.number_format(vnt.total,2)); 	    	
     },
 	addProducto:function(){		
 		if(Object.keys(vnt.producto).length){
 			c = parseFloat($.trim($("#cantidadp").val())),
 			p = parseFloat($.trim($("#preciop").val())),
-			d = parseFloat($.trim($("#descuentop").val()));						
+			d = parseFloat($.trim($("#descuentop").val()));
+			e = parseFloat(vnt.producto.existencia);			
+			cp = parseFloat(vnt.producto.costo_promedio);			
 			if(isNaN(c.toString()) || c <=0 || c==''){
 				$("#cantidadp").val(''),$("#cantidadp").focus(),toastr["warning"]("Capture la cantidad")
 				return 0;	
@@ -291,7 +354,20 @@ vnt = {
 			if(isNaN(d.toString()) || d < 0 || (d!= 0 && d=='')){
 				$("#descuentop").val(''),$("#descuentop").focus(),toastr["warning"]("Capture el descuento")
 				return 0;	
+			}
+			
+			if(e<=0){				
+				$.confirm({ title: 'Sin existencia',content: 'Este producto no cuenta con existencia diponible, no sera posible cargar este producto a la venta', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){vnt.clearForm()}}}});
+				return 0;
+			}
+			if(e<c){				
+				$.confirm({ title: 'Existencia insuficiente',content: 'La cantidad solicitada supera la existencia disponible', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){ toastr["warning"]("La cantidad tiene que ser menor o igual a la existencia disponible"),$("#cantidadp").focus()}}}});
+				return 0;
 			}			
+			if(p<cp){				
+				$.confirm({ title: 'Precio',content: 'El precio establecido es menor a el costo promedio del producto por lo que se generarán perdidas.<br>Costo Promedio:<b>$ '+app.number_format(cp,2)+'</b><br> Favor de revisar.', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){ $("#preciop").focus()}}}});
+				return 0;
+			}				
 			if(vnt.productos[vnt.producto.id_producto]){				
 				vnt.productos[vnt.producto.id_producto].cantidad += vnt.producto.cantidad;	
 				tot = (vnt.productos[vnt.producto.id_producto].cantidad * vnt.productos[vnt.producto.id_producto].precio);
@@ -321,12 +397,12 @@ vnt = {
 	},
 	
 	getFilaProducto:function(producto){
-		return '<tr id="prtr'+producto.id_producto+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'"> '+app.number_format(producto.cantidad,2)+'</a> '+(producto.um)+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">$ '+app.number_format(producto.precio,2)+'</a></td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">'+(producto.descuento)+' %</a></td><td class="bold right">$ '+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="vnt.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>';
+		return '<tr id="prtr'+producto.id_producto+'" class="'+( producto.existencia < producto.cantidad ? 'text-danger':'')+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right">'+producto.exstencia+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'"> '+app.number_format(producto.cantidad,2)+'</a> '+(producto.um)+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">$ '+app.number_format(producto.precio,2)+'</a></td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">'+(producto.descuento)+' %</a></td><td class="bold right">$ '+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="vnt.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>';
 	},
 	
 	setEditablesProducto:function(cn){		
 		$("#prtr"+cn.id_producto).find('td').eq(2).find('a').editable({type: 'text',title: 'Cantidad:',
-            validate: function(value) {				    	
+            validate: function(value) {	            				    	
                 if($.trim(value) == '') 
                     return 'Capture la cantidad.';						    
                 vl = /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(value);
@@ -334,6 +410,9 @@ vnt = {
                       return 'Capture un valor numérico.';
                 if(value<=0)
                       return 'La cantidad tiene que ser mayor a cero';	
+                e = parseFloat(vnt.productos[$(this).data('id')].existencia);				
+				if(e<value)				
+					return 'La cantidad solicitada supera la existencia disponible';
             },
             value:parseFloat(parseFloat(cn.cantidad).toFixed(2)),
             display: function(value) { $(this).html(app.number_format(value,2));}, 
@@ -395,12 +474,14 @@ vnt = {
 	
 	guardarVenta:function(o){		
 		o.observaciones = $("#observaciones").val();
+		o.condiciones = $("#condiciones").val();
 		o.productos = vnt.productos;
 		o.subtotal = vnt.total_descuento;
 		o.total_descuento = vnt.total_descuento_general; 
 		o.iva = vnt.iva;
 		o.total = vnt.total;		
-		console.log(o);			
+		console.log(o);	
+		return 0;		
 		$.ajax({type : "POST",url : "guardarVenta",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevaVenta').modal('hide'),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})

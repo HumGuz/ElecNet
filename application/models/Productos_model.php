@@ -111,14 +111,19 @@ class Productos_model extends CI_Model {
 									 group_concat(p.id_producto SEPARATOR '-|-') as id_producto, 
 									 p.clave,
 									 group_concat(p.concepto SEPARATOR '-|-') as concepto,
-									 group_concat(p.id_unidad_medida_salida SEPARATOR '-|-') as um, 
-									 group_concat( p.precio_min_venta  SEPARATOR '-|-') as precio,								
+									 group_concat(p.existencia SEPARATOR '-|-') as existencia_ue,
+									 group_concat(p.id_unidad_medida_entrada SEPARATOR '-|-') as ue, 
+									 group_concat(getExistenciaUS(p.existencia,p.factor_unidades) SEPARATOR '-|-') as existencia_us,
+									 group_concat(p.id_unidad_medida_salida SEPARATOR '-|-') as us, 
+									 group_concat(p.precio_min_venta  SEPARATOR '-|-') as precio_ue,
+									 group_concat(getPrecioUS(p.precio_min_venta,p.factor_unidades)  SEPARATOR '-|-') as precio_us,	
+									 group_concat( p.costo_promedio SEPARATOR '-|-') as costo_promedio,
 									 group_concat(p.id_almacen SEPARATOR '-|-') as id_almacen, 
 									 group_concat(a.clave SEPARATOR '-|-') as clave_almacen,
 									 group_concat(a.nombre SEPARATOR '-|-') as almacen
-								    from t_productos p 
+									 from t_productos p 
 								    left join r_proveedor_productos r on r.clave = p.clave
-								    left join t_almacenes a on a.id_almacen = p.id_almacen	
+								    left join t_almacenes a on a.id_almacen = p.id_almacen		
 								    where 1=1  ".$c);		
 		$result = $q->result_array();
 		if(!empty($result)){

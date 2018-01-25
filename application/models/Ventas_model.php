@@ -35,50 +35,20 @@ class Ventas_model extends CI_Model {
 		$c .= " order by c.fecha_registro desc";		
 		
 		$q = $this -> db -> query("select 
-									c.*,IF(c.status=2,1,0) as borrar,
-									o.folio as folio_orden,
-									o.fecha_registro as fecha_orden,
+									c.*,IF(c.status=2,1,0) as borrar,									
 									pr.clave clave_cliente,pr.nombre  nombre_cliente
 								    from t_ventas c 
-								    inner join t_clientes pr on pr.id_cliente = c.id_cliente 	
-									 left join t_ordenes_venta o on c.id_orden_venta = o.id_orden_venta											
+								    inner join t_clientes pr on pr.id_cliente = c.id_cliente 											
 								    where 1=1 ".$c);		
 		$r = $q->result_array();
 		return $r;		
-	}	
-	
-	function facturaUnica($d){			
-		if($d['factura'])
-			$c .= " and c.factura = '".trim($d['factura'])."'";			
-		$q = $this -> db -> query("select id_venta from t_ventas c  where 1=1  ".$c);		
-		$r = $q->result_array();
-		return empty($r)?'true':'false';		
-	}	
-	
-	function getProductosXOrden($d){
-				
-		if($d['id_orden_venta'])
-			$c .= ' and r.id_orden_venta = '.$d['id_orden_venta'];
-		
-		$q = $this -> db -> query("
-			select 
-			r.id_producto,
-			p.clave,
-			p.concepto,
-			p.id_unidad_medida_entrada as um,
-			r.cantidad_pedido as cantidad,
-			r.descuento,
-			r.precio,
-			r.subtotal,
-			r.total
-			from r_orden_venta_productos r
-			inner join t_productos p on p.id_producto = r.id_producto
-			where 1=1 ".$c);
-		$r = $q->result_array();
-		return $r;	
-		
 	}
 	
+	function getFolioCotizacion($d){
+		$q = $this -> db -> query("select  id_cotizacion from t_cotizaciones where folio = '".$d['folio']."' ");
+		$r = $q->result_array();
+		return   empty($r)? array('status'=>2) : array('status'=>1);
+	}
 	
 	function getProductosXVenta($d){
 				
@@ -90,7 +60,7 @@ class Ventas_model extends CI_Model {
 			r.id_producto,
 			p.clave,
 			p.concepto,
-			p.id_unidad_medida_entrada as um,
+			r.um,
 			r.cantidad,
 			r.descuento,
 			r.precio,
@@ -104,13 +74,11 @@ class Ventas_model extends CI_Model {
 		
 	}
 	
-	function getFolioOrden($d){
-		$q = $this -> db -> query("select  id_orden_venta from t_ordenes_venta where folio = '".$d['folio']."' ");
+	function getFolioVenta($d){
+		$q = $this -> db -> query("select  id_venta_venta from t_ventaes_venta where folio = '".$d['folio']."' ");
 		$r = $q->result_array();
 		return   empty($r)? array('status'=>2) : array('status'=>1);
 	}
-	
-	
 	
 	function guardarVenta($d){
 		$d['id_usuario_cambio'] = $this->s['usuario']['id_usuario'];
@@ -136,7 +104,7 @@ class Ventas_model extends CI_Model {
         
         if(!empty($p)){        				
         	foreach ($p as $k => $v) {						
-				$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_orden_venta' =>$d['id_orden_venta'],'id_producto'=>$v['id_producto'],'cantidad'=>$v['cantidad'],'disponible'=>$v['cantidad'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
+				$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_producto'=>$v['id_producto'],'cantidad'=>$v['cantidad'],'um'=>$v['um'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
 			}
         }
         		

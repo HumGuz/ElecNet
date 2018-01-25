@@ -50,7 +50,12 @@ class Cotizaciones_model extends CI_Model {
 			r.id_producto,
 			p.clave,
 			p.concepto,
-			p.id_unidad_medida_salida as um,
+			IF(
+				r.um = p.id_unidad_medida_entrada,
+				p.existencia,
+				getExistenciaUS(p.existencia,p.factor_unidades)
+			) as existencia,			
+			r.um,
 			r.cantidad,
 			r.descuento,
 			r.precio,
@@ -85,7 +90,7 @@ class Cotizaciones_model extends CI_Model {
         }  
         if(!empty($p)){        				
         	foreach ($p as $k => $v) {						
-				$this->db->insert('r_cotizacion_productos', array('id_cotizacion' =>$id_cotizacion,'id_producto'=>$v['id_producto'],'cantidad'=>$v['cantidad'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
+				$this->db->insert('r_cotizacion_productos', array('id_cotizacion' =>$id_cotizacion,'id_producto'=>$v['id_producto'],'cantidad'=>$v['cantidad'],'um'=>$v['um'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
 			}
         }	
 		return array('status'=>1,'id_cotizacion'=>$id_cotizacion);

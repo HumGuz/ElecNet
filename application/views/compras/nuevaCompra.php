@@ -36,12 +36,12 @@
 							</div>
 							<div class="clearfix"></div>	
 								
-							<div class="form-group col-sm-3  col-sm-offset-1">
+							<div class="form-group col-sm-2  col-sm-offset-1">
 				                  <label for="factura">No. Factura</label>
 				                  <input type="text" class="form-control  required" id="factura" name="factura">
 							</div>
 							
-							<div class="form-group col-sm-3">
+							<div class="form-group col-sm-2">
 				                  <label for="metodo_pago">Metodo de pago</label>
 				               	  <select  class="form-control selectpicker required" id="metodo_pago" name="metodo_pago" data-container="body">
 									<option value=""> -- seleccione --</option>
@@ -59,6 +59,11 @@
 							<div class="form-group col-sm-2">
 				                  <label for="descuento_general">Descuento Gral.</label>
 				                  <input type="text" class="form-control number" id="descuento_general" name="descuento_general">
+							</div>
+							
+							<div class="form-group col-sm-2">
+				                  <label for="costos_envio">Costos de envío</label>
+				                  <input type="text" class="form-control number required" id="costos_envio" name="costos_envio" value="0">
 							</div>
 								
 						
@@ -125,6 +130,24 @@
 											Descuento:
 										</td>
 										<td  class="right bold" id="descuento">
+											$ 0.00
+										</td>
+									</tr>
+									
+									<tr>
+										<td colspan="5" class="right">
+											Subtotal:
+										</td>
+										<td  class="right bold" id="subtotal_descuento">
+											$ 0.00
+										</td>
+									</tr>
+									
+									<tr>
+										<td colspan="5" class="right" >
+											Costo de envío:
+										</td>
+										<td  class="right bold" id="envio"> 
 											$ 0.00
 										</td>
 									</tr>

@@ -10,6 +10,10 @@
 			<script>
 				cot.productosDS = <?php echo !empty($prd)?json_encode($prd):'{}'; ?>;
 			</script>
+			<style>
+				#nuevaCotizacion button[data-id='umc']{padding-left: 2px!important;}
+				#nuevaCotizacion .bootstrap-select.btn-group .dropdown-toggle .caret {right: 2px!important;}
+			</style>
 				<div class="modal-body">					
 					<div class="row">				
 					<form id="nvaCot">								
@@ -50,7 +54,7 @@
 									<tr>
 										<th width="170px">Clave</th>
 										<th>Descripción</th>
-										<th width="90px">Cantidad</th>
+										<th width="100px">Cantidad</th>
 										<th width="100px">Precio U.</th>
 										<th width="70px">Desc.</th>
 										<th width="90px">Total</th>
@@ -70,11 +74,15 @@
 							              </div>
 										</td>
 										<td><input type="text" class="form-control typeahead" id="conc_cot" /></td>
-										<td >											
-											<div class="input-group">
-								                <input type="text" class="form-control number" id="cantidadp">
-								                <span class="input-group-addon" id="umc">---</span>
-								            </div>
+										<td >
+								             <div class="input-group">										 
+											   <input type="text" class="form-control number" id="cantidadp">										  
+											   <span class="input-group-btn">
+										         <select class="form-control selectpicker" id="umc" name="umc" data-container="body" data-width="40px">
+			                                    	
+			                                     </select>
+										       </span>
+											</div>									            
 										</td>
 										<td >
 											<div class="input-group">

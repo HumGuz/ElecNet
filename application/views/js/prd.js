@@ -90,8 +90,13 @@ prd = {
 					clave_secundaria:{remote:{ url: "claveUnica",type: "POST",data: {id_almacen:o.id_almacen,clave_secundaria: function() {return md.find( "#clave_secundaria" ).val();}}}}
 				},
 				msj = {clave:{remote:"Esta clave ya esta en uso"},clave_secundaria:{remote:"Esta clave ya esta en uso"}}
-			}
-			
+			}			
+			$("#id_unidad_medida_salida,#id_unidad_medida_entrada").change(function(){
+				ue = $("#id_unidad_medida_entrada").val();
+				es = $("#id_unidad_medida_salida").val()
+				if( es!='' && ue == es && ue !='')
+					$("#factor_unidades").val(1)
+			});			
 			$("#nvoPrdFrm .selectpicker").selectpicker({}),
 			$("#nvoPrdFrm").validation({extend:o,rules:rules,messages:msj,success:function(ob){prd.guardarProducto(ob)}})
 		});

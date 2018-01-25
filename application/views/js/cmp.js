@@ -106,8 +106,8 @@ cmp = {
 				(event.keyCode==13 && cmp.getCoincidence($(this).val(),cmp.names)),
 				(event.keyCode==27 && cmp.clearForm())				
 			});
-			md.find("#preciop,#cantidadp,#descuentop,#descuento_general").keypress(function() {v = $(this).val();return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46;});		
-			md.find("#descuento_general").keyup(function() { 			
+			md.find("#preciop,#cantidadp,#descuentop,#descuento_general,#costos_envio").keypress(function() {v = $(this).val();return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46;});		
+			md.find("#descuento_general,#costos_envio").keyup(function() { 			
 				vl = $(this).val();
 				if(vl!='' && Object.keys(cmp.productos).length)
 			    	cmp.totalGeneral();  				
@@ -236,19 +236,25 @@ cmp = {
     totalProducto:function(p) {    	
     	if(p){
     		v = p.cantidad;
-			if (Object.keys(p).length && !isNaN(v) && v > 0) {						
-				p.subtotal = (p.cantidad * p.precio);
-				p.total = (p.subtotal - ((p.descuento * p.subtotal) / 100));				
-				$("#prtr"+p.id_producto).find('td').eq(5).html('$ ' + app.number_format(p.total,2));				
+			if (Object.keys(p).length && !isNaN(v) && v > 0) {	
+				p.subtotal = p.cantidad * p.precio;				
+				p.total_descuento =  (p.descuento * p.subtotal) / 100;
+				p.subtotal -= p.total_descuento;
+				p.iva = p.subtotal * 0.16;
+				p.total =  p.subtotal * 1.16;				
+				$("#prtr"+p.id_producto).find('td').eq(5).html('$ ' + app.number_format(p.subtotal,2));				
 			} else {
 				$("#totalp").html('$ 0.00');
 			}
     	}else{
     		v = cmp.producto.cantidad;
 			if (Object.keys(cmp.producto).length && !isNaN(v) && v > 0) {						
-				cmp.producto.subtotal = (cmp.producto.cantidad * cmp.producto.precio);
-				cmp.producto.total = (cmp.producto.subtotal - ((cmp.producto.descuento * cmp.producto.subtotal) / 100));
-				$("#totalp").html('$ ' + app.number_format(cmp.producto.total,2));
+				cmp.producto.subtotal =  cmp.producto.cantidad * cmp.producto.precio;
+				cmp.producto.total_descuento  (cmp.producto.descuento * cmp.producto.subtotal) / 100;
+				cmp.producto.subtotal -=cmp.producto.total_descuento
+				cmp.producto.iva = cmp.producto.subtotal * 0.16;
+				cmp.producto.total =  cmp.producto.subtotal * 1.16;
+				$("#totalp").html('$ ' + app.number_format(cmp.producto.subtotal,2));
 			} else {
 				$("#totalp").html('$ 0.00');
 			}
@@ -262,16 +268,25 @@ cmp = {
     		dsc = 0;
     	}    	
     	cmp.subtotal = 0; 
-    	dsc = parseFloat(dsc);       
-        cmp.total = 0;      
-        for( producto in cmp.productos )        	
-        	cmp.subtotal += cmp.productos[ producto ].total;        
-        cmp.total_descuento_general = dsc *  cmp.subtotal / 100; 			
-		cmp.total_descuento = cmp.subtotal - cmp.total_descuento_general;
-		cmp.iva = cmp.total_descuento*0.16;
-		cmp.total = cmp.iva + cmp.total_descuento;	
+    	cmp.total_descuento = 0;
+    	cmp.subtotal_descuento = 0; 
+    	cmp.iva = 0;
+    	cmp.total = 0; 
+    	dsc = parseFloat(dsc);  
+        for( producto in cmp.productos ) {        	
+        	cmp.totalProducto(cmp.productos[ producto ]);
+        	cmp.subtotal += cmp.productos[ producto ].subtotal; 
+        }  
+        cmp.total_descuento = dsc *  cmp.subtotal / 100; 
+		cmp.subtotal_descuento = cmp.subtotal - cmp.total_descuento;
+		env = $.trim($("#costos_envio").val()), env = ( env !=''? parseFloat(env) :0 ),
+        (env == 0 && $("#costos_envio").val(0)),		
+		cmp.iva = (cmp.subtotal_descuento + env) * 0.16;
+		cmp.total = (cmp.subtotal_descuento + env) * 1.16;
         $("#subtotal").html('$ ' + app.number_format(cmp.subtotal,2));	
-		$("#descuento").html('$ ' + app.number_format(cmp.total_descuento_general,2));	    
+		$("#descuento").html('$ ' + app.number_format(cmp.total_descuento,2));
+		$("#subtotal_descuento").html('$ ' + app.number_format(cmp.subtotal_descuento,2));
+		$("#envio").html('$ ' + app.number_format(env,2));	    
     	$("#iva").html('$ ' + app.number_format(cmp.iva,2)); 
     	$("#total").html('$ ' + app.number_format(cmp.total,2)); 	    	
     },
@@ -396,11 +411,11 @@ cmp = {
 	guardarCompra:function(o){		
 		o.observaciones = $("#observaciones").val();
 		o.productos = cmp.productos;
-		o.subtotal = cmp.total_descuento;
-		o.total_descuento = cmp.total_descuento_general; 
+		o.subtotal = cmp.subtotal_descuento;
+		o.total_descuento = cmp.total_descuento; 
 		o.iva = cmp.iva;
 		o.total = cmp.total;		
-		console.log(o);			
+		console.log(o);				
 		$.ajax({type : "POST",url : "guardarCompra",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevaCompra').modal('hide'),cmp.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})
