@@ -94,7 +94,7 @@ vnt = {
 				}
 			});				
 			md.find(".selectpicker").selectpicker({});					
-			md.find('#fecha_recepcion').daterangepicker({locale:{format: 'YYYY-MM-DD'},singleDatePicker: true, showDropdowns: true });			
+			md.find('#fecha_entrega').daterangepicker({locale:{format: 'YYYY-MM-DD'},singleDatePicker: true, showDropdowns: true });			
 			md.find('#clve_vnt').on('focusout',function(){event.preventDefault(),vnt.getCoincidence($(this).val(),vnt.keys)});		
 			md.find('#conc_vnt').on('focusout',function(){event.preventDefault(),vnt.getCoincidence($(this).val(),vnt.names)});		
 			md.find('#clve_vnt').keyup(function(){
@@ -107,8 +107,8 @@ vnt = {
 				(event.keyCode==13 && vnt.getCoincidence($(this).val(),vnt.names)),
 				(event.keyCode==27 && vnt.clearForm())				
 			});
-			md.find("#preciop,#cantidadp,#descuentop,#descuento_general,#gastos_envio").keypress(function() {v = $(this).val();return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46;});		
-			md.find("#descuento_general,#gastos_envio").keyup(function() { 			
+			md.find("#preciop,#cantidadp,#descuentop,#descuento_general,#costos_envio").keypress(function() {v = $(this).val();return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46;});		
+			md.find("#descuento_general,#costos_envio").keyup(function() { 			
 				vl = $(this).val();
 				if(vl!='' && Object.keys(vnt.productos).length)
 			    	vnt.totalGeneral();  				
@@ -135,9 +135,11 @@ vnt = {
 				if(Object.keys(vnt.producto).length){				
 					vnt.producto.precio = parseFloat($(this).find('option:selected').data('precio')),
 					vnt.producto.existencia = parseFloat($(this).find('option:selected').data('existencia')),
+					vnt.producto.costo_promedio = parseFloat($(this).find('option:selected').data('costo_promedio')),
 					vnt.producto.um = $(this).val(),					
 					$("#preciop").val(vnt.producto.precio);
-		    		$("#existenciap").val(vnt.producto.existencia);
+		    		$("#existenciap").html(vnt.producto.existencia+' '+vnt.producto.um);
+		    		$("#costo_promediop").html('$ '+app.number_format(vnt.producto.costo_promedio,2));
 		    		vnt.totalProducto()	
 				}
 			});	
@@ -166,9 +168,20 @@ vnt = {
 				md.find("#id_cliente").attr('disabled','disabled');				
 				md.find("#id_cliente").change();
 				md.find("#descuento_general").val(vnt.cotizacion.descuento_general);
-				md.find("#gastos_envio").val(vnt.cotizacion.gastos_envio);
-				for(p in vnt.productosCT)
-					pr = vnt.productosCT[p], pr.existencia = parseFloat(pr.existencia), pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),vnt.addFilaProducto(vnt.productosCT[p]);					
+				md.find("#costos_envio").val(vnt.cotizacion.costos_envio);
+				for(p in vnt.productosCT){
+					pr = vnt.productosCT[p], 
+					pr.costo_promedio = parseFloat(pr.costo_promedio), 
+					pr.costo_promedio_ue = parseFloat(pr.costo_promedio_ue), 
+					pr.existencia = parseFloat(pr.existencia), 
+					pr.cantidad = parseFloat(pr.cantidad), 
+					pr.descuento = parseFloat(pr.descuento),
+					pr.precio = parseFloat(pr.precio), 
+					pr.subtotal = parseFloat(pr.subtotal), 
+					pr.total = parseFloat(pr.total),
+					vnt.addFilaProducto(pr);					
+				}
+					
 				vnt.totalGeneral()
 			}			
 			md.find("#nvaVnt").validation({extend:o,success:function(ob){
@@ -252,12 +265,13 @@ vnt = {
     		$('#conc_vnt').val(dat.concepto);     		
     		$("#umc").empty();
     		if(dat.ue != dat.us){    			
-    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'"  data-existencia="'+dat.existencia_ue+'" >'+dat.ue+'</option><option value="'+dat.us+'"  data-precio="'+dat.precio_us+'"  data-existencia="'+dat.existencia_us+'">'+dat.us+'</option>');    			
+    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'"  data-existencia="'+dat.existencia_ue+'" data-costo_promedio="'+dat.costo_promedio_ue+'" >'+dat.ue+'</option><option value="'+dat.us+'"  data-precio="'+dat.precio_us+'"  data-existencia="'+dat.existencia_us+'" data-costo_promedio="'+dat.costo_promedio_us+'" >'+dat.us+'</option>');    			
     		}else{
-    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'"  data-existencia="'+dat.existencia_ue+'">'+dat.ue+'</option>');  
+    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'"  data-existencia="'+dat.existencia_ue+'" data-costo_promedio="'+dat.costo_promedio_ue+'" >'+dat.ue+'</option>');  
     		} 
 	    	if(vnt.productos[dat.id_producto] ){
     			dat.precio = vnt.productos[dat.id_producto].precio;
+    			dat.costo_promedio = vnt.productos[dat.id_producto].costo_promedio;
     			dat.descuento = vnt.productos[dat.id_producto].descuento;
     			dat.um = vnt.productos[dat.id_producto].um;
     			dat.existencia = vnt.productos[dat.id_producto].existencia;
@@ -265,15 +279,16 @@ vnt = {
     			dat.precio = parseFloat(dat.precio_ue);
     			dat.um = dat.ue;
     			dat.descuento =  !dat.descuento ? 0 : dat.descuento;   
-    			dat.existencia = parseFloat(dat.existencia_ue); 		
+    			dat.existencia = parseFloat(dat.existencia_ue); 
+    			dat.costo_promedio = parseFloat(dat.costo_promedio_ue); 		
     		}	
     		
-    		$("#existenciap").text(dat.existencia);   
+    		$("#existenciap").text(dat.existencia+' '+dat.um);   
     		$("#cantidadp").focus(); 
     		$("#umc").selectpicker('refresh');  	
 	    	$("#preciop").val(dat.precio);     		  
     		$("#descuentop").val(dat.descuento);       		
-    		$("#costo_promediop").val(dat.costo_promedio);     		
+    		$("#costo_promediop").html(dat.costo_promedio);     		
             vnt.producto = $.extend({},dat);
     		delete dat;	
     	}else{
@@ -285,27 +300,33 @@ vnt = {
     totalProducto:function(p) {    	
     	if(p){
     		v = p.cantidad;
-			if (Object.keys(p).length && !isNaN(v) && v > 0) {						
-				p.subtotal = (p.cantidad * p.precio);
-				p.total = (p.subtotal - ((p.descuento * p.subtotal) / 100));				
-				$("#prtr"+p.id_producto).find('td').eq(5).html('$ ' + app.number_format(p.total,2));				
+			if (Object.keys(p).length && !isNaN(v) && v > 0) {	
+				p.subtotal = p.cantidad * p.precio;				
+				p.total_descuento =  (p.descuento * p.subtotal) / 100;
+				p.subtotal -= p.total_descuento;				
+				p.truput = p.subtotal - ( p.costo_promedio * p.cantidad  );				
+				p.iva = p.subtotal * 0.16;
+				p.total =  p.subtotal * 1.16;				
+				$("#prtr"+p.id_producto).find('td').eq(6).html('$ ' + app.number_format(p.subtotal,2));
+				$("#prtr"+p.id_producto).find('td').eq(7).html('$ ' + app.number_format( p.costo_promedio ,2));
+				$("#prtr"+p.id_producto).find('td').eq(8).html('$ ' + app.number_format(p.truput,2));		
+				$("#prtr"+p.id_producto).find('td').eq(9).html('$ ' + app.number_format(p.subtotal,2));				
 			} else {
 				$("#totalp").html('$ 0.00');
 			}
     	}else{
     		v = vnt.producto.cantidad;
 			if (Object.keys(vnt.producto).length && !isNaN(v) && v > 0) {						
-				vnt.producto.subtotal = (vnt.producto.cantidad * vnt.producto.precio);
-				vnt.producto.total = (vnt.producto.subtotal - ((vnt.producto.descuento * vnt.producto.subtotal) / 100));
-				
-				
-				
-				$("#subtotalp").val(dat.precio - (  dat.descuento * dat.precio / 100 ) ); 
-    			$("#truputp").val(dat.precio - (  dat.descuento * dat.precio / 100 ) ); 
-				
-				
-				
-				$("#totalp").html('$ ' + app.number_format(vnt.producto.total,2));
+				vnt.producto.subtotal =  vnt.producto.cantidad * vnt.producto.precio;
+				vnt.producto.total_descuento = (vnt.producto.descuento * vnt.producto.subtotal) / 100;
+				vnt.producto.subtotal -=vnt.producto.total_descuento;				
+				vnt.producto.truput = vnt.producto.subtotal - ( vnt.producto.costo_promedio * vnt.producto.cantidad  );
+				vnt.producto.iva = vnt.producto.subtotal * 0.16;
+				vnt.producto.total =  vnt.producto.subtotal * 1.16;				
+				$("#subtotalp").html('$ ' + app.number_format(vnt.producto.subtotal,2));
+				$("#costo_promediop").html('$ ' + app.number_format(vnt.producto.costo_promedio,2));
+				$("#truputp").html('$ ' + app.number_format(vnt.producto.truput,2));
+				$("#totalp").html('$ ' + app.number_format(vnt.producto.subtotal,2));
 			} else {
 				$("#totalp").html('$ 0.00');
 			}
@@ -319,22 +340,29 @@ vnt = {
     		dsc = 0;
     	}    	
     	vnt.subtotal = 0; 
-    	dsc = parseFloat(dsc);       
-        vnt.total = 0;      
-        for( producto in vnt.productos )        	
-        	vnt.subtotal += vnt.productos[ producto ].total;        
-        vnt.total_descuento_general = dsc *  vnt.subtotal / 100; 			
-		vnt.total_descuento = vnt.subtotal - vnt.total_descuento_general;		
-		env = $.trim($("#gastos_envio").val()), env = ( env !=''? parseFloat(env) :0 ),
-        (env == 0 && $("#gastos_envio").val(0)),		
-		vnt.total_descuento += env,	
-		vnt.iva = vnt.total_descuento*0.16;
-		vnt.total = vnt.iva + vnt.total_descuento;	
+    	vnt.truput = 0; 
+    	vnt.total_descuento = 0;
+    	vnt.subtotal_descuento = 0; 
+    	vnt.iva = 0;
+    	vnt.total = 0; 
+    	dsc = parseFloat(dsc);  
+        for( producto in vnt.productos ) {        	
+        	vnt.totalProducto(vnt.productos[ producto ]);
+        	vnt.subtotal += vnt.productos[ producto ].subtotal; 
+        	vnt.truput += vnt.productos[ producto ].truput; 
+        }  
+        vnt.total_descuento = dsc *  vnt.subtotal / 100; 
+		vnt.subtotal_descuento = vnt.subtotal - vnt.total_descuento;
+		env = $.trim($("#costos_envio").val()), env = ( env !=''? parseFloat(env) :0 ),
+        (env == 0 && $("#costos_envio").val(0)),		
+		vnt.iva = (vnt.subtotal_descuento + env) * 0.16;
+		vnt.total = (vnt.subtotal_descuento + env) * 1.16;
         $("#subtotal").html('$ ' + app.number_format(vnt.subtotal,2));	
-		$("#descuento").html('$ ' + app.number_format(vnt.total_descuento_general,2));	    
+		$("#descuento").html('$ ' + app.number_format(vnt.total_descuento,2));
+		$("#subtotal_descuento").html('$ ' + app.number_format(vnt.subtotal_descuento,2));
+		$("#envio").html('$ ' + app.number_format(env,2));	    
     	$("#iva").html('$ ' + app.number_format(vnt.iva,2)); 
-    	$("#envio").html('$ ' + app.number_format(env,2)); 
-    	$("#total").html('$ ' + app.number_format(vnt.total,2)); 	    	
+    	$("#total").html('$ ' + app.number_format(vnt.total,2));	    	
     },
 	addProducto:function(){		
 		if(Object.keys(vnt.producto).length){
@@ -354,8 +382,7 @@ vnt = {
 			if(isNaN(d.toString()) || d < 0 || (d!= 0 && d=='')){
 				$("#descuentop").val(''),$("#descuentop").focus(),toastr["warning"]("Capture el descuento")
 				return 0;	
-			}
-			
+			}			
 			if(e<=0){				
 				$.confirm({ title: 'Sin existencia',content: 'Este producto no cuenta con existencia diponible, no sera posible cargar este producto a la venta', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){vnt.clearForm()}}}});
 				return 0;
@@ -397,11 +424,12 @@ vnt = {
 	},
 	
 	getFilaProducto:function(producto){
-		return '<tr id="prtr'+producto.id_producto+'" class="'+( producto.existencia < producto.cantidad ? 'text-danger':'')+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right">'+producto.exstencia+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'"> '+app.number_format(producto.cantidad,2)+'</a> '+(producto.um)+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">$ '+app.number_format(producto.precio,2)+'</a></td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">'+(producto.descuento)+' %</a></td><td class="bold right">$ '+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="vnt.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>';
+		console.log(producto)
+		return '<tr id="prtr'+producto.id_producto+'" class="'+( producto.existencia < producto.cantidad ? 'text-danger':'')+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right">'+producto.existencia+' '+producto.um+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'"> '+app.number_format(producto.cantidad,2)+'</a> '+(producto.um)+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">$ '+app.number_format(producto.precio,2)+'</a></td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">'+(producto.descuento)+' %</a></td><td class="bold right">$ '+app.number_format(producto.subtotal,2)+'</td><td class="bold right">$ '+app.number_format(producto.costo_promedio,2)+'</td><td class="bold right">$ '+app.number_format(producto.truput,2)+'</td><td class="bold right">$ '+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="vnt.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>';
 	},
 	
 	setEditablesProducto:function(cn){		
-		$("#prtr"+cn.id_producto).find('td').eq(2).find('a').editable({type: 'text',title: 'Cantidad:',
+		$("#prtr"+cn.id_producto).find('td').eq(3).find('a').editable({type: 'text',title: 'Cantidad:',
             validate: function(value) {	            				    	
                 if($.trim(value) == '') 
                     return 'Capture la cantidad.';						    
@@ -423,7 +451,7 @@ vnt = {
                 vnt.totalGeneral();
             }
         });
-		$("#prtr"+cn.id_producto).find('td').eq(3).find('a').editable({type: 'text',title: 'Precio unitario:',
+		$("#prtr"+cn.id_producto).find('td').eq(4).find('a').editable({type: 'text',title: 'Precio unitario:',
             validate: function(value) {						    	
                     if($.trim(value) == '') 
                         return 'Capture el valor del precio.';						    
@@ -442,7 +470,7 @@ vnt = {
                 vnt.totalGeneral();
             }
         });        
-        $("#prtr"+cn.id_producto).find('td').eq(4).find('a').editable({type: 'text', title: 'Descuento:',
+        $("#prtr"+cn.id_producto).find('td').eq(5).find('a').editable({type: 'text', title: 'Descuento:',
             validate: function(value) {						    	
                     if($.trim(value) == '') 
                         return 'Capture el valor del descuento.';						    
@@ -476,12 +504,12 @@ vnt = {
 		o.observaciones = $("#observaciones").val();
 		o.condiciones = $("#condiciones").val();
 		o.productos = vnt.productos;
-		o.subtotal = vnt.total_descuento;
-		o.total_descuento = vnt.total_descuento_general; 
+		o.subtotal = vnt.subtotal_descuento;
+		o.truput = vnt.truput;
+		o.total_descuento = vnt.total_descuento; 
 		o.iva = vnt.iva;
 		o.total = vnt.total;		
 		console.log(o);	
-		return 0;		
 		$.ajax({type : "POST",url : "guardarVenta",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevaVenta').modal('hide'),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})

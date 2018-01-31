@@ -136,12 +136,12 @@ class Compras_model extends CI_Model {
         
         if(!empty($p)){        				
         	foreach ($p as $k => $v) {				
-				$v['costo_envio'] = ($d['costos_envio'] * $v['subtotal'])  /  $d['subtotal'];				
+				$v['costo_envio'] = ($d['costos_envio'] * $v['subtotal'])  / ( $d['subtotal']  + $d['total_descuento'] );				
 				$v['iva'] = ($v['subtotal'] + $v['costo_envio']) * 0.16;
 				$v['total'] = ($v['subtotal'] + $v['costo_envio']) * 1.16;
 				$v['costo_unitario'] = ($v['total'] / $v['cantidad']);
 				$this->db->insert('r_compra_productos', array('id_compra' =>$id_compra,'id_proveedor' =>$d['id_proveedor'],'id_orden_compra' =>$d['id_orden_compra'],'id_producto'=>$v['id_producto'],
-				'cantidad'=>$v['cantidad'],'disponible'=>$v['cantidad'],
+				'cantidad'=>$v['cantidad'],
 				'precio'=>$v['precio'],
 				'descuento'=>$v['descuento'],
 				'total_descuento'=>$v['total_descuento'],

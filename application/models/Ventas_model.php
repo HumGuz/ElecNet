@@ -36,9 +36,10 @@ class Ventas_model extends CI_Model {
 		
 		$q = $this -> db -> query("select 
 									c.*,IF(c.status=2,1,0) as borrar,									
-									pr.clave clave_cliente,pr.nombre  nombre_cliente
+									pr.clave clave_cliente,pr.nombre  nombre_cliente,ct.folio as cotizacion
 								    from t_ventas c 
-								    inner join t_clientes pr on pr.id_cliente = c.id_cliente 											
+								    inner join t_clientes pr on pr.id_cliente = c.id_cliente 
+								    left join t_cotizaciones ct on ct.id_cotizacion = c.id_cotizacion											
 								    where 1=1 ".$c);		
 		$r = $q->result_array();
 		return $r;		
@@ -61,7 +62,18 @@ class Ventas_model extends CI_Model {
 			p.clave,
 			p.concepto,
 			r.um,
-			r.cantidad,
+			r.cantidad,			
+			IF(
+				r.um = p.id_unidad_medida_entrada,
+				p.existencia,
+				getExistenciaUS(p.existencia,p.factor_unidades)
+			) as existencia,			
+			IF(
+				r.um = p.id_unidad_medida_entrada,
+				p.costo_promedio,
+				getPrecioUS(p.costo_promedio,p.factor_unidades)
+			) as costo_promedio,
+			p.costo_promedio  costo_promedio_ue,
 			r.descuento,
 			r.precio,
 			r.subtotal,
@@ -85,14 +97,14 @@ class Ventas_model extends CI_Model {
 		$d['fecha_cambio'] = date('Y-m-d H:i:s');
 		
 		$p = $d['productos'];
-		$d['productos'] = count($p);
-			
+		$d['productos'] = count($p);		
+		$d['id_cotizacion'] = empty($d['id_cotizacion']) ?0:$d['id_cotizacion'];			
 	  	if(empty($d['id_venta'])){	
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
 			$d['fecha_registro'] = $d['fecha_cambio'];						
             $this->db->insert('t_ventas', $d);			
 			$id_venta = $this->db->insert_id();	
-			$this->db->query("update t_ventas set folio = '".App::folio('CM',$id_venta)."' where id_venta =".$id_venta);		
+			$this->db->query("update t_ventas set folio = '".App::folio('V',$id_venta)."' where id_venta =".$id_venta);		
         }else{
         	$id_venta = $d['id_venta'];
 			unset($d['id_venta']);
@@ -103,13 +115,31 @@ class Ventas_model extends CI_Model {
         }        
         
         if(!empty($p)){        				
-        	foreach ($p as $k => $v) {						
-				$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_producto'=>$v['id_producto'],'cantidad'=>$v['cantidad'],'um'=>$v['um'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
+        	foreach ($p as $k => $v) {				
+				$v['costo_envio'] = ($d['costos_envio'] * $v['subtotal'])  /   ( $d['subtotal']  + $d['total_descuento'] );
+				$v['iva'] = ($v['subtotal'] + $v['costo_envio']) * 0.16;
+				$v['total'] = ($v['subtotal'] + $v['costo_envio']) * 1.16;
+				$v['costo_unitario'] = ($v['total'] / $v['cantidad']);
+				$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_cotizacion' =>$d['id_cotizacion'],'id_producto'=>$v['id_producto'],
+				'cantidad'=>$v['cantidad'],
+				'um'=>$v['um'],
+				'precio'=>$v['precio'],
+				'descuento'=>$v['descuento'],
+				'total_descuento'=>$v['total_descuento'],
+				'subtotal'=>$v['subtotal'],
+				'costo_envio'=>$v['costo_envio'],
+				'iva'=>$v['iva'],
+				'total'=>$v['total'],
+				'costo_unitario'=>$v['costo_unitario'],
+				'costo_promedio'=>$v['costo_promedio_ue'],
+				'truput'=>$v['truput'],
+				'id_usuario' =>$d['id_usuario_cambio']));			
 			}
         }
         		
 		return array('status'=>1,'id_venta'=>$id_venta);
 	}	
+
 	function borrarVenta($d){
 		 $this->db->where('id_venta', $d['id_venta']);			
          $this->db->delete(array('t_ventas','r_venta_productos'));	

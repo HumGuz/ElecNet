@@ -54,12 +54,25 @@ class Cotizaciones_model extends CI_Model {
 				r.um = p.id_unidad_medida_entrada,
 				p.existencia,
 				getExistenciaUS(p.existencia,p.factor_unidades)
-			) as existencia,			
+			) as existencia,
+			
+			IF(
+				r.um = p.id_unidad_medida_entrada,
+				p.costo_promedio,
+				getPrecioUS(p.costo_promedio,p.factor_unidades)
+			) as costo_promedio,
+			
+			IF(
+				r.um = p.id_unidad_medida_entrada,
+				r.subtotal - (p.costo_promedio *  r.cantidad),
+				r.subtotal - (getPrecioUS(p.costo_promedio,p.factor_unidades) *  r.cantidad)
+			) as truput,			
+						
 			r.um,
 			r.cantidad,
 			r.descuento,
 			r.precio,
-			r.subtotal,
+			
 			r.total
 			from r_cotizacion_productos r
 			inner join t_productos p on p.id_producto = r.id_producto

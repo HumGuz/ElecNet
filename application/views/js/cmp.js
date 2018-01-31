@@ -29,7 +29,7 @@ cmp = {
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},	
 	nuevaCompraDialog:function(o){	
-		if(Object.keys(o).length){
+		if(Object.keys(o).length && o.id_compra){
 			cmp.nuevaCompra(o);
 		}else{
 			$.confirm({title : 'Nueva compra',icon : 'fa fa-question',content : '¿Registrara una compra basado en una orden de compra previamente registrada?',type : 'blue',theme : "dark",
@@ -250,7 +250,7 @@ cmp = {
     		v = cmp.producto.cantidad;
 			if (Object.keys(cmp.producto).length && !isNaN(v) && v > 0) {						
 				cmp.producto.subtotal =  cmp.producto.cantidad * cmp.producto.precio;
-				cmp.producto.total_descuento  (cmp.producto.descuento * cmp.producto.subtotal) / 100;
+				cmp.producto.total_descuento = (cmp.producto.descuento * cmp.producto.subtotal) / 100;
 				cmp.producto.subtotal -=cmp.producto.total_descuento
 				cmp.producto.iva = cmp.producto.subtotal * 0.16;
 				cmp.producto.total =  cmp.producto.subtotal * 1.16;

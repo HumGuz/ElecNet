@@ -21,7 +21,7 @@
                 	<tr>	
                 	  <th width="120px">Fecha Reg.</th> 					              
 	                  <th width="80px">Folio</th>		                   					              
-	                  <th width="80px">Pedido</th>	
+	                  <th width="80px">Cotización</th>	
 	                  <th>Cliente</th>
 	                  <th width="45px" class="right">Prod.</th>	                  
 	                  <th width="100px"  class="right">Subtotal</th>
@@ -34,7 +34,7 @@
             </table> 
             <!-- /.box-header -->
             <div class="box-body box-body-catalogo table-responsive no-padding" >
-              <table class="table table-hover table-condensed table-striped table-body table-bordered" id="cmpTbl">
+              <table class="table table-hover table-condensed table-striped table-body table-bordered" id="vntTbl">
                 <tbody> </tbody>
               </table>
             </div>

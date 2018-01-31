@@ -10,7 +10,7 @@ if(!empty($prd)){
 			<td width="90px" class="right bold">'.$p['existencia'].' '.$p['us'].'</td>
 			<td width="90px" class="right bold">'.$p['entradas'].' '.$p['ue'].'</td>
 			<td width="90px" class="right bold">'.$p['salidas'].' '.$p['us'].'</td>
-			<td width="100px" class="right bold">$ '.number_format($p['precio_min_venta'],2).'</td>
+			<td width="100px" class="right bold">$ '.number_format($p['precio_venta'],2).'</td>
 			<td width="100px" class="right bold">$ '.number_format($p['costo_promedio'],2).'</td>
 			<td width="30px" class="opt-td">
 	                  	<div class="btn-group btn-group-sm">		                 

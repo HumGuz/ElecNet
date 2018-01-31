@@ -4,11 +4,10 @@ if(!empty($vnt)){
 		echo '
 			<tr >
 			<td width="120px" class="bold">'.App::dateFormat($p['fecha_cambio'],2).'</td>			
-			<td width="80px"  class="bold">'.$p['folio'].'</td>			
-			<td width="90px" class="bold">'.$p['factura'].'</td>			
-			<td width="80px"  class="bold">'.$p['folio_pedido'].'</td>
+			<td width="80px"  class="bold">'.$p['folio'].'</td>				
+			<td width="80px"  class="bold">'.$p['cotizacion'].'</td>
 			<td>[ '.$p['clave_cliente'].' ] '.$p['nombre_cliente'].'</td>
-			<td width="70px" class="right">'.$p['productos'].'</td>
+			<td width="45px" class="right">'.$p['productos'].'</td>
 			<td width="100px" class="right bold">$ '.number_format($p['subtotal'],2).'</td>
 			<td width="77px" class="right bold">$ '.number_format($p['total_descuento'],2).'</td>
 			<td width="100px" class="right bold">$ '.number_format($p['iva'],2).'</td>

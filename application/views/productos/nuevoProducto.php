@@ -174,8 +174,8 @@
 						</div>	
 						
 						<div class="form-group col-sm-3">
-			                  <label for="precio_min_venta">Precio mín. de vta.</label>
-			                  <input type="text" class="form-control required number" id="precio_min_venta" name="precio_min_venta">
+			                  <label for="precio_venta">Precio de venta.</label>
+			                  <input type="text" class="form-control required number" id="precio_venta" name="precio_venta">
 						</div>	
 												
 						<div class="form-group col-sm-3">

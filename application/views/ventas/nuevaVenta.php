@@ -1,5 +1,5 @@
 <div class="modal fade" id="nuevaVenta">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-lg" style="width: 90%">
 		<div class="modal-content" <?php echo $vnt ?>>
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -19,7 +19,7 @@
 				<div class="modal-body">					
 					<div class="row">				
 					<form id="nvaVnt">								
-							<div class="form-group col-sm-5 ">
+							<div class="form-group col-sm-4 ">
 				                  <label for="id_cliente">Cliente</label>
 				                  <select  class="form-control selectpicker required" id="id_cliente" name="id_cliente" data-container="body">				                  	
 				                  	<?php
@@ -33,7 +33,7 @@
 				                  </select>			            
 							</div>	
 																			
-							<div class="form-group col-sm-3">
+							<div class="form-group col-sm-2">
 				                  <label for="metodo_pago">Metodo de pago</label>
 				               	  <select  class="form-control selectpicker required" id="metodo_pago" name="metodo_pago" data-container="body">
 									<option value=""> -- seleccione --</option>
@@ -44,13 +44,18 @@
 							</div>
 							
 							<div class="form-group col-sm-2">
+				                  <label for="fecha_entrega">Fecha entrega</label>
+				                  <input type="text" class="form-control required" id="fecha_entrega" name="fecha_entrega">
+							</div>
+							
+							<div class="form-group col-sm-2">
 				                  <label for="descuento_general">Descuento Gral.</label>
 				                  <input type="text" class="form-control number required" id="descuento_general" name="descuento_general" value="0">
 							</div>
 							
 							<div class="form-group col-sm-2">
 				                  <label for="descuento_general">Gastos de envío</label>
-				                  <input type="text" class="form-control number required" id="gastos_envio" name="gastos_envio" value="0">
+				                  <input type="text" class="form-control number required" id="costos_envio" name="costos_envio" value="0">
 							</div>
 						
 					</form>			
@@ -60,14 +65,14 @@
 									<tr>
 										<th width="170px">Clave</th>
 										<th>Descripción</th>
-										<th width="90px">Exist.</th>
-										<th width="100px">Cantidad</th>
-										<th width="100px">Precio U.</th>										
-										<th width="70px">Desc.</th>
-										<th width="100px">Subtot.</th>
-										<th width="100px">Costo Prom.</th>
-										<th width="100px">Truput</th>
-										<th width="90px">Total</th>
+										<th class="right" width="90px">Exist.</th>
+										<th class="right" width="100px">Cantidad</th>
+										<th class="right" width="100px">Precio U.</th>										
+										<th class="right" width="70px">Desc.</th>
+										<th class="right" width="100px">Subtot.</th>
+										<th class="right" width="100px">Costo Prom.</th>
+										<th class="right" width="100px">Truput</th>
+										<th class="right" width="90px">Total</th>
 										<th width="30px" align="center"><span class="glyphicon glyphicon-cog"></span></th>
 									</tr>
 								</thead>

@@ -87,6 +87,7 @@ cot = {
 			md.find("#umc").change(function() {
 				if(Object.keys(cot.producto).length){				
 					cot.producto.precio = parseFloat($(this).find('option:selected').data('precio'));
+					cot.producto.costo_promedio = parseFloat($(this).find('option:selected').data('costo_promedio'));
 					$("#preciop").val(cot.producto.precio);
 		    		cot.producto.um = $(this).val(),
 		    		cot.totalProducto()	
@@ -167,18 +168,20 @@ cot = {
     		$('#conc_cot').val(dat.concepto);   
     		$("#umc").empty();
     		if(dat.ue != dat.us){    			
-    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'" >'+dat.ue+'</option><option value="'+dat.us+'"  data-precio="'+dat.precio_us+'" >'+dat.us+'</option>');    			
+    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'" data-costo_promedio="'+dat.costo_promedio_ue+'">'+dat.ue+'</option><option value="'+dat.us+'"  data-precio="'+dat.precio_us+'" data-costo_promedio="'+dat.costo_promedio_us+'">'+dat.us+'</option>');    			
     		}else{
-    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'" >'+dat.ue+'</option>');  
+    			$("#umc").html('<option value="'+dat.ue+'" data-precio="'+dat.precio_ue+'" data-costo_promedio="'+dat.costo_promedio_ue+'">'+dat.ue+'</option>');  
     		} 
     		if(cot.productos[dat.id_producto] ){
     			dat.precio = cot.productos[dat.id_producto].precio;
     			dat.descuento = cot.productos[dat.id_producto].descuento;
     			dat.um = cot.productos[dat.id_producto].um;
-    		}else{
+    			dat.costo_promedio = cot.productos[dat.id_producto].costo_promedio;
+    		}else{    			
     			dat.precio = parseFloat(dat.precio_ue);
     			dat.um = dat.ue;
-    			dat.descuento =  !dat.descuento ? 0 : dat.descuento;    		
+    			dat.descuento =  !dat.descuento ? 0 : dat.descuento;   
+    			dat.costo_promedio = parseFloat(dat.costo_promedio_ue); 		
     		}
 	    	$("#preciop").val(dat.precio);    		 		   		
     		$("#cantidadp").focus();
@@ -241,7 +244,7 @@ cot = {
 			c = parseFloat($.trim($("#cantidadp").val())),
 			p = parseFloat($.trim($("#preciop").val())),
 			d = parseFloat($.trim($("#descuentop").val()));						
-			cp = parseFloat(vnt.producto.costo_promedio);	
+			cp = parseFloat(cot.producto.costo_promedio);	
 			if(isNaN(c.toString()) || c <=0 || c==''){
 				$("#cantidadp").val(''),$("#cantidadp").focus(),toastr["warning"]("Capture la cantidad")
 				return 0;	
@@ -254,10 +257,13 @@ cot = {
 				$("#descuentop").val(''),$("#descuentop").focus(),toastr["warning"]("Capture el descuento")
 				return 0;	
 			}			
-			if(p<cp){				
+			if(p<cp && cp>0){				
 				$.confirm({ title: 'Precio',content: 'El precio establecido es menor a el costo promedio del producto por lo que se generarán perdidas.<br>Costo Promedio:<b>$ '+app.number_format(cp,2)+'</b><br> Favor de revisar.', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){ $("#preciop").focus()}}}});
 				return 0;
-			}		
+			}				
+			if(cp==0)
+				$.confirm({ title: 'Sin costo promedio registrado',content: 'No se han realziado compras de este producto, revise las existencias antes de realizar la venta.', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){}}}});
+							
 			if(cot.productos[cot.producto.id_producto]){				
 				cot.productos[cot.producto.id_producto].cantidad += cot.producto.cantidad;	
 				tot = (cot.productos[cot.producto.id_producto].cantidad * cot.productos[cot.producto.id_producto].precio);

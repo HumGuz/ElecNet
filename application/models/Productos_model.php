@@ -44,7 +44,7 @@ class Productos_model extends CI_Model {
 									p.id_unidad_medida_entrada, p.id_unidad_medida_entrada as ue,
 									p.id_unidad_medida_salida,p.id_unidad_medida_salida as us,
 									p.factor_unidades,p.existencia,p.entradas,p.salidas,
-								 	p.precio_min_venta,p.costo_promedio,p.tiempo_garantia,								 	
+								 	p.precio_venta,p.costo_promedio,p.tiempo_garantia,								 	
 								 	borrarProducto(p.id_producto) as borrar							 	
 									from 
 									t_productos p 
@@ -115,9 +115,11 @@ class Productos_model extends CI_Model {
 									 group_concat(p.id_unidad_medida_entrada SEPARATOR '-|-') as ue, 
 									 group_concat(getExistenciaUS(p.existencia,p.factor_unidades) SEPARATOR '-|-') as existencia_us,
 									 group_concat(p.id_unidad_medida_salida SEPARATOR '-|-') as us, 
-									 group_concat(p.precio_min_venta  SEPARATOR '-|-') as precio_ue,
-									 group_concat(getPrecioUS(p.precio_min_venta,p.factor_unidades)  SEPARATOR '-|-') as precio_us,	
-									 group_concat( p.costo_promedio SEPARATOR '-|-') as costo_promedio,
+									 group_concat(p.factor_unidades SEPARATOR '-|-') as factor_unidades, 
+									 group_concat(p.precio_venta  SEPARATOR '-|-') as precio_ue,
+									 group_concat(getPrecioUS(p.precio_venta,p.factor_unidades)  SEPARATOR '-|-') as precio_us,	
+									 group_concat( p.costo_promedio SEPARATOR '-|-') as costo_promedio_ue,
+									 group_concat( getPrecioUS(p.costo_promedio,p.factor_unidades) SEPARATOR '-|-') as costo_promedio_us,
 									 group_concat(p.id_almacen SEPARATOR '-|-') as id_almacen, 
 									 group_concat(a.clave SEPARATOR '-|-') as clave_almacen,
 									 group_concat(a.nombre SEPARATOR '-|-') as almacen
