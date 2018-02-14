@@ -11,9 +11,10 @@ alm = {
 		alm.almacenesTable({});
 	},
 	almacenesTable:function(o){
+		$(".overlay").show();
 		$.ajax({type : "POST",url : "almacenesTable",dataType : "html",data : o})
 		.done(function(r) {
-			$("#almTbl tbody").append(r);
+			$("#almTbl tbody").append(r),$(".overlay").hide();
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
 	nuevoAlmacen:function(o){
@@ -30,7 +31,8 @@ alm = {
 			$("#nvoAlmFrm").validation({extend:o,success:function(ob){alm.guardarAlmacen(ob)}})
 		});
 	},
-	guardarAlmacen:function(o){		
+	guardarAlmacen:function(o){	
+		(Ladda.create(document.querySelector( '#gNO' ))).start();				
 		console.log(o)
 		$.ajax({type : "POST",url : "guardarAlmacen",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoAlmacen').modal('hide'),alm.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})

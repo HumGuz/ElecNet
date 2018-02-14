@@ -20,4 +20,5 @@
   <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/toastr/build/toastr.min.css">  
   <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-select/dist/css/bootstrap-select.min.css">  
   <link rel="stylesheet" href="<?php echo base_url();?>application/views/css/custom.css">
+  <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/ladda-bootstrap/dist/ladda-themeless.min.css">
 </head>

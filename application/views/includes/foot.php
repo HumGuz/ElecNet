@@ -38,9 +38,18 @@
 <script src="<?php echo base_url();?>application/third_party/toastr/toastr.js"></script>
 <script src="<?php echo base_url();?>application/third_party/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 <script src="<?php echo base_url();?>application/third_party/bootstrap-select/dist/js/defaults-es_ES.min.js"></script>
+
+<script src="<?php echo base_url();?>application/third_party/ladda-bootstrap/dist/spin.min.js"></script>
+<script src="<?php echo base_url();?>application/third_party/ladda-bootstrap/dist/ladda.min.js"></script>
+
 <!-- AdminLTE App -->
 <script src="<?php echo base_url();?>application/views/js/adminlte.min.js"></script>
 <script src="<?php echo base_url();?>application/views/js/app.js"></script>
+
+
+
+
+
 <div class="spinner">
   <div class="double-bounce1"></div>
   <div class="double-bounce2"></div>

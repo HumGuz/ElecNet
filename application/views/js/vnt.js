@@ -500,7 +500,8 @@ vnt = {
 		vnt.clearForm();
 	},
 	
-	guardarVenta:function(o){		
+	guardarVenta:function(o){	
+		(Ladda.create(document.querySelector( '#gNO' ))).start();		
 		o.observaciones = $("#observaciones").val();
 		o.condiciones = $("#condiciones").val();
 		o.productos = vnt.productos;

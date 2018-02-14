@@ -22,10 +22,11 @@ cot = {
 		cot.cotizacionesTable({});
 	},
 	cotizacionesTable:function(o){
+			$(".overlay").show();
 		o.id_sucursal = cot.id_sucursal;
 		$.ajax({type : "POST",url : "cotizacionesTable",dataType : "html",data : o})
 		.done(function(r) {
-			$("#cotTbl tbody").append(r);
+			$("#cotTbl tbody").append(r),$(".overlay").hide();
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},		
 	nuevaCotizacion:function(o){
@@ -359,7 +360,8 @@ cot = {
 		cot.totalGeneral();		
 		cot.clearForm();
 	},	
-	guardarCotizacion:function(o){		
+	guardarCotizacion:function(o){	
+		(Ladda.create(document.querySelector( '#nuevaCotizacion button.ladda-button' ))).start();			
 		o.observaciones = $("#observaciones").val();
 		o.condiciones = $("#condiciones").val();
 		o.productos = cot.productos;

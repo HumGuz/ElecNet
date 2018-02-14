@@ -107,7 +107,8 @@
 				</div>			
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success  btn-sm"> <span class="glyphicon glyphicon-floppy-disk"></span> Guardar </button>
+					<button id="gNO"type="submit" class="btn btn-success  btn-sm ladda-button" data-style="slide-right"><span class="ladda-label"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</span>  </button>
+				
 				</div>
 			</form>
 		</div>

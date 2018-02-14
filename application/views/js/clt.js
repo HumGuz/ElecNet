@@ -11,9 +11,10 @@ clt = {
 		clt.clientesTable({});
 	},
 	clientesTable:function(o){
+		$(".overlay").show();
 		$.ajax({type : "POST",url : "clientesTable",dataType : "html",data : o})
 		.done(function(r) {
-			$("#cltTbl tbody").append(r);
+			$("#cltTbl tbody").append(r),$(".overlay").hide();
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
 	nuevoCliente:function(o){
@@ -56,7 +57,8 @@ clt = {
 	        return false;
 	    return true;
 	},
-	guardarCliente:function(o){		
+	guardarCliente:function(o){	
+		(Ladda.create(document.querySelector( '#gNO' ))).start();					
 		console.log(o)
 		$.ajax({type : "POST",url : "guardarCliente",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoCliente').modal('hide'),clt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})

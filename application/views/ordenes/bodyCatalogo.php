@@ -40,9 +40,7 @@
               </table>
             </div>
             <!-- /.box-body -->
-            <!-- <div class="overlay">
-			  <i class="fa fa-spinner fa-spin fa-2x" ></i>
-			</div> -->
+            <div class="overlay" style="display: none"> <i class="fa fa-spinner fa-spin fa-2x" ></i></div>
           </div>
           <!-- /.box -->
         </div>

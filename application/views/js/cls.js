@@ -83,6 +83,7 @@ cls = {
 		});
 	},
 	guardarClasificacion:function(o){
+		(Ladda.create(document.querySelector( '#gNO' ))).start();	
 		console.log(o);			
 		$.ajax({type : "POST",url : "guardarClasificacion",dataType : "json",data : o})
 		.done(function(r) {

@@ -22,10 +22,11 @@ cmp = {
 		cmp.comprasTable({});
 	},
 	comprasTable:function(o){
+		$(".overlay").show();
 		o.id_sucursal = cmp.id_sucursal;
 		$.ajax({type : "POST",url : "comprasTable",dataType : "html",data : o})
 		.done(function(r) {
-			$("#cmpTbl tbody").append(r);
+			$("#cmpTbl tbody").append(r),$(".overlay").hide();
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},	
 	nuevaCompraDialog:function(o){	
@@ -409,6 +410,7 @@ cmp = {
 	},
 	
 	guardarCompra:function(o){		
+		(Ladda.create(document.querySelector( '#nuevaCompra button.ladda-button' ))).start();		
 		o.observaciones = $("#observaciones").val();
 		o.productos = cmp.productos;
 		o.subtotal = cmp.subtotal_descuento;

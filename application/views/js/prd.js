@@ -52,11 +52,12 @@ prd = {
 		$("#fltrAlmFrm").resetForm(),$("#fltrAlmFrm select").selectpicker('refresh'),$("#fltrAlmFrm").submit()		
 	},		
 	productosTable:function(o){
+		$(".overlay").show();
 		prd.filter = {};
 		$.ajax({type : "POST",url : "productosTable",dataType : "html",data : o})
 		.done(function(r) {
 			($.trim(r)!='' && $("#scrTbl tbody").append(r)),
-			($(r).find('tr').length && prd.scr())			
+			($(r).find('tr').length && prd.scr()),$(".overlay").hide();			
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
 	scr:function(){
@@ -80,7 +81,7 @@ prd = {
 				s.colores = s.colores.split(',');
 				for(i in s)
 					(md.find("#"+i).length && md.find("#"+i).val(s[i]));
-				md.find( "#clave_secundaria" ).attr('disabled','disabled'),
+	//			md.find( "#clave_secundaria" ).attr('disabled','disabled'),
 				md.find( "#clave" ).attr('disabled','disabled'),
 				prd.initClas(md,s.id_departamento,s.id_categoria_padre,s.id_categoria)
 			}else{	
@@ -97,11 +98,12 @@ prd = {
 				if( es!='' && ue == es && ue !='')
 					$("#factor_unidades").val(1)
 			});			
-			$("#nvoPrdFrm .selectpicker").selectpicker({}),
+			$("#nvoPrdFrm .selectpicker").selectpicker({}),				
 			$("#nvoPrdFrm").validation({extend:o,rules:rules,messages:msj,success:function(ob){prd.guardarProducto(ob)}})
 		});
 	},
-	guardarProducto:function(o){		
+	guardarProducto:function(o){
+		(Ladda.create(document.querySelector( '#nvoPrdFrm button.ladda-button' ))).start();		
 		$.ajax({type : "POST",url : "guardarProducto",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoProducto').modal('hide'),prd.clearAlm()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})

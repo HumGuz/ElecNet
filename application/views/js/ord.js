@@ -32,10 +32,11 @@ ord = {
 		ord.ordenesTable({});
 	},
 	ordenesTable:function(o){
+		$(".overlay").show();
 		o.id_sucursal = ord.id_sucursal;
 		$.ajax({type : "POST",url : "ordenesTable",dataType : "html",data : o})
 		.done(function(r) {
-			$("#ordTbl tbody").append(r);
+			$("#ordTbl tbody").append(r),$(".overlay").hide();
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
 	nuevaOrden:function(o){
@@ -348,7 +349,8 @@ ord = {
 		ord.clearForm();
 	},
 	
-	guardarOrden:function(o){		
+	guardarOrden:function(o){	
+		(Ladda.create(document.querySelector( '#nuevaOrden button.ladda-button' ))).start();			
 		o.observaciones = $("#observaciones").val();
 		o.productos = ord.productos;
 		o.subtotal = ord.total_descuento;

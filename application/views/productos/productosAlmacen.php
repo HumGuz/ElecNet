@@ -39,6 +39,7 @@
                 <tbody> </tbody>
               </table>
             </div>
+             <div class="overlay" style="display: none"> <i class="fa fa-spinner fa-spin fa-2x" ></i></div>
 		  <div class="box-footer">
 		    The footer of the box
 		  </div>		

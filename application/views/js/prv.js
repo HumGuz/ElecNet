@@ -55,7 +55,8 @@ prv = {
 	        return false;
 	    return true;
 	},
-	guardarProveedor:function(o){		
+	guardarProveedor:function(o){	
+		(Ladda.create(document.querySelector( '#gNO' ))).start();					
 		console.log(o)
 		$.ajax({type : "POST",url : "guardarProveedor",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoProveedor').modal('hide'),prv.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})

@@ -27,10 +27,7 @@ var app = function() {
 				response && (app.loaded[script] = 1, fn ? eval(response)[fn](object) : eval(response)['init'])
 			})
 		},
-		init : function() {
-			$(document).ajaxSend(function(a,b,c) {$(".spinner").show()  }),
-			$(document).ajaxStop(function() {setTimeout(function() { $(".spinner").hide(); }, 1e3)}), 
-			$(document).ajaxComplete(function(t, a, e) {setTimeout(function() {$(".spinner") }, 2e3)}), 
+		init : function() {			
 			handleOnResize(), wrapper = $(".box.catalog");
 			$(".box.catalog .box-body.table-responsive").each(function(t, a) {
 					var e = function() {
@@ -52,7 +49,10 @@ var app = function() {
 	        $('body').on('click', 'div.box-filter,.bootstrap-select', function(e) { if($(".bootstrap-select.open:visible").length==0) e.stopPropagation();});
 	        $('body').click(function(e){if($(".bootstrap-select.open:visible").length==0)$('div.box-filter:visible').slideUp(200);});
 	        $('body').on('click','div.daterangepicker.dropdown-menu.ltr',function(e){e.stopPropagation()});
-	        $('body').on('click', 'div.close-filter', function(e) {$(this).parents('div.box-filter').slideUp(200);});			
+	        $('body').on('click', 'div.close-filter', function(e) {$(this).parents('div.box-filter').slideUp(200);});	        
+			$(document).ajaxSend(function(a,b,c) {$(".spinner").show()  }),
+			$(document).ajaxStop(function() {setTimeout(function() { $(".spinner").hide(); }, 1e3)}), 
+			$(document).ajaxComplete(function(t, a, e) {setTimeout(function() {$(".spinner") }, 2e3)}) 
 		},
 		getUniqueID : function(t) { return (t || "") + Math.floor(Math.random() * (new Date).getTime()) },
 		number_format : function(t, a, e, i) {
