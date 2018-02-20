@@ -199,7 +199,7 @@ class Productos_model extends CI_Model {
 	}
 	
 	function borrarProducto($d){
-		 $this->db->where('id_producto', $d['id_producto']);			
+		 $this->db->where('id_producto', $d['id_producto']);		 			
          $this->db->delete('t_productos');	
 		 return array('status'=>1);
 	}	
