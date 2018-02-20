@@ -144,12 +144,12 @@ class Productos_model extends CI_Model {
 	
 	function claveUnica($d){	
 		if($d['id_almacen'])
-			$c .= " and p.id_almacen = ".$d['id_almacen'];
+			$c .= " and r.id_almacen = ".$d['id_almacen'];
 		if($d['clave'])
 			$c .= " and p.clave = '".$d['clave']."'";
 		if($d['clave_secundaria'])		
 			$c .= " and p.clave_secundaria = '".$d['clave_secundaria']."'";				
-		$q = $this -> db -> query("select id_producto from t_productos p  where 1=1  ".$c);		
+		$q = $this -> db -> query("select p.id_producto from t_productos p inner join r_almacen_productos r on r.id_producto = p.id_producto where 1=1  ".$c);		
 		$r = $q->result_array();
 		return empty($r)?'true':'false';		
 	}	

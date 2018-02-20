@@ -63,7 +63,8 @@ prd = {
 	        }                  
 	  	}); 
 	},
-	nuevoProducto:function(o){
+	nuevoProducto:function(o){	
+		o.id_sucursal = $("#id_sucursal").val(),o.id_almacen = $("#id_almacen").val();
 		$.ajax({type:"POST",url :  "nuevoProducto",dataType : "html",data:o}).done(function(r) {
 			$('body').append(r),md = $('#nuevoProducto'); 
 			md.modal({show:true,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});			
@@ -94,7 +95,7 @@ prd = {
 			$("#nvoPrdFrm").validation({extend:o,rules:rules,messages:msj,success:function(ob){prd.guardarProducto(ob)}})
 		});
 	},
-	guardarProducto:function(o){
+	guardarProducto:function(o){		
 		(Ladda.create(document.querySelector( '#nvoPrdFrm button.ladda-button' ))).start();		
 		$.ajax({type : "POST",url : "guardarProducto",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevoProducto').modal('hide'),prd.clearAlm()) : app.error();})
