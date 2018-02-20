@@ -47,6 +47,11 @@
         <li><a href="<?php echo base_url().'cotizaciones/' ?>"><i class="fa fa-file-text-o"></i> <span>Cotizaciones</span> </a></li>
        	<li><a href="<?php echo base_url().'ventas/' ?>"><i class="fa fa-money"></i> <span>Ventas</span> </a></li>
         
+        <li class="header"><i class="glyphicon glyphicon-globe"></i> E-commerce</li> 
+        
+        <li><a href="<?php echo base_url().'sitio/productos' ?>"><i class="fa fa-book"></i> <span>Catálogo del sitio</span> </a></li>
+        <li><a href="<?php echo base_url().'sitio/pedidos' ?>"><i class="fa fa-file-text-o"></i> <span>Pedidos</span> </a></li>
+        
       </ul>
     </section>
     <!-- /.sidebar -->

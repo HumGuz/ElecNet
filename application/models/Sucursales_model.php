@@ -41,7 +41,7 @@ class Sucursales_model extends CI_Model {
          $this->db->delete('t_sucursales');	
 		 return array('status'=>1);
 	}	
-	function getAlmacenesPorSucursal($d=null){
+	function getAlmacenesPorSucursalSelect($d=null){
 		
 		if($d['id_sucursal'])
 			$c .= ' and s.id_sucursal = '.$d['id_sucursal'];
@@ -56,7 +56,7 @@ class Sucursales_model extends CI_Model {
 		  		 left join t_almacenes a on a.id_sucursal = s.id_sucursal where 1=1 ".$c);		
 		$r = $q->result_array();		
 		if(!empty($r)){
-			$a = array();
+			 $a = array();
 			foreach ($r as $k => $v) {
 				if(!isset($a[$v['clave_sucursal']]))
 					$a[$v['clave_sucursal']] = array(
@@ -65,12 +65,24 @@ class Sucursales_model extends CI_Model {
 						'sucursal'=>$v['sucursal'],
 						'encargado_sucursal'=>$v['encargado_sucursal'],						
 						'a'=>array()
-					);					
+					);				
 					
 				if(!empty($v['clave']))	
-					$a[$v['clave_sucursal']]['a'][$v['clave']]= $v;					
+					$a[$v['clave_sucursal']]['a'][$v['clave']]= $v;	
 			}
-			$r = $a;
+			if(!empty($a)){				
+					$r = '<select  class="form-control selectpicker div-sucursal " id="id_almacen" name="id_almacen" data-container="body" data-width="150px">';						
+					foreach ($a as $cs => $s) {								
+						if(!empty($s['a'])){
+							$r .= '<optgroup label="[ '.$s['clave_sucursal'].' ] '.$s['sucursal'].'"> ';	
+							foreach ($s['a'] as $ca => $al) {
+								$r .= '<option value="'.$al['id_almacen'].'" data-id_sucursal="'.$al['id_sucursal'].'">[ '.$ca.' ]  '.$al['almacen'].' </option> ';
+							}		
+							$r .= '</optgroup>';								
+						}
+					}
+					$r .="</select>";				
+			}			
 		}		
 		return $r;
 	}

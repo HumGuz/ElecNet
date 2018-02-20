@@ -11,18 +11,17 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        <i class="fa fa-cube"></i> Productos por almacén
+        <i class="fa fa-th"></i> Productos del sitio
         <small></small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
-        <li><a href="#">Almacenes</a></li>
-        <li class="active"> Productos por almacén</li>
+        <li class="active"> Productos</li>
       </ol>
     </section>
     <!-- Main content -->
     <section class="content">    
-      <?php include_once FCPATH.'application/views/productos/bodyCatalogo.php';?> 
+      <?php include_once FCPATH.'application/views/sitio/bodyCatalogoProductos.php';?> 
     </section>
     <!-- /.content -->
   </div>
@@ -34,8 +33,13 @@
     <strong>Copyright &copy; 2017 <a href="#">Halammeshta Devs</a>.</strong> Todos los derechos reservados.
   </footer>
   <?php include_once FCPATH.'application/views/includes/foot.php';?> 
-  <script>app.script('prd','init')</script>
+  <script src="<?php echo base_url();?>application/third_party/moment/moment.js"></script>
+  <script src="<?php echo base_url();?>application/third_party/moment/es.js"></script>
+  <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.css">
+  <script src="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script src="<?php echo base_url();?>application/third_party/typeahead/typeahead.bundle.min.js"></script>
+  <script>app.script('st','init')</script>
 </div>
+<!-- ./wrapper -->
 </body>
 </html>
-

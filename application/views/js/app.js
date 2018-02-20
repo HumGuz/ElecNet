@@ -101,6 +101,12 @@ var app = function() {
 			days = Math.floor(timestamp / 60 / 60 / 24), days > 0 && (timestamp -= 24 * days * 60 * 60, result += days + " días "),
 			hours = Math.floor(timestamp / 60 / 60), hours > 0 && (timestamp -= 60 * hours * 60, result += (hours <= 9 ? "0" : "") + hours + " hrs "),
 			minutes = Math.floor(timestamp / 60), minutes > 0 ? (timestamp -= 60 * minutes, result += (minutes <= 9 ? "0" : "") + minutes + " min ") : (result += "00:", result += (timestamp <= 9 ? "0" : "") + timestamp + " sec "), result
+		},
+		ok:function(){
+			toastr["success"]("Cambios guardados con éxito")
+		},
+		error:function(){
+			  $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
 		}
 	}
 }();

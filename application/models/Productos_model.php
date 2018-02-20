@@ -12,11 +12,11 @@ class Productos_model extends CI_Model {
 		
 	function getProductos($d){					
 		if($d['id_sucursal'])
-			$c = ' and p.id_sucursal =  '.$d['id_sucursal'];
+			$c = ' and r.id_sucursal =  '.$d['id_sucursal'];
 		else 
-			$c = ' and p.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
+			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
 		if($d['id_almacen'])
-			$c .= ' and p.id_almacen = '.$d['id_almacen'];
+			$c .= ' and r.id_almacen = '.$d['id_almacen'];
 		if($d['id_producto'])		
 			$c .= ' and p.id_producto = '.$d['id_producto'];
 		if($d['id_departamento'])		
@@ -33,21 +33,22 @@ class Productos_model extends CI_Model {
 			$c .= " and (  p.clave like '%".$d['busqueda']."%' or p.clave_secundaria like '%".$d['busqueda']."%' or p.descripcion like '%".$d['busqueda']."%' or p.concepto like '%".$d['busqueda']."%' or p.marca like '%".$d['busqueda']."%'  )  ";
 		$c .= " order by p.clave asc";		
 		$q = $this -> db -> query("select 
-									p.id_almacen,p.id_producto,
+									r.id_almacen_producto,r.id_almacen,r.id_sucursal,p.id_producto,
 									p.clave,p.clave_secundaria,
 									p.concepto,p.marca,p.modelo,
 									p.descripcion,p.colores,p.dimensiones,p.peso,
 									p.id_departamento, d.clave as dep,
 									p.id_categoria_padre, cp. clave as cat,
 									p.id_categoria, c.clave as subcat,
-									p.stock_min,p.stock_max,
+									r.stock_min,r.stock_max,
 									p.id_unidad_medida_entrada, p.id_unidad_medida_entrada as ue,
 									p.id_unidad_medida_salida,p.id_unidad_medida_salida as us,
-									p.factor_unidades,p.existencia,p.entradas,p.salidas,
-								 	p.precio_venta,p.costo_promedio,p.tiempo_garantia,								 	
+									p.factor_unidades,r.existencia,r.entradas,r.salidas,
+								 	p.precio_venta,r.costo_promedio,p.tiempo_garantia,								 	
 								 	borrarProducto(p.id_producto) as borrar							 	
 									from 
 									t_productos p 
+									inner join r_almacen_productos r on r.id_producto = p.id_producto
 									inner join t_departamentos d on d.id_departamento = p.id_departamento
 									inner join t_categorias cp on cp.id_categoria = p.id_categoria_padre
 									inner join t_categorias c on c.id_categoria = p.id_categoria
@@ -65,29 +66,31 @@ class Productos_model extends CI_Model {
 	function getProductosXProveedor($d){
 					
 		if($d['id_sucursal'])
-			$c .= ' and p.id_sucursal = '.$d['id_sucursal'];
+			$c .= ' and r.id_sucursal = '.$d['id_sucursal'];
 		else
-			$c = ' and p.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
+			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
 			
-		if($d['id_proveedor'])
-			$c .= ' and r.id_proveedor = '.$d['id_proveedor']." or r.clave is null";		
+		// if($d['id_proveedor'])
+			// $c .= ' and rp.id_proveedor = '.$d['id_proveedor']." or r.clave is null";		
 		
-		$c .= " group by p.id_producto order by p.clave asc";
+		$c .= " group by p.id_producto";
 		
 						
-		$q = $this -> db -> query("select 
-									 group_concat(p.id_producto SEPARATOR '-|-') as id_producto, 
+		$q = $this -> db -> query("
+							select 
+									 p.id_producto, 
 									 p.clave,
-									 group_concat(p.concepto SEPARATOR '-|-') as concepto,
-									 group_concat(p.id_unidad_medida_entrada SEPARATOR '-|-') as um, 
-									 group_concat(r.precio SEPARATOR '-|-') as precio,
-									 group_concat(r.descuento SEPARATOR '-|-') as descuento,
-									 group_concat(p.id_almacen SEPARATOR '-|-') as id_almacen, 
+									 p.concepto,
+									 p.id_unidad_medida_entrada as um, 
+									 rp.precio  as precio,
+									 rp.descuento as descuento,
+									 group_concat(a.id_almacen SEPARATOR '-|-') as id_almacen, 
 									 group_concat(a.clave SEPARATOR '-|-') as clave_almacen,
 									 group_concat(a.nombre SEPARATOR '-|-') as almacen
 								    from t_productos p 
-								    left join r_proveedor_productos r on r.clave = p.clave
-								    left join t_almacenes a on a.id_almacen = p.id_almacen	
+								    left join r_almacen_productos r on r.id_producto = p.id_producto
+								    left join t_almacenes a on a.id_almacen = r.id_almacen	
+								    left join (select * from r_proveedor_productos where id_proveedor = ".$d['id_proveedor'].") rp on rp.id_producto = p.id_producto
 								    where 1=1 ".$c);		
 		$result = $q->result_array();
 		if(!empty($result)){
@@ -101,31 +104,31 @@ class Productos_model extends CI_Model {
 	function getPrecioXProducto(){
 				
 		if($d['id_sucursal'])
-			$c .= ' and p.id_sucursal = '.$d['id_sucursal'];
+			$c .= ' and r.id_sucursal = '.$d['id_sucursal'];
 		else
-			$c = ' and p.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
 		
-		$c .= " group by p.id_producto order by p.clave asc";		
+		$c .= " group by p.id_producto ";		
 						
 		$q = $this -> db -> query("select 
-									 group_concat(p.id_producto SEPARATOR '-|-') as id_producto, 
+									 p.id_producto, 
 									 p.clave,
-									 group_concat(p.concepto SEPARATOR '-|-') as concepto,
-									 group_concat(p.existencia SEPARATOR '-|-') as existencia_ue,
-									 group_concat(p.id_unidad_medida_entrada SEPARATOR '-|-') as ue, 
-									 group_concat(getExistenciaUS(p.existencia,p.factor_unidades) SEPARATOR '-|-') as existencia_us,
-									 group_concat(p.id_unidad_medida_salida SEPARATOR '-|-') as us, 
-									 group_concat(p.factor_unidades SEPARATOR '-|-') as factor_unidades, 
-									 group_concat(p.precio_venta  SEPARATOR '-|-') as precio_ue,
-									 group_concat(getPrecioUS(p.precio_venta,p.factor_unidades)  SEPARATOR '-|-') as precio_us,	
-									 group_concat( p.costo_promedio SEPARATOR '-|-') as costo_promedio_ue,
-									 group_concat( getPrecioUS(p.costo_promedio,p.factor_unidades) SEPARATOR '-|-') as costo_promedio_us,
-									 group_concat(p.id_almacen SEPARATOR '-|-') as id_almacen, 
+									 p.concepto,
+									 p.existencia as existencia_ue,
+									 p.id_unidad_medida_entrada  as ue, 
+									 group_concat(getExistenciaUS(r.existencia,p.factor_unidades) SEPARATOR '-|-') as existencia_us,
+									 p.id_unidad_medida_salida as us, 
+									 p.factor_unidades,
+									 p.precio_venta as precio_ue,
+									 getPrecioUS(p.precio_venta,p.factor_unidades)  as precio_us,	
+									 r.costo_promedio as costo_promedio_ue,
+									 getPrecioUS(r.costo_promedio,p.factor_unidades) as costo_promedio_us,
+									 group_concat(r.id_almacen SEPARATOR '-|-') as id_almacen, 
 									 group_concat(a.clave SEPARATOR '-|-') as clave_almacen,
 									 group_concat(a.nombre SEPARATOR '-|-') as almacen
 									 from t_productos p 
-								    left join r_proveedor_productos r on r.clave = p.clave
-								    left join t_almacenes a on a.id_almacen = p.id_almacen		
+								    left join r_almacen_productos r on r.id_producto = p.id_producto
+								    left join t_almacenes a on a.id_almacen = r.id_almacen		
 								    where 1=1  ".$c);		
 		$result = $q->result_array();
 		if(!empty($result)){
@@ -154,17 +157,25 @@ class Productos_model extends CI_Model {
 	function guardarProducto($d){
 		$d['id_usuario_cambio'] = $this->s['usuario']['id_usuario'];
 		$d['fecha_cambio'] = date('Y-m-d H:i:s');		  	
-	  	$d['colores'] = implode(',', $d['colores']);
-	  	if(empty($d['id_producto'])){	
+	  	$d['colores'] = implode(',', $d['colores']);	
+	  	if(empty($d['id_producto'])){
+	  		$rp = array('id_sucursal'=>$d['id_sucursal'],'id_almacen'=>$d['id_almacen'],'stock_max'=>$d['stock_max'],'stock_min'=>$d['stock_min']);			
+			unset($d['stock_max']);unset($d['stock_min']);	unset($d['id_sucursal']);unset($d['id_almacen']);								
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
 			$d['fecha_registro'] = $d['fecha_cambio'];						
             $this->db->insert('t_productos', $d);			
-			$id_producto = $this->db->insert_id();			
+			$id_producto = $this->db->insert_id();	
+			$rp['id_producto'] = $id_producto;
+			$this->db->insert('r_almacen_productos', $rp);
         }else{
-        	$id_producto = $d['id_producto'];
-			unset($d['id_cliente_cliente']);
+        	$id_producto = $d['id_producto'];   
+        	$id_almacen_producto = $d['id_almacen_producto'];     
+        	$rp = array('stock_max'=>$d['stock_max'],'stock_min'=>$d['stock_min']);						      	     	
+			unset($d['id_producto']);unset($d['stock_max']);unset($d['stock_min']);	unset($d['id_sucursal']);unset($d['id_almacen']);unset($d['id_almacen_producto']);			
             $this->db->where('id_producto', $id_producto);			
-            $this->db->update('t_productos', $d);	
+            $this->db->update('t_productos', $d);
+			$this->db->where('id_almacen_producto', $id_almacen_producto);
+            $this->db->update('r_almacen_productos', $rp);	
         } 
 		return array('status'=>1,'id_producto'=>$id_producto);
 	}

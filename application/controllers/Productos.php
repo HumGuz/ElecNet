@@ -14,7 +14,7 @@ class Productos extends CI_Controller {
 	}		
 	function index(){
 		$this->load->model('sucursales_model','scr');
-		$this->load->view('productos/almacenesSucursal',array('scr'=>$this->scr->getAlmacenesPorSucursal()));		
+		$this->load->view('productos/productosAlmacen',array('sucursales_select'=>$this->scr->getSucursalesSelect(),'almacenes_select'=>$this->scr->getAlmacenesPorSucursalSelect()));		
 	}
 	
 	function productosAlmacen(){

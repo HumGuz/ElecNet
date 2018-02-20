@@ -1,40 +1,40 @@
-scr = {
+st = {
 	init:function(){		
-		$("div.box-tools button.btn.btn-success").click(function(){scr.nuevaSucursal({})});
-		$("#scrTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,scr[f](d)});
-		$("#srchFrm").validation({success:function(o){$("#scrTbl tbody").empty(),scr.sucursalesTable(o)}})
-		scr.clear({});
+		$("div.box-tools button.btn.btn-success").click(function(){st.agregarProducto({})});
+		$("#stTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,st[f](d)});
+		$("#srchFrm").validation({success:function(o){$("#stTbl tbody").empty(),st.productosTable(o)}})
+		// st.clear({});
 	},
 	clear:function(){
 		$("#srchFrm").resetForm();
-		$("#scrTbl tbody").empty();
-		scr.sucursalesTable({});
+		$("#stTbl tbody").empty();
+		st.productosTable({});
 	},
-	sucursalesTable:function(o){
+	productosTable:function(o){
 		$(".overlay").show();
-		$.ajax({type : "POST",url : "sucursalesTable",dataType : "html",data : o})
+		$.ajax({type : "POST",url : "productosTable",dataType : "html",data : o})
 		.done(function(r) {
-			$("#scrTbl tbody").append(r),$(".overlay").hide();
+			$("#stTbl tbody").append(r),$(".overlay").hide();
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
-	nuevaSucursal:function(o){
-		$.ajax({type:"POST",url :  "nuevaSucursal",dataType : "html",data:o}).done(function(r) {
+	agregarProducto:function(o){
+		$.ajax({type:"POST",url :  "agregarProducto",dataType : "html",data:o}).done(function(r) {
 			$('body').append(r);  
-			$('#nuevaSucursal').modal({show:true,backdrop:'static'});
-			$('#nuevaSucursal').on('hidden.bs.modal',function(){$(this).remove();});		
+			$('#agregarProducto').modal({show:true,backdrop:'static'});
+			$('#agregarProducto').on('hidden.bs.modal',function(){$(this).remove();});		
 			if(o && o.id_sucursal){				
-				s = $('#nuevaSucursal .modal-content').data();
+				s = $('#agregarProducto .modal-content').data();
 				for(i in s)
 					($("#"+i).length && $("#"+i).val(s[i]));
 			}
-			$("#nvaScrFrm").validation({extend:o,success:function(ob){scr.guardarSucursal(ob)}})
+			$("#nvaScrFrm").validation({extend:o,success:function(ob){st.guardarSucursal(ob)}})
 		});
 	},
-	guardarSucursal:function(o){	
+	guardarProducto:function(o){	
 		(Ladda.create(document.querySelector( '#gNO' ))).start();			
 		console.log(o)
-		$.ajax({type : "POST",url : "guardarSucursal",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaSucursal').modal('hide'),scr.clear()) : app.error();})
+		$.ajax({type : "POST",url : "guardarProducto",dataType : "json",data : o})
+		.done(function(r) {1 == r.status ? (app.ok(),$('#agregarProducto').modal('hide'),st.clear()) :app.error()})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarSucursal:function(o){
@@ -49,7 +49,7 @@ scr = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarSucursal",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (app.ok(),scr.clear()) : app.error();
+									1 == r.status ? (app.ok(),st.clear()) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});

@@ -2,7 +2,7 @@
 if(!empty($prd)){		
 	foreach ($prd as $k => $p) {		
 		echo '
-			<tr >
+			<tr style="font-size:13px" >
 			<td width="150px" class="bold">'.$p['clave'].'</td>
 			<td>'.$p['concepto'].'</td>
 			<td width="130px">'.$p['marca'].'</td>
@@ -18,7 +18,7 @@ if(!empty($prd)){
 		                  <ul class="dropdown-menu pull-right" role="menu">
 		                    <li><a href="#" ><span class="fa fa-info-circle text-info"></span> Detalles </a></li>
 		                    <li><a href="#" data-id_producto="'.$p['id_producto'].'" data-fn="imagenes"><span class="fa fa-picture-o text-primary"></span> Imagenes </a></li>
-		                    <li><a href="#" data-id_producto="'.$p['id_producto'].'" data-fn="nuevoProducto"><span class="fa fa-pencil"></span> Editar </a></li>
+		                    <li><a href="#" data-id_producto="'.$p['id_producto'].'"  data-id_almacen_producto = "'.$p['id_almacen_producto'].'" data-fn="nuevoProducto"><span class="fa fa-pencil"></span> Editar </a></li>
 		                    '.( $p['borrar'] ? '<li class="divider"></li><li><a href="#"  data-id_producto="'.$p['id_producto'].'" data-fn="borrarProducto"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
 		                  </ul>
 		     	</div>

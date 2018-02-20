@@ -9,7 +9,7 @@ ord = {
 		cb =  function (start, end, lbl) {	      
 	       	$("#srchFrm").find('#daterange-btn span').html('<b>'+lbl+'</b> del '+start.format('D MMMM YYYY') + ' al ' + end.format('D MMMM YYYY'));	        
 	        $("#srchFrm").find("#fecha_inicial").val(start.format('YYYY-MM-DD'))
-	        $("#srchFrm").find("#fecha_final").val(start.format('YYYY-MM-DD'))
+	        $("#srchFrm").find("#fecha_final").val(end.format('YYYY-MM-DD'))
 	    };		
 		$("#srchFrm").find('#daterange-btn').daterangepicker({
 			locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end, opens: "left",drops: "up",autoApply:true,
@@ -119,7 +119,7 @@ ord = {
 				for(i in s)
 					(md.find("#"+i).length && md.find("#"+i).val(s[i]));					
 				for(p in ord.productosDS)
-					pr = ord.productosDS[p], pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),ord.addFilaProducto(ord.productosDS[p]);					
+					pr = ord.productosDS[p], pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),ord.addFilaProducto(pr);					
 				ord.totalGeneral(),md.find("#id_proveedor").change(),md.find("#id_proveedor").selectpicker('refresh');
 			}	
 			
@@ -358,7 +358,7 @@ ord = {
 		o.iva = ord.iva;
 		o.total = ord.total;
 		$.ajax({type : "POST",url : "guardarOrden",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevaOrden').modal('hide'),ord.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaOrden').modal('hide'),ord.clear()) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarOrden:function(o){
@@ -373,7 +373,7 @@ ord = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarOrden",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),ord.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+									1 == r.status ? (app.ok(),ord.clear()) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});
@@ -388,7 +388,7 @@ ord = {
 			1 == a.status ? location.href = ('download?folio='+f+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
 			 // window.open('download?id_orden_compra='+t+'&type='+type, "_blank")
 		}).fail(function(t, a, e) {
-			 $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}}), console.log(t, a, e);
+			 app.error(), console.log(t, a, e);
 		});
 	},
 

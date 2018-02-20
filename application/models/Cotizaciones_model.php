@@ -47,35 +47,34 @@ class Cotizaciones_model extends CI_Model {
 		
 		$q = $this -> db -> query("
 			select 
-			r.id_producto,
+			r.id_producto,	
+			r.id_almacen,		
 			p.clave,
 			p.concepto,
 			IF(
 				r.um = p.id_unidad_medida_entrada,
 				p.existencia,
 				getExistenciaUS(p.existencia,p.factor_unidades)
-			) as existencia,
-			
+			) as existencia,			
 			IF(
 				r.um = p.id_unidad_medida_entrada,
-				p.costo_promedio,
-				getPrecioUS(p.costo_promedio,p.factor_unidades)
-			) as costo_promedio,
-			
+				ra.costo_promedio,
+				getPrecioUS(ra.costo_promedio,p.factor_unidades)
+			) as costo_promedio,			
 			IF(
 				r.um = p.id_unidad_medida_entrada,
-				r.subtotal - (p.costo_promedio *  r.cantidad),
-				r.subtotal - (getPrecioUS(p.costo_promedio,p.factor_unidades) *  r.cantidad)
-			) as truput,			
-						
+				r.subtotal - (ra.costo_promedio *  r.cantidad),
+				r.subtotal - (getPrecioUS(ra.costo_promedio,p.factor_unidades) *  r.cantidad)
+			) as truput,		
+			ra.costo_promedio as costo_promedio_ue,				
 			r.um,
 			r.cantidad,
 			r.descuento,
-			r.precio,
-			
+			r.precio,			
 			r.total
 			from r_cotizacion_productos r
 			inner join t_productos p on p.id_producto = r.id_producto
+			inner join r_almacen_productos ra on ra.id_producto = p.id_producto and r.id_almacen = ra.id_almacen
 			where 1=1 ".$c);
 		$r = $q->result_array();
 		return $r;	
@@ -103,7 +102,7 @@ class Cotizaciones_model extends CI_Model {
         }  
         if(!empty($p)){        				
         	foreach ($p as $k => $v) {						
-				$this->db->insert('r_cotizacion_productos', array('id_cotizacion' =>$id_cotizacion,'id_producto'=>$v['id_producto'],'cantidad'=>$v['cantidad'],'um'=>$v['um'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
+				$this->db->insert('r_cotizacion_productos', array('id_cotizacion' =>$id_cotizacion,'id_producto'=>$v['id_producto'],'id_almacen'=>$v['id_almacen'],'cantidad'=>$v['cantidad'],'um'=>$v['um'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
 			}
         }	
 		return array('status'=>1,'id_cotizacion'=>$id_cotizacion);

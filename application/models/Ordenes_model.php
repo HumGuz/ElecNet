@@ -52,6 +52,7 @@ class Ordenes_model extends CI_Model {
 		$q = $this -> db -> query("
 			select 
 			r.id_producto,
+			r.id_almacen,
 			p.clave,
 			p.concepto,
 			p.id_unidad_medida_entrada as um,
@@ -92,7 +93,7 @@ class Ordenes_model extends CI_Model {
         
         if(!empty($p)){        				
         	foreach ($p as $k => $v) {						
-				$this->db->insert('r_orden_compra_productos', array('id_orden_compra' =>$id_orden_compra,'id_proveedor' =>$d['id_proveedor'],'id_producto'=>$v['id_producto'],'cantidad_pedido'=>$v['cantidad'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
+				$this->db->insert('r_orden_compra_productos', array('id_orden_compra' =>$id_orden_compra,'id_proveedor' =>$d['id_proveedor'],'id_producto'=>$v['id_producto'],'id_almacen'=>$v['id_almacen'],'cantidad_pedido'=>$v['cantidad'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
 			}
         }
         		

@@ -35,7 +35,7 @@ alm = {
 		(Ladda.create(document.querySelector( '#gNO' ))).start();				
 		console.log(o)
 		$.ajax({type : "POST",url : "guardarAlmacen",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoAlmacen').modal('hide'),alm.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevoAlmacen').modal('hide'),alm.clear()) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarAlmacen:function(o){
@@ -50,7 +50,7 @@ alm = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarAlmacen",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),alm.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+									1 == r.status ? (app.ok(),alm.clear()) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});

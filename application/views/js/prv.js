@@ -59,7 +59,7 @@ prv = {
 		(Ladda.create(document.querySelector( '#gNO' ))).start();					
 		console.log(o)
 		$.ajax({type : "POST",url : "guardarProveedor",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoProveedor').modal('hide'),prv.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevoProveedor').modal('hide'),prv.clear()) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarProveedor:function(o){
@@ -74,7 +74,7 @@ prv = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarProveedor",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),prv.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+									1 == r.status ? (app.ok(),prv.clear()) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});

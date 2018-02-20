@@ -2,39 +2,32 @@ prd = {
 	limit:0,filter:{},
 	init:function(){		
 		$('body').on('click',"[data-fn]",function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn,delete d['bs.tooltip'],delete d['placement'],delete d.toggle,delete d.trigger ,prd[f](d)});
+		
+		prd.initFilter($("section.content"));
 	},	
-	productosAlmacen:function(o){
-		$.ajax({type : "POST",url : "productosAlmacen",dataType : "html",data : o})
-		.done(function(r) {
-			$('body').append(r),md = $("#prodAlm-modal"),		
-			md.modal({backdrop:'static',show:true}).on('hidden.bs.modal',function(){$(this).remove();}).on('shown.bs.modal',function(){
-				$(this).find(".box-body-modal").each(function(t, a) {					
-					var e = function() {
-						var t = $(a);					
-						app.destroySlimScroll(a), dumpHeight = t.outerHeight() ,t.css('height',dumpHeight), t.attr("data-height", dumpHeight), app.initSlimScroll(a)
-					};
-					e(), app.addResizeHandler(e)
-				});	
-			});	
-			prd.initFilter(md,o);
-		}).fail(function(e, t, i) {console.log(e, t, i)});
-	},		
-	initFilter:function(md,o){
+	initFilter:function(md){
 		prd.limit = 0,prd.filter= {},		
 		md.find(".selectpicker").selectpicker({});
 		var s,i = md.find("#busqueda_out");
-		i.keyup(function(){if(s) clearTimeout(s),s = setTimeout(function() {prd.limit = 0,prd.filter= {},val = $.trim(i.val()),prd.productosTable({busqueda:val,id_almacen:o.id_almacen,limit:0})},500)})	
+		i.keyup(function(){if(s) clearTimeout(s),s = setTimeout(function() {prd.limit = 0,prd.filter= {},val = $.trim(i.val()),prd.productosTable({busqueda:val,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val(),limit:0})},500)})	
 		prd.initClas(md);		
-		$("#fltrAlmFrm").validation({extend:o,success:function(ob){
-			$("#scrTbl tbody").empty(),prd.limit = 0,prd.filter= {},ob.limit = 0,
+		$("#fltrAlmFrm").validation({extend:{},success:function(ob){
+			$("#prdTbl tbody").empty(),prd.limit = 0,prd.filter= ob,ob.limit = 0,
 			prd.productosTable(ob)
 		}})
-		o.limit = 0,prd.productosTable(o);		
+		prd.productosTable({limit:0,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val()});		
 	},	
 	initClas:function(c,d,cp,ch){		
+		suc = c.find("#id_sucursal"),
+		alm = c.find("#id_almacen"),			
 		dep = c.find("#id_departamento"),
 		catp = c.find("#id_categoria_padre"),
 		cath = c.find("#id_categoria")	
+		suc.change(function(){
+			vl = $(this).val(),alm.find("option").prop('disabled',true),					
+			(vl!='' &&  alm.find("option[data-id_sucursal='"+vl+"']").prop('disabled',false) ),
+			alm.selectpicker('refresh');					
+		}),
 		dep.change(function(){
 			vl =$(this).val(),c.find(".categorias").val(''),c.find(".categorias option").prop('disabled',true),					
 			(vl!='' &&  c.find(".categorias option[data-id_departamento='"+vl+"']").prop('disabled',false) ),
@@ -52,24 +45,23 @@ prd = {
 		$("#fltrAlmFrm").resetForm(),$("#fltrAlmFrm select").selectpicker('refresh'),$("#fltrAlmFrm").submit()		
 	},		
 	productosTable:function(o){
-		$(".overlay").show();
-		prd.filter = {};
+		$(".overlay").show();		
 		$.ajax({type : "POST",url : "productosTable",dataType : "html",data : o})
 		.done(function(r) {
-			($.trim(r)!='' && $("#scrTbl tbody").append(r)),
+			($.trim(r)!='' && $("#prdTbl tbody").append(r)),
 			($(r).find('tr').length && prd.scr()),$(".overlay").hide();			
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
 	scr:function(){
-		 $(".scroller-tbl").scroll(function(){
-	      	     control = this; 
-	             if ($(control).scrollTop() >= $(control)[0].scrollHeight - $(control).outerHeight()-100){ 	               
-	                $(this).unbind('scroll');
-	                 insumos.limit += 50;
-                     obj = $.extend({},insumos.filter,{id_clasificacion_insumo:insumos.id_clasificacion_insumo,limit:insumos.limit});
-                     insumos.getInsumosTable( obj );
-	             }                  
-	      }); 
+		$(".scroller-tbl").scroll(function(){
+	    	control = this; 
+	        if ($(control).scrollTop() >= $(control)[0].scrollHeight - $(control).outerHeight()-100){ 	               
+	        	$(this).unbind('scroll');
+	            insumos.limit += 50;
+                obj = $.extend({},insumos.filter,{id_clasificacion_insumo:insumos.id_clasificacion_insumo,limit:insumos.limit});
+                insumos.getInsumosTable( obj );
+	        }                  
+	  	}); 
 	},
 	nuevoProducto:function(o){
 		$.ajax({type:"POST",url :  "nuevoProducto",dataType : "html",data:o}).done(function(r) {
@@ -105,7 +97,7 @@ prd = {
 	guardarProducto:function(o){
 		(Ladda.create(document.querySelector( '#nvoPrdFrm button.ladda-button' ))).start();		
 		$.ajax({type : "POST",url : "guardarProducto",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoProducto').modal('hide'),prd.clearAlm()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevoProducto').modal('hide'),prd.clearAlm()) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarProducto:function(o){
@@ -120,7 +112,7 @@ prd = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarProducto",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),prd.clearAlm()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+									1 == r.status ? (app.ok(),prd.clearAlm()) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});
@@ -158,7 +150,7 @@ prd = {
 	guardarAlmacen:function(o){		
 		console.log(o)
 		$.ajax({type : "POST",url : "guardarAlmacen",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevoAlmacen').modal('hide'),location.reload()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevoAlmacen').modal('hide'),location.reload()) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarAlmacen:function(o){
@@ -173,7 +165,7 @@ prd = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarAlmacen",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),location.reload()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+									1 == r.status ? (app.ok(),location.reload()) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});

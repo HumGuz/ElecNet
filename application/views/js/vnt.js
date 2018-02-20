@@ -9,7 +9,7 @@ vnt = {
 		cb =  function (start, end, lbl) {	      
 	       	$("#srchFrm").find('#daterange-btn span').html('<b>'+lbl+'</b> del '+start.format('D MMMM YYYY') + ' al ' + end.format('D MMMM YYYY'));	        
 	        $("#srchFrm").find("#fecha_inicial").val(start.format('YYYY-MM-DD'))
-	        $("#srchFrm").find("#fecha_final").val(start.format('YYYY-MM-DD'))
+	        $("#srchFrm").find("#fecha_final").val(end.format('YYYY-MM-DD'))
 	    };		
 		$("#srchFrm").find('#daterange-btn').daterangepicker({locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end,opens: "left",drops: "up",autoApply:true, ranges: { 'Hoy'       : [moment(), moment()],'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],'Últimos 7 Días' : [moment().subtract(6, 'days'), moment()],'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],'Este Mes'  : [moment().startOf('month'), moment().endOf('month')], 'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]}},cb);		 
 		cb(strt,end,'Últimos 7 Días');		 
@@ -158,7 +158,7 @@ vnt = {
 				for(i in s)
 					(md.find("#"+i).length && md.find("#"+i).val(s[i]));					
 				for(p in vnt.productosDS)
-					pr = vnt.productosDS[p], pr.existencia = parseFloat(pr.existencia), pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),vnt.addFilaProducto(vnt.productosDS[p]);					
+					pr = vnt.productosDS[p], pr.existencia = parseFloat(pr.existencia), pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),vnt.addFilaProducto(pr);					
 				vnt.totalGeneral(),md.find( "#factura" ).attr('disabled','disabled'),
 				md.find("#id_cliente").change()		
 			}else if(!o.id_venta && o.folio){
@@ -175,6 +175,7 @@ vnt = {
 					pr.costo_promedio_ue = parseFloat(pr.costo_promedio_ue), 
 					pr.existencia = parseFloat(pr.existencia), 
 					pr.cantidad = parseFloat(pr.cantidad), 
+					pr.truput = parseFloat(pr.truput), 
 					pr.descuento = parseFloat(pr.descuento),
 					pr.precio = parseFloat(pr.precio), 
 					pr.subtotal = parseFloat(pr.subtotal), 
@@ -424,7 +425,6 @@ vnt = {
 	},
 	
 	getFilaProducto:function(producto){
-		console.log(producto)
 		return '<tr id="prtr'+producto.id_producto+'" class="'+( producto.existencia < producto.cantidad ? 'text-danger':'')+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right">'+producto.existencia+' '+producto.um+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'"> '+app.number_format(producto.cantidad,2)+'</a> '+(producto.um)+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">$ '+app.number_format(producto.precio,2)+'</a></td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">'+(producto.descuento)+' %</a></td><td class="bold right">$ '+app.number_format(producto.subtotal,2)+'</td><td class="bold right">$ '+app.number_format(producto.costo_promedio,2)+'</td><td class="bold right">$ '+app.number_format(producto.truput,2)+'</td><td class="bold right">$ '+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="vnt.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>';
 	},
 	
@@ -512,7 +512,7 @@ vnt = {
 		o.total = vnt.total;		
 		console.log(o);	
 		$.ajax({type : "POST",url : "guardarVenta",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),$('#nuevaVenta').modal('hide'),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaVenta').modal('hide'),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	
@@ -528,7 +528,7 @@ vnt = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarVenta",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+									1 == r.status ? (app.ok(),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});

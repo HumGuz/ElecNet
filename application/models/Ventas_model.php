@@ -59,6 +59,7 @@ class Ventas_model extends CI_Model {
 		$q = $this -> db -> query("
 			select 
 			r.id_producto,
+			r.id_almacen,
 			p.clave,
 			p.concepto,
 			r.um,
@@ -70,16 +71,17 @@ class Ventas_model extends CI_Model {
 			) as existencia,			
 			IF(
 				r.um = p.id_unidad_medida_entrada,
-				p.costo_promedio,
-				getPrecioUS(p.costo_promedio,p.factor_unidades)
+				ra.costo_promedio,
+				getPrecioUS(ra.costo_promedio,p.factor_unidades)
 			) as costo_promedio,
-			p.costo_promedio  costo_promedio_ue,
+			ra.costo_promedio  costo_promedio_ue,
 			r.descuento,
 			r.precio,
 			r.subtotal,
 			r.total
 			from r_venta_productos r
 			inner join t_productos p on p.id_producto = r.id_producto
+			inner join r_almacen_productos ra on ra.id_producto = p.id_producto and r.id_almacen = ra.id_almacen
 			where 1=1 ".$c);
 		$r = $q->result_array();
 		return $r;	
@@ -120,7 +122,7 @@ class Ventas_model extends CI_Model {
 				$v['iva'] = ($v['subtotal'] + $v['costo_envio']) * 0.16;
 				$v['total'] = ($v['subtotal'] + $v['costo_envio']) * 1.16;
 				$v['costo_unitario'] = ($v['total'] / $v['cantidad']);
-				$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_cotizacion' =>$d['id_cotizacion'],'id_producto'=>$v['id_producto'],
+				$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_cotizacion' =>$d['id_cotizacion'],'id_producto'=>$v['id_producto'],'id_almacen'=>$v['id_almacen'],
 				'cantidad'=>$v['cantidad'],
 				'um'=>$v['um'],
 				'precio'=>$v['precio'],

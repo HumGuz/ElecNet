@@ -88,8 +88,8 @@ cls = {
 		$.ajax({type : "POST",url : "guardarClasificacion",dataType : "json",data : o})
 		.done(function(r) {
 			1 == r.status ? (				
-				toastr["success"]("Cambios guardados con éxito"),$('#nuevaClasificacion').modal('hide'),cls.clearG(r)
-			) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+				app.ok(),$('#nuevaClasificacion').modal('hide'),cls.clearG(r)
+			) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarClasificacion:function(o){
@@ -104,7 +104,7 @@ cls = {
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
 					        	$.ajax({type : "POST",url : "borrarClasificacion",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (toastr["success"]("Cambios guardados con éxito"),cls.clearD(o)) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
+									1 == r.status ? (app.ok(),cls.clearD(o)) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});

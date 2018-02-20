@@ -63,6 +63,7 @@ class Compras_model extends CI_Model {
 		$q = $this -> db -> query("
 			select 
 			r.id_producto,
+			r.id_almacen,
 			p.clave,
 			p.concepto,
 			p.id_unidad_medida_entrada as um,
@@ -88,6 +89,7 @@ class Compras_model extends CI_Model {
 		$q = $this -> db -> query("
 			select 
 			r.id_producto,
+			r.id_almacen,
 			p.clave,
 			p.concepto,
 			p.id_unidad_medida_entrada as um,
@@ -140,7 +142,7 @@ class Compras_model extends CI_Model {
 				$v['iva'] = ($v['subtotal'] + $v['costo_envio']) * 0.16;
 				$v['total'] = ($v['subtotal'] + $v['costo_envio']) * 1.16;
 				$v['costo_unitario'] = ($v['total'] / $v['cantidad']);
-				$this->db->insert('r_compra_productos', array('id_compra' =>$id_compra,'id_proveedor' =>$d['id_proveedor'],'id_orden_compra' =>$d['id_orden_compra'],'id_producto'=>$v['id_producto'],
+				$this->db->insert('r_compra_productos', array('id_compra' =>$id_compra,'id_proveedor' =>$d['id_proveedor'],'id_orden_compra' =>$d['id_orden_compra'],'id_producto'=>$v['id_producto'],'id_almacen'=>$v['id_almacen'],
 				'cantidad'=>$v['cantidad'],
 				'precio'=>$v['precio'],
 				'descuento'=>$v['descuento'],
