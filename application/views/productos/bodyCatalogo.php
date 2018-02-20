@@ -10,7 +10,7 @@
 	                    <?php echo $sucursales_select.$almacenes_select; ?>
 	                    <button type="button" class="btn btn-default filter" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="Filtro avanzado"><i class="fa fa-filter"></i> <i class="fa fa-caret-down"></i></button>
 	                    <?php include_once FCPATH.'application/views/productos/filter.php';?>
-                    	<button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"  title="Nueva compra" data-fn="nuevaCompraDialog"><i class="fa fa-plus"></i></button>
+                    	<button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"  title="Nuevo Producto" data-fn="nuevoProducto"><i class="fa fa-plus"></i></button>
                        </div>
 	                </div> 
 		    	</div>                         
