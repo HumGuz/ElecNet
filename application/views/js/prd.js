@@ -74,7 +74,6 @@ prd = {
 				s.colores = s.colores.split(',');
 				for(i in s)
 					(md.find("#"+i).length && md.find("#"+i).val(s[i]));
-	//			md.find( "#clave_secundaria" ).attr('disabled','disabled'),
 				md.find( "#clave" ).attr('disabled','disabled'),
 				prd.initClas(md,s.id_departamento,s.id_categoria_padre,s.id_categoria)
 			}else{	
@@ -127,12 +126,34 @@ prd = {
 		.done(function(r) {
 			$('body').append(r),md = $("#prodImg-modal"),		
 			md.modal({backdrop:'static',show:true}).on('hidden.bs.modal',function(){$(this).remove();}).on('shown.bs.modal',function(){
-				
+				$("#image-cropper").cropit({
+					allowDragNDrop: false,
+					onFileChange : function(a) {
+						param = "png|jpe?g|gif", value = $("#imagen_producto").val(), value.match(new RegExp("\\.(" + param + ")$", "i")) , $("#subImg").show(),$("#seimgO").text('Cambiar Imagen') ||
+						($.confirm({title : 'Archivo inválido',content : 'Seleccione un archivo formato PNG, JPEG, JPG o GIF',type : 'orange',theme : "dark",buttons : {a : {text : 'Aceptar'}}}),$("#image-cropper .cropit-preview-image").attr("src", ""), $("#imagen_producto").val(""))
+					},
+					onImageError : function(e) {console.log(e),toastr["error"](e.message)}
+				}),	
+				$("#seimgO").click(function(){$("#imagen_producto").click()});	
+				$("#subImg").click(function(){					
+					imgURI = $("#image-cropper").cropit("export")
+					if(imgURI){											
+						$.ajax({type : "POST",url : "guardarImagen",dataType : "json",data : {imagen:imgURI,id_producto:o.id_producto}})
+						.done(function(r) {1 == r.status ? (
+							app.ok(),
+							$('a[href="#tab_1"]').tab('show'),							
+							(n = $("#tab_1 .carousel-indicators li").length),							
+							$("#tab_1 .carousel-indicators").append('<li class="'+(n==0?'active':'')+'" data-target="#img-prod" data-slide-to="'+n+'"></li>'),
+							$("#tab_1 .carousel-inner").append('<div class="item '+(n==0?'active':'')+'"><img src="'+($("#prodImg-modal").data('base_url'))+'application/views/img/uploads/'+r.imagen+'" style="margin:0px auto"><div class="carousel-caption">'+r.imagen+'</div></div>'),
+							$("#img-prod").carousel(n),$("#subImg").hide(),$("#seimgO").text('Subir Imagen'),$("#image-cropper .cropit-preview-image").attr("src", ""), $("#imagen_producto").val("")
+							) : app.error();})
+						.fail(function(e, a, r) {console.log(e, a, r)})
+					}
+				});							
 			});				
 		}).fail(function(e, t, i) {console.log(e, t, i)});
-	},	
-	
-	
+	},
+		
 	/*almacenes light*/
 	nuevoAlmacen:function(o){
 		$.ajax({type:"POST",url :  "nuevoAlmacen",dataType : "html",data:o}).done(function(r) {

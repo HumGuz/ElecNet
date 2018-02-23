@@ -121,7 +121,7 @@ class App {
 		
 	public static function saveUriImg($data){
 		if($data['imagen']){			
-			$img = 'img-'.$data['uniqueid'].(self::getCode()).".png";			
+			$img = 'img-'.(self::getCode()).".png";			
 			if(file_put_contents('./application/views/img/uploads/'.$img, file_get_contents($data['imagen']))){				
 				$data['imagen'] = $img;
 				$data['status']=1;

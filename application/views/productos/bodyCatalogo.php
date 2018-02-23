@@ -28,7 +28,7 @@
 	                  <th width="90px" class="right">Salidas</th>
 	                  <th width="100px" class="right">Precio Vta.</th>
 	                  <th width="100px" class="right">Costo Prom.</th>
-	                  <th width="30px" align="center"><span class="glyphicon glyphicon-cog"></span> </th>
+	                  <th width="60px" align="center"><span class="glyphicon glyphicon-cog"></span> </th>
 	                </tr> 
                 </tbody>
             </table> 

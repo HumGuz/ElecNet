@@ -203,4 +203,17 @@ class Productos_model extends CI_Model {
          $this->db->delete('t_productos');	
 		 return array('status'=>1);
 	}	
+
+	function getImagenesProducto($d){
+		$q = $this -> db -> query("select * from  r_producto_imagen where id_producto= ".$d['id_producto']);		
+		$r = $q->result_array();
+		return $r;
+	}
+
+	function guardarImagen($d){
+		unset($d['status']);				
+		$q = $this -> db -> insert('r_producto_imagen',$d);	
+		return array('status'=>1,'imagen'=>$d['imagen']);	
+	}
+
 }

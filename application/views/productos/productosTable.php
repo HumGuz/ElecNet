@@ -12,8 +12,13 @@ if(!empty($prd)){
 			<td width="90px" class="right bold">'.$p['salidas'].' '.$p['us'].'</td>
 			<td width="100px" class="right bold">$ '.number_format($p['precio_venta'],2).'</td>
 			<td width="100px" class="right bold">$ '.number_format($p['costo_promedio'],2).'</td>
-			<td width="30px" class="opt-td">
-	                  	<div class="btn-group btn-group-sm">		                 
+			<td width="60px" class="opt-td">
+	                  	<div class="btn-group btn-group-sm">	
+	                  	
+						 
+						  <button type="button" class="btn '.($p['visible']==1 ?'btn-primary':'btn-default').'" > <span class="fa fa-globe"></span> </button>
+						
+							                 
 		                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"> <span class="caret"></span></button>
 		                  <ul class="dropdown-menu pull-right" role="menu">
 		                    <li><a href="#" ><span class="fa fa-info-circle text-info"></span> Detalles </a></li>

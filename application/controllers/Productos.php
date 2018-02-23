@@ -11,6 +11,7 @@ class Productos extends CI_Controller {
 			redirect(base_url());		
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);
 		$this->load->model('productos_model','prd');
+		$this->load->library('app');
 	}		
 	function index(){
 		$this->load->model('sucursales_model','scr');
@@ -65,7 +66,17 @@ class Productos extends CI_Controller {
 	function imagenes(){
 		$d = $this->input->post();
 		$prd = $this->prd->getProductos($d);
-		$img = $this->alm->getImagenesProducto($d);
+		$img = $this->prd->getImagenesProducto($d);
 		echo $this->load->view('productos/imagenes',array('img'=>$img,'prd'=>$prd[0]),TRUE);
 	}
+	
+	function guardarImagen(){
+		$d = $this->input->post();
+		$d = App::saveUriImg($d);
+		if($d['status']==1){
+			$d =  $this->prd->guardarImagen($d);
+		}
+		echo json_encode($d);
+	}
+	
 }
