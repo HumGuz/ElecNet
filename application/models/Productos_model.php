@@ -37,14 +37,14 @@ class Productos_model extends CI_Model {
 									p.clave,p.clave_secundaria,
 									p.concepto,p.marca,p.modelo,
 									p.descripcion,p.colores,p.dimensiones,p.peso,
-									p.id_departamento, d.clave as dep,
-									p.id_categoria_padre, cp. clave as cat,
-									p.id_categoria, c.clave as subcat,
+									p.id_departamento, d.clave as dep,d.nombre as departamento,
+									p.id_categoria_padre, cp. clave as cat,cp.nombre as categoria,
+									p.id_categoria, c.clave as subcat,c.nombre as subcategoria,
 									r.stock_min,r.stock_max,
 									p.id_unidad_medida_entrada, p.id_unidad_medida_entrada as ue,
 									p.id_unidad_medida_salida,p.id_unidad_medida_salida as us,
-									p.factor_unidades,r.existencia,r.entradas,r.salidas,
-								 	p.precio_venta,r.costo_promedio,p.tiempo_garantia,								 	
+									p.factor_unidades,r.existencia,r.entradas,r.salidas,p.existencia as existencia_general,p.costo_promedio as costo_promedio_general,
+								 	p.precio_venta,r.costo_promedio,p.tiempo_garantia,	round(p.valuacion) as valuacion,p.visible,p.stock,p.nuevo,	p.precio_oferta,						 	
 								 	borrarProducto(p.id_producto) as borrar							 	
 									from 
 									t_productos p 
@@ -179,6 +179,12 @@ class Productos_model extends CI_Model {
         } 
 		return array('status'=>1,'id_producto'=>$id_producto);
 	}
+	
+	function setOpciones($d){
+		 $this->db->where('id_producto', $d['id_producto']);			
+         $this->db->update('t_productos', $d);
+	}
+	
 	
 	function getUnidadesDeMedida($d= null){			
 		$sql = "select id_unidad_medida,nombre,magnitud from t_unidades_medida ";		

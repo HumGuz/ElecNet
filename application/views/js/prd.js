@@ -121,10 +121,11 @@ prd = {
 		});
 	},
 	
-	imagenes:function(o){
-		$.ajax({type : "POST",url : "imagenes",dataType : "html",data : o})
+	detalles:function(o){
+		$.ajax({type : "POST",url : "detalles",dataType : "html",data : o})
 		.done(function(r) {
-			$('body').append(r),md = $("#prodImg-modal"),		
+			$('body').append(r),md = $("#prodDet-modal"),			
+			$('a[href="#tab_'+o.op+'"]').tab('show'),
 			md.modal({backdrop:'static',show:true}).on('hidden.bs.modal',function(){$(this).remove();}).on('shown.bs.modal',function(){
 				$("#image-cropper").cropit({
 					allowDragNDrop: false,
@@ -144,16 +145,48 @@ prd = {
 							$('a[href="#tab_1"]').tab('show'),							
 							(n = $("#tab_1 .carousel-indicators li").length),							
 							$("#tab_1 .carousel-indicators").append('<li class="'+(n==0?'active':'')+'" data-target="#img-prod" data-slide-to="'+n+'"></li>'),
-							$("#tab_1 .carousel-inner").append('<div class="item '+(n==0?'active':'')+'"><img src="'+($("#prodImg-modal").data('base_url'))+'application/views/img/uploads/'+r.imagen+'" style="margin:0px auto"><div class="carousel-caption">'+r.imagen+'</div></div>'),
+							$("#tab_1 .carousel-inner").append('<div class="item '+(n==0?'active':'')+'"><img src="'+($("#prodDet-modal").data('base_url'))+'application/views/img/uploads/'+r.imagen+'" style="margin:0px auto"><div class="carousel-caption">'+r.imagen+'</div></div>'),
 							$("#img-prod").carousel(n),$("#subImg").hide(),$("#seimgO").text('Subir Imagen'),$("#image-cropper .cropit-preview-image").attr("src", ""), $("#imagen_producto").val("")
 							) : app.error();})
 						.fail(function(e, a, r) {console.log(e, a, r)})
 					}
-				});							
+				});					
+				$("input:checkbox[data-op]").click(function(k,e){		
+					d = $(this).data() 
+					o={id_producto:d.id_producto};
+					o[d.op] = $(this).is(':checked')?1:0;
+					$.ajax({type : "POST",url : "setOpciones",dataType : "json",data : o})
+					.done(function(r) {app.ok()}).fail(function(e, a, r) {console.log(e, a, r)})
+				});								
+				$("#precio_especial_i").click(function(){
+					if(!$(this).is(':checked')){						
+						$("#precio_especial").attr('readonly','readonly').val('');
+						$.ajax({type : "POST",url : "setOpciones",dataType : "json",data : {precio_oferta:0,id_producto:$(this).data('id_producto')}})
+						.done(function(r) {app.ok()}).fail(function(e, a, r) {console.log(e, a, r)});
+					}else{
+						$("#precio_especial").removeAttr('readonly');
+					}
+				});
+				$("#precio_especial_g").click(function(){
+					d = $.extend({},$(this).data());
+					d.precio_oferta = parseFloat($.trim($("#precio_especial").val()));	
+					if(isNaN(d.precio_oferta)){						
+						toastr["error"]("Capture el precio")
+						$("#precio_especial").focus()
+						return 0;
+					}					
+					if(d.precio_oferta < d.costo_promedio){
+						toastr["error"]("El nuevo precio no puede ser menor al Costo Promedio")
+						$("#precio_especial").focus()
+						return 0;						
+					}
+					delete d.costo_promedio;
+					$.ajax({type : "POST",url : "setOpciones",dataType : "json",data : d})
+					.done(function(r) {app.ok()}).fail(function(e, a, r) {console.log(e, a, r)});
+				});				
 			});				
 		}).fail(function(e, t, i) {console.log(e, t, i)});
 	},
-		
 	/*almacenes light*/
 	nuevoAlmacen:function(o){
 		$.ajax({type:"POST",url :  "nuevoAlmacen",dataType : "html",data:o}).done(function(r) {

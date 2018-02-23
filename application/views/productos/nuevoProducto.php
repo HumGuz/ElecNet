@@ -40,12 +40,12 @@
 			            <div class="form-group col-sm-4">
 			                  <label for="id_categoria_padre">Colores</label>
 			                  <select  class="form-control selectpicker required" id="colores" name="colores" data-container="body" multiple="multiple">
-			                  	<option value="#333333" style="background-color:#FFFFFF">Blanco</option>			                  	
+			                  	<option value="#FFFFFF" style="background-color:#FFFFFF">Blanco</option>			                  	
 			                  	<option value="#333333" style="background-color:#333333;color:#FFFFFF">Negro</option>
 			                  	<option value="#9f9f9f" style="background-color:#9f9f9f;color:#FFFFFF">Gris</option>
 			                  	<option value="#10b9b9" style="background-color:#10b9b9;color:#FFFFFF">Azul</option>	
 			                  	<option value="#8BC44A" style="background-color:#8BC44A;color:#FFFFFF">Verde</option>	
-			                  	<option value="##ff9000" style="background-color:#ff9000;color:#FFFFFF">Naranja</option>	
+			                  	<option value="#ff9000" style="background-color:#ff9000;color:#FFFFFF">Naranja</option>	
 			                  </select>			            
 						</div>		
 			            

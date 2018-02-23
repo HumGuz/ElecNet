@@ -58,16 +58,18 @@ class Productos extends CI_Controller {
 	function guardarProducto(){
 		echo json_encode($this->prd->guardarProducto($this->input->post()));		
 	}
-		
+	function setOpciones(){
+		echo json_encode($this->prd->setOpciones($this->input->post()));		
+	}		
 	function borrarProducto(){
 		echo json_encode($this->prd->borrarProducto($this->input->post()));		
 	}
 	
-	function imagenes(){
+	function detalles(){
 		$d = $this->input->post();
 		$prd = $this->prd->getProductos($d);
 		$img = $this->prd->getImagenesProducto($d);
-		echo $this->load->view('productos/imagenes',array('img'=>$img,'prd'=>$prd[0]),TRUE);
+		echo $this->load->view('productos/detalles',array('img'=>$img,'prd'=>$prd[0]),TRUE);
 	}
 	
 	function guardarImagen(){
