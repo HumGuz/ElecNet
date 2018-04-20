@@ -2,7 +2,7 @@
 	<div class="box-header with-border">
 		<h3 class="box-title">Filtro avanzado</h3>
 	</div>
-	<form id="fltrAlmFrm" role="form">
+	<form id="fltrSrvFrm" role="form">
 		<div class="box-body box-body-filter row">
 			
 			<div class="form-group col-sm-12" >
@@ -54,7 +54,6 @@
 				</select>
 			</div>
 			<div class="clearfix"></div>
-			
 		</div>
 		<!-- /.box-body -->
 		<div class="box-footer">

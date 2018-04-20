@@ -43,7 +43,7 @@ class Cotizaciones_model extends CI_Model {
 	function getProductosXCotizacion($d){
 				
 		if($d['id_cotizacion'])
-			$c .= ' and r.id_cotizacion = '.$d['id_cotizacion'];
+			$c .= ' and r.id_cotizacion = '.$d['id_cotizacion']." order by p.clave asc";
 		
 		$q = $this -> db -> query("
 			select 

@@ -81,4 +81,51 @@ class Clasificaciones_model extends CI_Model {
 			 	
 		 return array('status'=>1);
 	}
+	
+	function getClasificaciones($d=null){
+		
+		$sql = "SELECT 
+				c.id_categoria,
+				c.id_categoria_padre,
+				c.id_departamento,
+				c.nombre as categoria,
+				cp.nombre as categoria_padre,
+				d.nombre as departamento
+				FROM t_categorias c
+				left join t_categorias cp on cp.id_categoria = c.id_categoria_padre
+				inner join t_departamentos d on d.id_departamento = c.id_departamento
+				WHERE 1=1";
+				
+		$q = $this -> db -> query($sql);		
+		$r = $q->result_array();
+		
+		if(!empty($r)){
+			$aux = array();
+			foreach ($r as $k => $d) {
+								
+				if(!isset($aux[$d['id_departamento']]))
+					$aux[$d['id_departamento']] = array('departamento'=>$d['departamento'],'categorias'=>array());				
+				
+				if($d['id_categoria_padre']==0 && !isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria']])){
+					$aux[$d['id_departamento']]['categorias'][$d['id_categoria']] = array('categoria'=>$d['categoria'],'subcategorias'=>array());
+				}else{
+					
+					if(!isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]))								
+						$aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']] = array('categoria'=>$d['categoria_padre'],'subcategorias'=>array());
+						
+					if(!isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]['subcategorias'][$d['id_categoria']]))								
+						$aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]['subcategorias'][$d['id_categoria']] = array('subcategoria'=>$d['categoria']);							
+				}
+				
+			}
+			
+			$r = $aux;
+			
+		}
+
+		return $r;
+		
+		
+	}
+	
 }

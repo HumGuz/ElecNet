@@ -33,9 +33,10 @@
           <ul class="treeview-menu">
             <li><a href="<?php echo base_url().'almacenes/' ?>"><i class="fa fa-archive"></i> Lista de almacenes </a></li>
             <li><a href="<?php echo base_url().'productos/' ?>"><i class="fa  fa-cubes"></i> Productos por almacén </a></li>            
-            <li><a href="<?php echo base_url().'clasificaciones/' ?>"><i class="glyphicon glyphicon-folder-open"></i> Clasificación de prod. </a></li>                
+            <li><a href="<?php echo base_url().'clasificaciones/' ?>"><i class="glyphicon glyphicon-folder-open"></i> Clasificación de prod. y serv. </a></li>                
           </ul>
         </li>
+        <li><a href="<?php echo base_url().'servicios/' ?>"><i class="fa fa-cogs"></i> Servicios </a></li>
         <li><a href="<?php echo base_url().'clientes/' ?>"><i class="fa fa-users"></i> <span>Clientes</span> </a></li>
         <li><a href="<?php echo base_url().'proveedores/' ?>"><i class="fa fa-truck"></i> <span>Proveedores</span> </a></li>
         <li><a href="<?php echo base_url().'usuarios/' ?>"><i class="fa fa-user"></i> <span>Usuarios</span> </a></li>

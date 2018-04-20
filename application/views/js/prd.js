@@ -1,5 +1,5 @@
 prd = {
-	limit:0,filter:{},
+	filter:{},
 	init:function(){		
 		$('body').on('click',"[data-fn]",function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn,delete d['bs.tooltip'],delete d['placement'],delete d.toggle,delete d.trigger ,prd[f](d)});
 		
@@ -8,12 +8,12 @@ prd = {
 	initFilter:function(md){
 		prd.limit = 0,prd.filter= {},		
 		md.find(".selectpicker").selectpicker({});
-		var s,i = md.find("#busqueda_out");
-		i.keyup(function(){if(s) clearTimeout(s),s = setTimeout(function() {prd.limit = 0,prd.filter= {},val = $.trim(i.val()),prd.productosTable({busqueda:val,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val(),limit:0})},500)})	
+		var s;i = md.find("#busqueda_out").eq(0);
+		i.keyup(function(){if(s) clearTimeout(s); s = setTimeout(function() {$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),$("#prdTbl tbody").empty(),val = $.trim(i.val()),prd.productosTable({busqueda:val,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val(),limit:0})},1000)})	
 		prd.initClas(md);		
 		$("#fltrAlmFrm").validation({extend:{},success:function(ob){
-			$("#prdTbl tbody").empty(),prd.limit = 0,prd.filter= ob,ob.limit = 0,
-			prd.productosTable(ob)
+			$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),
+			$("#prdTbl tbody").empty(),ob.limit = 0,prd.productosTable(ob)
 		}})
 		prd.productosTable({limit:0,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val()});		
 	},	
@@ -45,21 +45,23 @@ prd = {
 		$("#fltrAlmFrm").resetForm(),$("#fltrAlmFrm select").selectpicker('refresh'),$("#fltrAlmFrm").submit()		
 	},		
 	productosTable:function(o){
+		prd.filter = $.extend({},o);
 		$(".overlay").show();		
 		$.ajax({type : "POST",url : "productosTable",dataType : "html",data : o})
 		.done(function(r) {
 			($.trim(r)!='' && $("#prdTbl tbody").append(r)),
-			($(r).find('tr').length && prd.scr()),$(".overlay").hide();			
+			(r.indexOf('tr')>=0 && prd.scr()),$(".overlay").hide();			
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
 	scr:function(){
-		$(".scroller-tbl").scroll(function(){
+		console.log('scr')
+		$(".box-body-catalogo").scroll(function(){
 	    	control = this; 
-	        if ($(control).scrollTop() >= $(control)[0].scrollHeight - $(control).outerHeight()-100){ 	               
+	        if ($(control).scrollTop() >= $(control)[0].scrollHeight - $(control).outerHeight()-30){ 	               
 	        	$(this).unbind('scroll');
-	            insumos.limit += 50;
-                obj = $.extend({},insumos.filter,{id_clasificacion_insumo:insumos.id_clasificacion_insumo,limit:insumos.limit});
-                insumos.getInsumosTable( obj );
+	            prd.filter.limit += 50;
+                obj = $.extend({},prd.filter);
+                prd.productosTable( obj );
 	        }                  
 	  	}); 
 	},

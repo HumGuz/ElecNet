@@ -59,7 +59,7 @@ class Cotizaciones extends CI_Controller {
 		
 		if(!empty($prd)){
 			$this->load->library('pdf');
-			$pdf = $this->pdf->load('utf-8',array(216,279.4),0,'"Helvetica Neue",Helvetica,Arial,sans-serif',10,10,7,10,10,4,"P");							
+			$pdf = $this->pdf->load('utf-8',array(216,279.4),0,'"Helvetica Neue",Helvetica,Arial,sans-serif',8,5,5,20,5,2,"P");							
 				$html = '
 				<html>
 					<head>
@@ -73,35 +73,34 @@ class Cotizaciones extends CI_Controller {
 						</style>
 					</head>
 					<body>
-						<htmlpageheader name="myHeader" style="display:none;">						
-								<h2 align="center" style="margin-top:15;"><b>Cotización</b></h2>
+						<htmlpageheader name="myHeader" style="display:none;">										
 								<div align="right">
 									Fecha Vencimiento: '.App::dateFormat($cot[0]['fecha_vencimiento']).'<br>
 									Numero de cotización: <b>'.$cot[0]['folio'].'</b> 																
 								</div>
-								<div align="left">									
+								<h2 align="center"><b>Cotización</b></h2>
+								<div align="left">			
+								'.($d['membrete']=='mem_ele' ? '<br/><br/>':'').'						
 									<b>Cliente:</b> '.$cot[0]['nombre_cliente'].'	
 									'.( trim($cot[0]['observaciones']) != '' ? '<br><b>Observaciones:</b> '.trim($cot[0]['observaciones']) : '' ).'
 								</div>							
 						</htmlpageheader>
 
 						<htmlpagefooter name="myFooter" style="display:none;">				
-							<div align="right" style="color:white;">
-								<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'</span><br>
-								<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}</span>
+							<div  '.($d['membrete']=='mem_ele' ? 'align="right"':'').'>
+								<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+								<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
+								<br/><br/><br/><br/>'.($d['membrete']=='mem_ele' ? '':'<br/><br/>').'
 							</div>	
 						</htmlpagefooter>										
 				
 				<table  cellpadding="5" cellspacing="0" style="font-size:12px;width:100%">
 					<thead>					
-						<tr style="background-color:#333333;">						
-							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;border-left:1px solid #333333;color:#FFFFFF"><b>#</b></td>
+						<tr style="background-color:#333333;">	
 							<td style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF"><b>Clave</b></td>
 							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Descripción</b></td>	
 							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Cantidad</b></td>
-							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Unidad</b></td>	
-							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Precio de Lista</b></td>
-							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Descuento</b></td>						
+							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Unidad</b></td>										
 							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Precio Unitario</b></td>								
 							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Importe</b></td>								
 						</tr>
@@ -111,11 +110,8 @@ class Cotizaciones extends CI_Controller {
 			$x = 1;			
 			foreach ($prd as $k => $u) {								
 				$html .= '				
-						<tr>						
-							<td align="center" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;border-left:1px solid #d3d3d3;">
-								'.$x.'
-							</td>
-							<td style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+						<tr>	
+							<td style="border-left:1px solid #d3d3d3;font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
 								'.$u['clave'].'
 							</td>	
 							<td style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
@@ -126,13 +122,7 @@ class Cotizaciones extends CI_Controller {
 							</td>
 							<td align="center" style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
 								'.$u['um'].'
-							</td>	
-							<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
-								$ '.number_format($u['precio'],2).'
-							</td>	
-							<td align="right" style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
-								'.number_format($u['descuento'],2).' %
-							</td>								
+							</td>					
 							<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
 								$ '.number_format( $u['precio']   - ( $u['precio'] * $u['descuento'] / 100  ),2).'
 							</td>								
@@ -145,24 +135,24 @@ class Cotizaciones extends CI_Controller {
 			}
 			$html .= '
 			<tr>
-			<td colspan="8" align="right" style="">Subtotal:</td>
+			<td colspan="5" align="right" style="">Subtotal:</td>
 			<td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['subtotal'],2).' </td>
 			</tr><tr>
-			<td colspan="8" align="right" style="">Descuento <b>'.round($cot[0]['descuento_general']).'%</b>:</td>
+			<td colspan="5" align="right" style="">Descuento <b>'.round($cot[0]['descuento_general']).'%</b>:</td>
 			<td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['total_descuento'],2).' </td>
 			</tr><tr>
-			<td colspan="8" align="right" style="">Gastos de envío:</td>
+			<td colspan="5" align="right" style="">Gastos de envío:</td>
 			<td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['gastos_envio'],2).'</td>
 			</tr><tr>
-			<td colspan="8" align="right" style="">I.V.A:</td>
+			<td colspan="5" align="right" style="">I.V.A:</td>
 			<td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['iva'],2).'</td>
 			</tr><tr>
-			<td colspan="8" align="right" style="">Total:</td>
+			<td colspan="5" align="right" style="">Total:</td>
 			<td align="right" style="font-weight:bold">$ '.number_format($cot[0]['total'],2).'</td>
 			</tr>
-			<tr><td colspan="9" align="right" >'.($l->ValorEnLetras(round($cot[0]['total'],2),'Pesos')).'</td></tr>				
+			<tr><td colspan="6" align="right" >'.($l->ValorEnLetras(round($cot[0]['total'],2),'Pesos')).'</td></tr>				
 			</tbody></table>			
-			<div style="margin:10px"><b>CONDICIONES DE VENTA</b>: '.$cot[0]['condiciones'].'</div>
+			'.(trim($cot[0]['condiciones'])!='' ? ' <div style="margin:10px"><b>CONDICIONES DE VENTA</b>: '.$cot[0]['condiciones'].'</div>':'').'
 			</body></html>';			
 			$pdf->WriteHTML($html); 			
 			$pdf->Output('./application/files/'.$cot[0]['folio'].'.pdf', 'F');

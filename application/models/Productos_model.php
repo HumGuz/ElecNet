@@ -31,8 +31,27 @@ class Productos_model extends CI_Model {
 			$c .= " and p.id_unidad_medida_salida = '".$d['id_unidad_medida_salida']."' ";		
 		if($d['busqueda'])
 			$c .= " and (  p.clave like '%".$d['busqueda']."%' or p.clave_secundaria like '%".$d['busqueda']."%' or p.descripcion like '%".$d['busqueda']."%' or p.concepto like '%".$d['busqueda']."%' or p.marca like '%".$d['busqueda']."%'  )  ";
-		$c .= " order by p.clave asc";		
-		$q = $this -> db -> query("select 
+				
+		if($d['group_by'])
+			$c .= " group by ".$d['group_by'];	
+		
+		if($d['order_by']){			
+			if(is_array($d['order_by'])){					
+				$o = " order by ";						
+				foreach ($d['order_by'] as $ko => $o) {
+					$o .= " order by ".$o.' '.( is_array($d['order_flag']) && isset($d['order_flag'][$ko]) ?$d['order_flag'][$ko]: ($d['order_flag'] && !is_array($d['order_flag']) ? $d['order_flag'] :'asc') ).',' ;
+				}
+				$c .= trim($o,',');
+			}else{
+				$c .= " order by ".$d['order_by'].' '.($d['order_flag'] ?$d['order_flag']:'asc');
+			}
+		}else
+			$c .= " order by p.clave asc";		
+		
+		if($d['limit'] || $d['limit']==0)
+			$c .= ' limit '.$d['limit'].',50';
+		
+		$s = "select 
 									r.id_almacen_producto,r.id_almacen,r.id_sucursal,p.id_producto,
 									p.clave,p.clave_secundaria,
 									p.concepto,p.marca,p.modelo,
@@ -52,8 +71,13 @@ class Productos_model extends CI_Model {
 									inner join t_departamentos d on d.id_departamento = p.id_departamento
 									inner join t_categorias cp on cp.id_categoria = p.id_categoria_padre
 									inner join t_categorias c on c.id_categoria = p.id_categoria
-									 where 1=1 ".$c);		
-		$r = $q->result_array();
+									 where 1=1 ".$c;
+		
+		$q = $this -> db -> query($s);		
+	$r = $q->result_array();
+	
+	
+	
 		return $r;		
 	}
 	
@@ -139,6 +163,57 @@ class Productos_model extends CI_Model {
 		return $result;		
 		
 	}
+	
+	
+	
+	function getPrecioXProductoServicio(){
+		$c = $cs = '';		
+		if($d['id_sucursal']){
+			$c .= ' and r.id_sucursal = '.$d['id_sucursal'];
+			$cs .= ' and s.id_sucursal = '.$d['id_sucursal'];
+		}else{
+			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+			$cs = ' and s.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+		}
+			
+						
+		$q = $this -> db -> query(" SELECT * FROM ( select 
+									 p.id_producto, 
+									 p.clave,
+									 p.concepto,
+									 p.existencia as existencia_ue,
+									 p.id_unidad_medida_entrada  as ue, 
+									 group_concat(getExistenciaUS(r.existencia,p.factor_unidades) SEPARATOR '-|-') as existencia_us,
+									 p.id_unidad_medida_salida as us, 
+									 p.factor_unidades,
+									 p.precio_venta as precio_ue,
+									 getPrecioUS(p.precio_venta,p.factor_unidades)  as precio_us,	
+									 r.costo_promedio as costo_promedio_ue,
+									 getPrecioUS(r.costo_promedio,p.factor_unidades) as costo_promedio_us,
+									 group_concat(r.id_almacen SEPARATOR '-|-') as id_almacen, 
+									 group_concat(a.clave SEPARATOR '-|-') as clave_almacen,
+									 group_concat(a.nombre SEPARATOR '-|-') as almacen
+									 from t_productos p 
+								    left join r_almacen_productos r on r.id_producto = p.id_producto
+								    left join t_almacenes a on a.id_almacen = r.id_almacen		
+								    where 1=1  ".$c." group by p.id_producto 
+								    
+								    UNION 
+									 
+									 select s.id_servicio,s.clave,s.concepto,1,'SERV',1,'SERV',1,s.precio_venta,s.precio_venta,0,0,0,'',''
+									 from t_servicios s
+									 where 1=1  ".$cs."
+									 
+									 )  a");		
+		$result = $q->result_array();
+		if(!empty($result)){
+			foreach ($result as $key => $v) {											
+				$result[$key]['nombre'] = $this->replace($v['nombre']);
+			}
+		}
+		return $result;		
+		
+	}
 
 	
 	
@@ -194,10 +269,8 @@ class Productos_model extends CI_Model {
 			$aux = array();
 			foreach ($r as $key => $v) {
 				if(!isset($aux[$v['magnitud']]))
-					$aux[$v['magnitud']] = array();
-				
-				$aux[$v['magnitud']][$v['id_unidad_medida']] = $v;
-					
+					$aux[$v['magnitud']] = array();				
+				$aux[$v['magnitud']][$v['id_unidad_medida']] = $v;					
 			}
 			$r = $aux;
 		}		

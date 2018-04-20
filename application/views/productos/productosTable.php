@@ -1,10 +1,9 @@
 <?php 
 if(!empty($prd)){		
 	foreach ($prd as $k => $p) {		
-		echo '
-			<tr style="font-size:13px" >
+		echo '<tr style="font-size:13px" >
 			<td width="150px" class="bold">'.$p['clave'].'</td>
-			<td>'.$p['concepto'].'</td>
+			<td title="'.$p['concepto'].'">'.$p['concepto'].'</td>
 			<td width="130px">'.$p['marca'].'</td>
 			<td width="100px" class="center">'.$p['dep'].' - '.$p['cat'].' - '.$p['subcat'].'</td>
 			<td width="90px" class="right bold">'.$p['existencia'].' '.$p['us'].'</td>

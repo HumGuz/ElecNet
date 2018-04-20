@@ -145,6 +145,14 @@
 										</td>
 									</tr>
 									<tr>
+										<td colspan="9" class="right">
+											Subtotal:
+										</td>
+										<td  class="right bold"  id="subtotal_descuento">
+											$ 0.00
+										</td>
+									</tr>
+									<tr>
 										<td colspan="9" class="right" >
 											I.V.A.:
 										</td>

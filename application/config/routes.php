@@ -52,3 +52,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'login';
 $route['404_override'] = 'not_found_404';
 $route['translate_uri_dashes'] = FALSE;
+
+//ver producto
+$route['(:any)/(:num)'] = 'sitio/producto/$2';
+
+//departamentos
+$route['departamento/(:any)/(:num)/(:any)'] = 'sitio/departamento/$2/$3';
+
+//paginacion de departamentos
+$route['departamento/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/departamento/$2/$3/$5';
+
+//busqueda
+$route['busqueda/(:any)/(:num)/(:any)'] = 'sitio/departamento/$2/$3';
+
+//paginacion de busqueda
+$route['busqueda/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/departamento/$2/$3/$5';

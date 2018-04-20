@@ -15,16 +15,10 @@ class Productos extends CI_Controller {
 	}		
 	function index(){
 		$this->load->model('sucursales_model','scr');
-		$this->load->view('productos/productosAlmacen',array('sucursales_select'=>$this->scr->getSucursalesSelect(),'almacenes_select'=>$this->scr->getAlmacenesPorSucursalSelect()));		
+		$this->load->model('clasificaciones_model','cls');		
+		$this->load->view('productos/productosAlmacen',array('sucursales_select'=>$this->scr->getSucursalesSelect(),'almacenes_select'=>$this->scr->getAlmacenesPorSucursalSelect(),'um'=>$this->prd->getUnidadesDeMedida(),'dep'=>$this->cls->getDepartamentos(),'cat'=>$this->cls->getCategorias()));		
 	}
-	
-	function productosAlmacen(){
-		$this->load->model('almacenes_model','alm');
-		$this->load->model('clasificaciones_model','cls');
-		$alm = $this->alm->getAlmacenes($this->input->post());
-		echo $this->load->view('productos/productosAlmacen',array('alm'=>$alm[0],'um'=>$this->prd->getUnidadesDeMedida(),'dep'=>$this->cls->getDepartamentos(),'cat'=>$this->cls->getCategorias()),TRUE);
-	}
-	
+		
 	function claveUnica(){
 		echo $this->prd->claveUnica($this->input->post());
 	}
@@ -40,6 +34,10 @@ class Productos extends CI_Controller {
 	
 	function getPrecioXProducto(){
 		echo json_encode($this->prd->getPrecioXProducto($this->input->post()));		
+	}
+	
+	function getPrecioXProductoServicio(){
+		echo json_encode($this->prd->getPrecioXProductoServicio($this->input->post()));		
 	}
 	
 	function nuevoProducto(){
