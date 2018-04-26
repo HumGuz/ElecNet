@@ -2,7 +2,6 @@ prd = {
 	filter:{},
 	init:function(){		
 		$('body').on('click',"[data-fn]",function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn,delete d['bs.tooltip'],delete d['placement'],delete d.toggle,delete d.trigger ,prd[f](d)});
-		
 		prd.initFilter($("section.content"));
 	},	
 	initFilter:function(md){

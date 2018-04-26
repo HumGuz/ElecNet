@@ -1,5 +1,5 @@
 <div class="modal fade" id="nuevaCotizacion">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-lg" style="width: 90%">
 		<div class="modal-content" <?php echo $cot ?>>
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -54,10 +54,14 @@
 									<tr>
 										<th width="170px">Clave</th>
 										<th>Descripción</th>
-										<th width="100px">Cantidad</th>
-										<th width="100px">Precio U.</th>
-										<th width="70px">Desc.</th>
-										<th width="90px">Total</th>
+										<th class="right" width="90px">Exist.</th>
+										<th class="right" width="100px">Cantidad</th>
+										<th class="right" width="100px">Precio U.</th>										
+										<th class="right" width="70px">Desc.</th>
+										<th class="right" width="100px">Subtot.</th>
+										<th class="right" width="100px">Costo Prom.</th>
+										<th class="right" width="100px">Truput</th>
+										<th class="right" width="90px">Total</th>
 										<th width="30px" align="center"><span class="glyphicon glyphicon-cog"></span></th>
 									</tr>
 								</thead>
@@ -74,35 +78,39 @@
 							              </div>
 										</td>
 										<td><input type="text" class="form-control typeahead" id="conc_cot" /></td>
-										<td >
-								             <div class="input-group">										 
+										<td class="bold right" style="padding:6px!important;" id="existenciap"></td>
+										<td >							            
+								            <div class="input-group">										 
 											   <input type="text" class="form-control number" id="cantidadp">										  
-											   <span class="input-group-btn">
-										         <select class="form-control selectpicker" id="umc" name="umc" data-container="body" data-width="40px">
+											  <span class="input-group-btn">
+										        <select class="form-control selectpicker" id="umc" name="umc" data-container="body" data-width="40px">
 			                                    	
-			                                     </select>
-										       </span>
-											</div>									            
+			                                    </select>
+										      </span>
+											</div>	
 										</td>
 										<td >
 											<div class="input-group">
 								                <span class="input-group-addon">$</span>
 								                <input type="text" class="form-control number" id="preciop">
 								            </div>											
-										</td>										
+										</td>							
 										<td >
 											<div class="input-group">
 								                <input type="text" class="form-control number" id="descuentop">
 								                <span class="input-group-addon">%</span>
 								            </div>
 								        </td>
+								        <td class="bold right" style="padding:6px!important;" id="subtotalp">$ 0.00</td>		
+								        <td class="bold right" style="padding:6px!important;" id="costo_promediop">$ 0.00</td>		
+										<td class="bold right" style="padding:6px!important;" id="truputp">$ 0.00</td>	
 										<td class="bold right" style="padding:6px!important;" id="totalp">$ 0.00</td>
 										<td align="center">
 											<button type="button" class="btn btn-success" id="add-btn"><i class="fa fa-plus-circle"></i></button>
 										</td>
 									</tr>
 									<tr>
-										<td colspan="5" class="right">
+										<td colspan="9" class="right">
 											Subtotal:
 										</td>
 										<td  class="right bold"  id="subtotal">
@@ -110,15 +118,15 @@
 										</td>
 									</tr>
 									<tr>
-										<td colspan="5" class="right">
-											Descuento:
+										<td colspan="9" class="right">
+											Descuento Gral:
 										</td>
 										<td  class="right bold" id="descuento">
 											$ 0.00
 										</td>
 									</tr>
 									<tr>
-										<td colspan="5" class="right" >
+										<td colspan="9" class="right" >
 											Gastos de envio:
 										</td>
 										<td  class="right bold" id="envio"> 
@@ -126,7 +134,15 @@
 										</td>
 									</tr>
 									<tr>
-										<td colspan="5" class="right" >
+										<td colspan="9" class="right">
+											Subtotal:
+										</td>
+										<td  class="right bold"  id="subtotal_descuento">
+											$ 0.00
+										</td>
+									</tr>
+									<tr>
+										<td colspan="9" class="right" >
 											I.V.A.:
 										</td>
 										<td  class="right bold" id="iva"> 
@@ -134,7 +150,7 @@
 										</td>
 									</tr>									
 									<tr>
-										<td colspan="5" class="right"  >
+										<td colspan="9" class="right"  >
 											Total:
 										</td>
 										<td  class="right bold" id="total">

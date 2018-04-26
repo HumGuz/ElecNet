@@ -289,7 +289,7 @@ vnt = {
     		$("#umc").selectpicker('refresh');  	
 	    	$("#preciop").val(dat.precio);     		  
     		$("#descuentop").val(dat.descuento);       		
-    		$("#costo_promediop").html(dat.costo_promedio);     		
+    		$("#costo_promediop").html('$ '+dat.costo_promedio);     		
             vnt.producto = $.extend({},dat);
     		delete dat;	
     	}else{
