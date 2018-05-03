@@ -15,13 +15,14 @@
 			<style>
 				#nuevaVenta button[data-id='umc']{padding-left: 2px!important;}
 				#nuevaVenta .bootstrap-select.btn-group .dropdown-toggle .caret {right: 2px!important;}
+				.col-sm-50-4{width:12.5%!important}
 			</style>
 				<div class="modal-body">					
 					<div class="row">				
 					<form id="nvaVnt">								
 							<div class="form-group col-sm-4 ">
 				                  <label for="id_cliente">Cliente</label>
-				                  <select  class="form-control selectpicker required" id="id_cliente" name="id_cliente" data-container="body">				                  	
+				                  <select  class="form-control selectpicker required" id="id_cliente" name="id_cliente" data-container="body" data-live-search="true">				                  	
 				                  	<?php
 										if(!empty($clt)) {
 											echo '<option>-- seleccione --</option>';							
@@ -43,17 +44,22 @@
 								</select>	
 							</div>
 							
-							<div class="form-group col-sm-2">
+							<div class="form-group col-sm-2 col-sm-50-4">
 				                  <label for="fecha_entrega">Fecha entrega</label>
 				                  <input type="text" class="form-control required" id="fecha_entrega" name="fecha_entrega">
 							</div>
 							
-							<div class="form-group col-sm-2">
+							<div class="form-group col-sm-2 col-sm-50-4">
+				                  <label for="fecha_entrega">Fecha. Lim Pago</label>
+				                  <input type="text" class="form-control" id="fecha_limite_pago" name="fecha_limite_pago">
+							</div>
+							
+							<div class="form-group col-sm-2 col-sm-50-4">
 				                  <label for="descuento_general">Descuento Gral.</label>
 				                  <input type="text" class="form-control number required" id="descuento_general" name="descuento_general" value="0">
 							</div>
 							
-							<div class="form-group col-sm-2">
+							<div class="form-group col-sm-2 col-sm-50-4">
 				                  <label for="descuento_general">Gastos de envío</label>
 				                  <input type="text" class="form-control number required" id="costos_envio" name="costos_envio" value="0">
 							</div>

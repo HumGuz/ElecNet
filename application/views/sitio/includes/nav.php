@@ -3,15 +3,15 @@
       <div class="row">
         <div class="mm-toggle-wrap">
           <div class="mm-toggle"><i class="fa fa-align-justify"></i> </div>
-          <span class="mm-label">Departamentos</span> </div>
+          <span class="mm-label">Lo Mas Buscado En:</span> </div>
         <div class="col-md-3 col-sm-3 mega-container hidden-xs">
           <div class="navleft-container">
             <div class="mega-menu-title">
-              <h3><span>Departamentos</span></h3>
+              <h3><span>Lo Mas Buscado En:</span></h3>
             </div>            
             <!-- Shop by category -->
             <div class="mega-menu-category">
-              <ul class="nav">                
+              <ul class="nav">   
                 <li><a href="#">TV &amp; Audio</a>
                   <div class="wrap-popup">
                     <div class="popup">

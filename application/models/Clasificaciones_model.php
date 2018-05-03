@@ -104,18 +104,18 @@ class Clasificaciones_model extends CI_Model {
 			foreach ($r as $k => $d) {
 								
 				if(!isset($aux[$d['id_departamento']]))
-					$aux[$d['id_departamento']] = array('departamento'=>$d['departamento'],'categorias'=>array());				
+					$aux[$d['id_departamento']] = array('departamento'=>$d['departamento'],'categorias'=>array());
 				
-				if($d['id_categoria_padre']==0 && !isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria']])){
+				if($d['id_categoria_padre']==0 && !isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria']]))
 					$aux[$d['id_departamento']]['categorias'][$d['id_categoria']] = array('categoria'=>$d['categoria'],'subcategorias'=>array());
-				}else{
+				
 					
-					if(!isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]))								
-						$aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']] = array('categoria'=>$d['categoria_padre'],'subcategorias'=>array());
+				if(!isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]) && $d['id_categoria_padre']!=0)								
+					$aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']] = array('categoria'=>$d['categoria_padre'],'subcategorias'=>array());
 						
-					if(!isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]['subcategorias'][$d['id_categoria']]))								
-						$aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]['subcategorias'][$d['id_categoria']] = array('subcategoria'=>$d['categoria']);							
-				}
+				if(!isset($aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]['subcategorias'][$d['id_categoria']]) && $d['id_categoria_padre']!=0)								
+					$aux[$d['id_departamento']]['categorias'][$d['id_categoria_padre']]['subcategorias'][$d['id_categoria']] = array('subcategoria'=>$d['categoria']);							
+				
 				
 			}
 			

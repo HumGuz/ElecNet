@@ -117,25 +117,44 @@ class Ventas_model extends CI_Model {
         }        
         
         if(!empty($p)){        				
-        	foreach ($p as $k => $v) {				
+        	foreach ($p as $k => $v) {        			
 				$v['costo_envio'] = ($d['costos_envio'] * $v['subtotal'])  /   ( $d['subtotal']  + $d['total_descuento'] );
 				$v['iva'] = ($v['subtotal'] + $v['costo_envio']) * 0.16;
 				$v['total'] = ($v['subtotal'] + $v['costo_envio']) * 1.16;
-				$v['costo_unitario'] = ($v['total'] / $v['cantidad']);
-				$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_cotizacion' =>$d['id_cotizacion'],'id_producto'=>$v['id_producto'],'id_almacen'=>$v['id_almacen'],
-				'cantidad'=>$v['cantidad'],
-				'um'=>$v['um'],
-				'precio'=>$v['precio'],
-				'descuento'=>$v['descuento'],
-				'total_descuento'=>$v['total_descuento'],
-				'subtotal'=>$v['subtotal'],
-				'costo_envio'=>$v['costo_envio'],
-				'iva'=>$v['iva'],
-				'total'=>$v['total'],
-				'costo_unitario'=>$v['costo_unitario'],
-				'costo_promedio'=>$v['costo_promedio_ue'],
-				'truput'=>$v['truput'],
-				'id_usuario' =>$d['id_usuario_cambio']));			
+				$v['costo_unitario'] = ($v['total'] / $v['cantidad']);					
+				if($v['um']=='SERV'){
+					$this->db->insert('r_venta_servicios', array(
+					'id_venta' =>$id_venta,
+					'id_cliente' =>$d['id_cliente'],
+					'id_cotizacion' =>$d['id_cotizacion'],
+					'id_servicio'=>$v['id_producto'],
+					'cantidad'=>$v['cantidad'],					
+					'precio'=>$v['precio'],
+					'descuento'=>$v['descuento'],
+					'total_descuento'=>$v['total_descuento'],
+					'subtotal'=>$v['subtotal'],
+					'costo_envio'=>$v['costo_envio'],
+					'iva'=>$v['iva'],
+					'total'=>$v['total'],
+					'costo_unitario'=>$v['costo_unitario'],					
+					'truput'=>$v['truput'],
+					'id_usuario' =>$d['id_usuario_cambio']));						
+				}else{
+					$this->db->insert('r_venta_productos', array('id_venta' =>$id_venta,'id_cliente' =>$d['id_cliente'],'id_cotizacion' =>$d['id_cotizacion'],'id_producto'=>$v['id_producto'],'id_almacen'=>$v['id_almacen'],
+					'cantidad'=>$v['cantidad'],
+					'um'=>$v['um'],
+					'precio'=>$v['precio'],
+					'descuento'=>$v['descuento'],
+					'total_descuento'=>$v['total_descuento'],
+					'subtotal'=>$v['subtotal'],
+					'costo_envio'=>$v['costo_envio'],
+					'iva'=>$v['iva'],
+					'total'=>$v['total'],
+					'costo_unitario'=>$v['costo_unitario'],
+					'costo_promedio'=>$v['costo_promedio_ue'],
+					'truput'=>$v['truput'],
+					'id_usuario' =>$d['id_usuario_cambio']));	
+				}						
 			}
         }
         		
@@ -144,7 +163,7 @@ class Ventas_model extends CI_Model {
 
 	function borrarVenta($d){
 		 $this->db->where('id_venta', $d['id_venta']);			
-         $this->db->delete(array('t_ventas','r_venta_productos'));	
+         $this->db->delete(array('t_ventas','r_venta_productos','r_venta_servicios'));	
 		 return array('status'=>1);
 	}
 }

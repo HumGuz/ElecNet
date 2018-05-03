@@ -208,7 +208,7 @@ class Productos_model extends CI_Model {
 		$result = $q->result_array();
 		if(!empty($result)){
 			foreach ($result as $key => $v) {											
-				$result[$key]['nombre'] = $this->replace($v['nombre']);
+				$result[$key]['concepto'] = $this->replace($v['concepto']);
 			}
 		}
 		return $result;		

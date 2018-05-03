@@ -94,7 +94,8 @@ vnt = {
 				}
 			});				
 			md.find(".selectpicker").selectpicker({});					
-			md.find('#fecha_entrega').daterangepicker({locale:{format: 'YYYY-MM-DD'},singleDatePicker: true, showDropdowns: true });			
+			md.find('#fecha_entrega').daterangepicker({locale:{format: 'YYYY-MM-DD'},singleDatePicker: true, showDropdowns: true });	
+			md.find('#fecha_limite_pago').daterangepicker({locale:{format: 'YYYY-MM-DD'},singleDatePicker: true, showDropdowns: true });			
 			md.find('#clve_vnt').on('focusout',function(){event.preventDefault(),vnt.getCoincidence($(this).val(),vnt.keys)});		
 			md.find('#conc_vnt').on('focusout',function(){event.preventDefault(),vnt.getCoincidence($(this).val(),vnt.names)});		
 			md.find('#clve_vnt').keyup(function(){
@@ -439,7 +440,7 @@ vnt = {
                 if(value<=0)
                       return 'La cantidad tiene que ser mayor a cero';	
                 e = parseFloat(vnt.productos[$(this).data('id')].existencia);				
-				if(e<value && vnt.productos[$(this).data('id')].UM!='SERV')				
+				if(e<value && vnt.productos[$(this).data('id')].um	!='SERV')				
 					return 'La cantidad solicitada supera la existencia disponible';
             },
             value:parseFloat(parseFloat(cn.cantidad).toFixed(2)),
@@ -510,8 +511,7 @@ vnt = {
 		o.total_descuento = vnt.total_descuento; 
 		o.iva = vnt.iva;
 		o.total = vnt.total;		
-		console.log(o);	
-		return 0;
+		console.log(o);			
 		$.ajax({type : "POST",url : "guardarVenta",dataType : "json",data : o})
 		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaVenta').modal('hide'),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})

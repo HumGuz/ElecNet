@@ -41,6 +41,79 @@ class Sitio extends CI_Controller {
 	}
 	
 	
+	function getWrapPopup($categorias){
+				
+				$h = '<div class="wrap-popup"><div class="popup"><div class="row">';
+				$c = ceil(count($categorias) / 2);
+				$x = 0;				
+				$h .= '<div class="col-md-4 col-sm-6">';
+				foreach ($categorias as $k => $cat) {
+					if($x < $c){
+						$h .= ($x > 0 && $x<($c - 1 ))?'<br>':'';							
+						$h .= $this->getCategoriaNavList($cat);						
+						unset($categorias[$k]);
+						$x++;
+					}					
+				}
+				$h .= '</div>';
+		
+				if(!empty($categorias)){
+					$x = 0;				
+					$h .= '<div class="col-md-4 col-sm-6">';
+					foreach ($categorias as $k => $cat) {
+						if($x < $c){
+							$h .= ($x > 0 && $x<($c - 1 ))?'<br>':'';							
+							$h .= $this->getCategoriaNavList($cat);						
+							unset($categorias[$k]);
+							$x++;
+						}					
+					}
+					$h .= '</div>';
+				}
+			
+				$h .= '
+				<div class="col-md-4 has-sep hidden-sm">
+                          <div class="custom-menu-right">
+                            <div class="box-banner media">
+                              <div class="add-desc">
+                                <h3>Computer <br>
+                                  Services </h3>
+                                <div class="price-sale">2016</div>
+                                <a href="#">Shop Now</a> </div>
+                              <div class="add-right"><a href="#"><img src="'.base_url().'application/views/img/menu-banner-img2.jpg" alt="fashion"></a></div>
+                            </div>
+                            <div class="box-banner media">
+                              <div class="add-desc">
+                                <h3>Save up to</h3>
+                                <div class="price-sale">75 <sup>%</sup><sub>off</sub></div>
+                                <a href="#">Shopping Now</a> </div>
+                              <div class="add-right"><a href="#"><img src="'.base_url().'application/views/img/menu-banner-img3.jpg" alt=" html store"></a></div>
+                            </div>
+                          </div>
+                        </div>
+                         </div>
+                    </div>
+                  </div>
+                        ';
+			
+			
+		
+	}
+	
+	
+	function getCategoriaNavList($c){							
+		$h = '<h3>'.$c['categoria'].'</h3>';
+		if(!empty($c['subcategorias'])){
+			$h .= '<ul class="nav">';	
+			foreach ($c['subcategorias'] as $ke => $sc) {
+				$h .= '<li><a href="shop_grid.html">'.$sc['subcategoria'].'</a></li>';	
+			}
+			$h .= '</ul>';		
+		}
+		return $h;
+	}
+	
+	
 	function getProductItem($d,$p=null){		
 		if($p==null)
 			$p = $this->p->getProductos($d);					

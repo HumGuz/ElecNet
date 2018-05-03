@@ -1,10 +1,3 @@
- <!-- Header -->
- <?php 
- 
- echo "<pre>";
-						print_r($departamentos);
-						 echo "</pre>";
- ?>
   <header>
     <div class="header-container">
       <div class="header-top">
@@ -69,7 +62,7 @@
           <div class="row">
             <div class="col-sm-3 col-xs-12 jtv-logo-block">               
               <!-- Header Logo -->
-              <div class="logo"><a title="e-commerce" href="index.html"><img alt="Famous" title="Famous" src="application/views/img/logo.png"></a> </div>
+              <div class="logo"><a title="e-commerce" href="index.html"><img alt="Famous" title="Famous" src="<?php echo base_url() ?>application/views/img/logo.png"></a> </div>
             </div>
             <div class="col-xs-12 col-sm-5 col-md-6 jtv-top-search">               
               <!-- Search -->              
@@ -125,17 +118,17 @@
                       <div class="block-subtitle">Artículos recientemente agregados</div>
                       <ul id="cart-sidebar" class="mini-products-list">                        
                         
-                        <li class="item odd"> <a href="shopping_cart.html" title="Product title here" class="product-image"><img src="application/views/img/products/product-1.jpg" alt="html Template" width="65"></a>
+                        <li class="item odd"> <a href="shopping_cart.html" title="Product title here" class="product-image"><img src="<?php echo base_url() ?>application/views/img/products/product-1.jpg" alt="html Template" width="65"></a>
                           <div class="product-details"> <a href="#" title="Remove This Item" class="remove-cart"><i class="pe-7s-trash"></i></a>
                             <p class="product-name"><a href="shopping_cart.html">Lorem ipsum dolor sit amet Consectetur</a> </p>
                             <strong>1</strong> x <span class="price">$20.00</span> </div>
                         </li>
-                        <li class="item even"> <a href="shopping_cart.html" title="Product title here" class="product-image"><img src="application/views/img/products/product-1.jpg" alt="html Template" width="65"></a>
+                        <li class="item even"> <a href="shopping_cart.html" title="Product title here" class="product-image"><img src="<?php echo base_url() ?>application/views/img/products/product-1.jpg" alt="html Template" width="65"></a>
                           <div class="product-details"> <a href="#" title="Remove This Item" class="remove-cart"><i class="pe-7s-trash"></i></a>
                             <p class="product-name"><a href="shopping_cart.html">Consectetur utes anet adipisicing elit</a> </p>
                             <strong>1</strong> x <span class="price">$230.00</span> </div>
                         </li>
-                        <li class="item last odd"> <a href="shopping_cart.html" title="Product title here" class="product-image"><img src="application/views/img/products/product-1.jpg" alt="html Template" width="65"></a>
+                        <li class="item last odd"> <a href="shopping_cart.html" title="Product title here" class="product-image"><img src="<?php echo base_url() ?>application/views/img/products/product-1.jpg" alt="html Template" width="65"></a>
                           <div class="product-details"> <a href="#" title="Remove This Item" class="remove-cart"><i class="pe-7s-trash"></i></a>
                             <p class="product-name"><a href="shopping_cart.html">Sed do eiusmod tempor incidist</a> </p>
                             <strong>2</strong> x <span class="price">$420.00</span> </div>
