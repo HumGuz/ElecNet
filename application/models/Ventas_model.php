@@ -36,7 +36,9 @@ class Ventas_model extends CI_Model {
 		
 		$q = $this -> db -> query("select 
 									c.*,IF(c.status=2,1,0) as borrar,									
-									pr.clave clave_cliente,pr.nombre  nombre_cliente,ct.folio as cotizacion
+									pr.clave clave_cliente,pr.nombre  nombre_cliente,ct.folio as cotizacion,
+									concat(pr.calle,' #',pr.exterior,if(pr.interior<>'',concat('Int. ',pr.interior),''),' Col.',pr.colonia,',',pr.municipio_delegacion,',',pr.estado,',Mex.') as direccion
+								 
 								    from t_ventas c 
 								    inner join t_clientes pr on pr.id_cliente = c.id_cliente 
 								    left join t_cotizaciones ct on ct.id_cotizacion = c.id_cotizacion											
@@ -56,7 +58,7 @@ class Ventas_model extends CI_Model {
 		if($d['id_venta'])
 			$c .= ' and r.id_venta = '.$d['id_venta'];
 		
-		$q = $this -> db -> query("
+		$q = $this -> db -> query(" select * from (
 			select 
 			r.id_producto,
 			r.id_almacen,
@@ -82,7 +84,28 @@ class Ventas_model extends CI_Model {
 			from r_venta_productos r
 			inner join t_productos p on p.id_producto = r.id_producto
 			inner join r_almacen_productos ra on ra.id_producto = p.id_producto and r.id_almacen = ra.id_almacen
-			where 1=1 ".$c);
+			where 1=1 ".$c." 
+			
+			UNION  
+			
+			select 
+			r.id_servicio,
+			0 as id_almacen,
+			s.clave,
+			s.concepto,
+			'SERV' AS um,
+			r.cantidad,			
+			1 as existencia,			
+			0 as costo_promedio,
+			0 as  costo_promedio_ue,
+			r.descuento,
+			r.precio,
+			r.subtotal,
+			r.total
+			from r_venta_servicios r
+			inner join t_servicios s on s.id_servicio = r.id_servicio			
+			where 1=1 ".$c." ) a order by a.clave asc
+			");
 		$r = $q->result_array();
 		return $r;	
 		
@@ -114,6 +137,8 @@ class Ventas_model extends CI_Model {
             $this->db->update('t_ventas', $d);            
             $this->db->where('id_venta', $id_venta);			
          	$this->db->delete('r_venta_productos');
+			$this->db->where('id_venta', $id_venta);			
+         	$this->db->delete('r_venta_servicios');
         }        
         
         if(!empty($p)){        				

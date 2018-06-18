@@ -1,4 +1,5 @@
 <?php 
+session_start();
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Productos_model extends CI_Model {
 	private $db = null;	
@@ -6,7 +7,7 @@ class Productos_model extends CI_Model {
 	function __construct() {
 		parent::__construct();
 		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
+		$this -> db = $this -> load -> database('elecnet', TRUE);		
 		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
 	}
 		
@@ -48,7 +49,7 @@ class Productos_model extends CI_Model {
 		}else
 			$c .= " order by p.clave asc";		
 		
-		if($d['limit'] || $d['limit']==0)
+		if(isset($d['limit']) && $d['limit']>=0 )
 			$c .= ' limit '.$d['limit'].',50';
 		
 		$s = "select 
@@ -75,8 +76,6 @@ class Productos_model extends CI_Model {
 		
 		$q = $this -> db -> query($s);		
 	$r = $q->result_array();
-	
-	
 	
 		return $r;		
 	}

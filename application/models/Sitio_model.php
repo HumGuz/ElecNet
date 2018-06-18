@@ -6,7 +6,7 @@ class Sitio_model extends CI_Model {
 	function __construct() {
 		parent::__construct();
 		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
+		$this -> db = $this -> load -> database('elecnet', TRUE);		
 		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
 	}
 	

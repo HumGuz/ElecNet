@@ -7,11 +7,14 @@ class Admin extends CI_Controller {
 		parent::__construct();
 		date_default_timezone_set("America/Mexico_City");
 		setlocale(LC_TIME, "es_MX.utf8");
-		$this->s = $this -> session -> userdata();		
+		$this->s = $_SESSION;
 		if(!isset($this->s['usuario']))			
 			redirect(base_url());	
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);
+		// echo "<pre>";
+		// print_r($this->s);
+		// echo "</pre>";
+		// die();
 	}	 
 	 
 	public function index()

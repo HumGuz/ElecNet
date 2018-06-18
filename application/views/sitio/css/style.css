@@ -700,7 +700,7 @@ label {
 #search input {
 	height: 38px;
 	display: inline-block;
-	width: 66%;
+	width: 56%;
 	border: none;
 	background: #fff;
 	box-shadow: none;
@@ -735,7 +735,7 @@ color: #333333;
 }
 .cate-dropdown {
 	float: left;
-	width: 140px;
+	width: 199px;
 	height: 38px;
 	border: none;
 	display: inline-block;

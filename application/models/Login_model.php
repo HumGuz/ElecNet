@@ -43,6 +43,7 @@ class Login_model extends CI_Model {
 					unset($r['db_name']);
 					$s['cliente'] = $r;
 					$this->session->set_userdata($s);
+					$_SESSION = $s;					
 					return array('code'=>1252);
 				}else{
 					return array('email'=>'Error desconocido');

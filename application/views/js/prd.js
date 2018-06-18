@@ -1,11 +1,12 @@
 prd = {
+	md:null,
 	filter:{},
 	init:function(){		
 		$('body').on('click',"[data-fn]",function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn,delete d['bs.tooltip'],delete d['placement'],delete d.toggle,delete d.trigger ,prd[f](d)});
 		prd.initFilter($("section.content"));
 	},	
 	initFilter:function(md){
-		prd.limit = 0,prd.filter= {},		
+		prd.md = md,prd.limit = 0,prd.filter= {},		
 		md.find(".selectpicker").selectpicker({});
 		var s;i = md.find("#busqueda_out").eq(0);
 		i.keyup(function(){if(s) clearTimeout(s); s = setTimeout(function() {$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),$("#prdTbl tbody").empty(),val = $.trim(i.val()),prd.productosTable({busqueda:val,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val(),limit:0})},1000)})	
@@ -14,7 +15,8 @@ prd = {
 			$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),
 			$("#prdTbl tbody").empty(),ob.limit = 0,prd.productosTable(ob)
 		}})
-		prd.productosTable({limit:0,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val()});		
+		prd.productosTable({limit:0});
+				
 	},	
 	initClas:function(c,d,cp,ch){		
 		suc = c.find("#id_sucursal"),
@@ -44,16 +46,15 @@ prd = {
 		$("#fltrAlmFrm").resetForm(),$("#fltrAlmFrm select").selectpicker('refresh'),$("#fltrAlmFrm").submit()		
 	},		
 	productosTable:function(o){
-		prd.filter = $.extend({},o);
+		prd.filter = $.extend({},o,{id_sucursal:prd.md.find("#id_sucursal").val(),id_almacen:prd.md.find("#id_almacen").val()});
 		$(".overlay").show();		
-		$.ajax({type : "POST",url : "productosTable",dataType : "html",data : o})
+		$.ajax({type : "POST",url : "productosTable",dataType : "html",data :prd.filter})
 		.done(function(r) {
 			($.trim(r)!='' && $("#prdTbl tbody").append(r)),
 			(r.indexOf('tr')>=0 && prd.scr()),$(".overlay").hide();			
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
-	scr:function(){
-		console.log('scr')
+	scr:function(){	
 		$(".box-body-catalogo").scroll(function(){
 	    	control = this; 
 	        if ($(control).scrollTop() >= $(control)[0].scrollHeight - $(control).outerHeight()-30){ 	               

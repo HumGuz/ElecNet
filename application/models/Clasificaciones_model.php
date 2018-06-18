@@ -5,7 +5,7 @@ class Clasificaciones_model extends CI_Model {
 	function __construct() {
 		parent::__construct();
 		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
+		$this -> db = $this -> load -> database('elecnet', TRUE);		
 	}	
 	function getDepartamentos($d=null){		
 		$c = '';

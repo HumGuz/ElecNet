@@ -10,7 +10,7 @@ class Sitio extends CI_Controller {
 		// $this->s = $this -> session -> userdata();
 		// if(!isset($this->s['usuario']))					
 			// redirect(base_url());
-		// $this -> db = $this -> load -> database($this->s["db"], TRUE);
+		$this -> db = $this -> load -> database('elecnet', TRUE);
 		
 		
 		$this->load->model('sitio_model','st');

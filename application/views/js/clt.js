@@ -31,7 +31,7 @@ clt = {
 			    return  clt.rfcValido($.trim(value).toUpperCase()) ; 
 			}, 'El RFC es inválido');
 			$('#nuevoCliente .selectpicker').selectpicker({})
-			$("#nvoPrvFrm").validation({extend:o,rules:{rfc:{rfc:true}},success:function(ob){clt.guardarCliente(ob)}})
+			$("#nvoPrvFrm").validation({extend:o,rules:{rfc:{rfc:function(){ return $.trim($("#rfs").val())!='' },required:false}},success:function(ob){clt.guardarCliente(ob)}})
 		});
 	},
 	

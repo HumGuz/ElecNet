@@ -1,10 +1,12 @@
 srv = {
+	md:null,
 	limit:0,filter:{},
 	init:function(){		
 		$('body').on('click',"[data-fn]",function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn,delete d['bs.tooltip'],delete d['placement'],delete d.toggle,delete d.trigger ,srv[f](d)});		
 		srv.initFilter($("section.content"));
 	},	
 	initFilter:function(md){
+		srv.md = md;
 		srv.limit = 0,srv.filter= {},		
 		md.find(".selectpicker").selectpicker({});
 		var s,i = md.find("#busqueda_out");
@@ -14,7 +16,7 @@ srv = {
 			$("#srvTbl tbody").empty(),srv.limit = 0,srv.filter= ob,ob.limit = 0,
 			srv.serviciosTable(ob)
 		}})
-		srv.serviciosTable({limit:0,id_sucursal:md.find("#id_sucursal").val()});		
+		srv.serviciosTable({limit:0});		
 	},	
 	initClas:function(c,d,cp,ch){	
 		dep = c.find("#id_departamento"),
@@ -37,8 +39,9 @@ srv = {
 		$("#fltrSrvFrm").resetForm(),$("#fltrSrvFrm select").selectpicker('refresh'),$("#fltrSrvFrm").submit()		
 	},		
 	serviciosTable:function(o){
-		$(".overlay").show();		
-		$.ajax({type : "POST",url : "serviciosTable",dataType : "html",data : o})
+		$(".overlay").show();			
+		srv.filter = $.extend({},0,{id_sucursal:srv.md.find("#id_sucursal").val()})			
+		$.ajax({type : "POST",url : "serviciosTable",dataType : "html",data : srv.filter})
 		.done(function(r) {
 			($.trim(r)!='' && $("#srvTbl tbody").append(r)),
 			($(r).find('tr').length && srv.scr()),$(".overlay").hide();			

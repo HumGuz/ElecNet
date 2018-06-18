@@ -4,7 +4,6 @@
 <body class="sidebar-mini skin-blue-light fixed">
 <div class="wrapper">
   <?php include_once FCPATH.'application/views/includes/header.php';?> 
-  <?php include_once FCPATH.'application/views/includes/header.php';?>
    <!-- Left side column. contains the logo and sidebar -->
   <?php include_once FCPATH.'application/views/includes/aside.php';?>
   <!-- Content Wrapper. Contains page content -->

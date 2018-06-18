@@ -538,13 +538,66 @@ vnt = {
 		});
 	},
 	
-	export : function(t,type) {
-		$.ajax({type : "POST",url : type,dataType : "json",data :{id_venta: t}})
-		.done(function(a) {
-			1 == a.status ? window.open("application/files/" + a.folio + '.'+type, "_blank") :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
-		}).fail(function(t, a, e) {
-			 $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}}), console.log(t, a, e);
+	exportDialog : function(t,f,type) {		
+		$.confirm({ title: 'Membrete',content: 'Selecciona el membrete a utilizar en el documento', type: 'blue',theme:"dark",
+		    buttons: {
+		    	a: {text: 'Syscam',btnClass: 'btn-blue', action: function(r){ 
+		        	vnt.export(t,f,type,'mem_sys');
+		        }},
+		        b: {text: 'Elecnet',btnClass: 'btn-red', action: function(r){ 
+		        	vnt.export(t,f,type,'mem_ele');
+		        }},
+		        c: {text: 'centralGPS',btnClass: 'btn-info', action: function(r){ 
+		        	vnt.export(t,f,type,'bg-cntrlgps');
+		        }},
+		        d: {text: 'Cancelar',btnClass: 'btn-default'}		        
+		    }
 		});
 	},
-
+	export:function(t,f,type,m){
+		
+		$.confirm({
+		    title: 'Nombrar Archivo',
+		    content: '' +
+		    '<form action="" class="formName">' +
+		    '<div class="form-group">' +
+		    '<label>Nombre para el archivo</label>' +
+		    '<input type="text"  class="name form-control" required />' +
+		    '</div>' +
+		    '</form>', type: 'blue',theme:"dark",
+		    buttons: {
+		        formSubmit: {
+		            text: 'Descargar',
+		            btnClass: 'btn-blue',
+		            action: function () {
+		                var name = this.$content.find('.name').val();
+		                if(!name){
+		                    $.alert('Capture un nombre para el archivo');
+		                    return false;
+		                }
+		                $.ajax({type : "POST",url : type,dataType : "json",data :{id_venta: t,membrete:m,nombre:name}})
+						.done(function(a) {
+							1 == a.status ? location.href = ('download?nombre='+name+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
+						}).fail(function(t, a, e) {
+							 app.error(), console.log(t, a, e);
+						});
+		            }
+		        },
+		        d: {text: 'Cancelar',btnClass: 'btn-default'}		   
+		    },
+		    onContentReady: function () {		       
+		        var jc = this;
+		        this.$content.find('form').on('submit', function (e) {		            
+		            e.preventDefault();
+		            jc.$$formSubmit.trigger('click');
+		        });
+		    }
+		});
+		
+		
+		
+		
+		
+		
+	}
 };

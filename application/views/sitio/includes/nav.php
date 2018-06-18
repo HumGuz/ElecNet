@@ -12,17 +12,17 @@
             <!-- Shop by category -->
             <div class="mega-menu-category">
               <ul class="nav">   
-                <li><a href="#">TV &amp; Audio</a>
+                <li><a href="#">Seguridad Electronica</a>
                   <div class="wrap-popup">
                     <div class="popup">
                       <div class="row">
                         <div class="col-md-4 col-sm-6">
-                          <h3>Televisions</h3>
+                          <h3>Alarmas</h3>
                           <ul class="nav">
-                            <li><a href="shop_grid.html">LCD Televisions</a></li>
-                            <li><a href="shop_grid.html">Projection Televisions</a></li>
-                            <li><a href="shop_grid.html">Play Stations</a></li>
-                            <li><a href="shop_grid.html">Televisions/Tube</a></li>
+                            <li><a href="shop_grid.html">Kit Residencial Alámbrico</a></li>
+                            <li><a href="shop_grid.html">Detectores y Sensores</a></li>
+                            <li><a href="shop_grid.html">Gabinetes y Carcasas</a></li>
+                            <li><a href="shop_grid.html">Sirenas y Estrobos</a></li>
                           </ul>
                           <br>
                           <h3>Headphones</h3>

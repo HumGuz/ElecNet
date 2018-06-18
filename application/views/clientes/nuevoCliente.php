@@ -18,7 +18,7 @@
 						<div class="col-sm-3">
 							<div class="form-group">
 			                  <label for="clave ">RFC</label>
-			                  <input type="text" class="form-control required" id="rfc" name="rfc">
+			                  <input type="text" class="form-control" id="rfc" name="rfc">
 			                </div>
 						</div>
 												

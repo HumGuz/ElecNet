@@ -71,7 +71,7 @@
                   <form>
                     <div class="input-group">
                       <select class="cate-dropdown hidden-xs hidden-sm" name="category_id">
-                        <option>Departamentos</option>                       
+                        <option>Todos los Departamentos</option>                       
                         <?php 
                         	if(!empty($departamentos)){                        		
 								foreach ($departamentos as $id_departamento => $d) {										
