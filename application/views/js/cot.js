@@ -263,14 +263,14 @@ cot = {
         	cot.truput += cot.productos[ producto ].truput; 
         }  
         cot.total_descuento = dsc *  cot.subtotal / 100; 
-		cot.subtotal_descuento = cot.subtotal - cot.total_descuento;
 		env = $.trim($("#gastos_envio").val()), env = ( env !=''? parseFloat(env) :0 ),
-        (env == 0 && $("#gastos_envio").val(0)),		
+        (env == 0 && $("#gastos_envio").val(0)),	
+		cot.subtotal_descuento = cot.subtotal - cot.total_descuento;
 		cot.iva = (cot.subtotal_descuento + env) * 0.16;
 		cot.total = (cot.subtotal_descuento + env) * 1.16;
         $("#subtotal").html('$ ' + app.number_format(cot.subtotal,2));	
 		$("#descuento").html('$ ' + app.number_format(cot.total_descuento,2));
-		$("#subtotal_descuento").html('$ ' + app.number_format(cot.subtotal_descuento,2));
+		$("#subtotal_descuento").html('$ ' + app.number_format(cot.subtotal_descuento + env,2));
 		$("#envio").html('$ ' + app.number_format(env,2));	    
     	$("#iva").html('$ ' + app.number_format(cot.iva,2)); 
     	$("#total").html('$ ' + app.number_format(cot.total,2));	    	
@@ -402,8 +402,8 @@ cot = {
 		o.observaciones = $("#observaciones").val();
 		o.condiciones = $("#condiciones").val();
 		o.productos = cot.productos;
-		o.subtotal = cot.total_descuento;
-		o.total_descuento = cot.total_descuento_general; 
+		o.subtotal = cot.subtotal_descuento;
+		o.total_descuento = cot.total_descuento; 
 		o.iva = cot.iva;
 		o.total = cot.total;		
 		$.ajax({type : "POST",url : "guardarCotizacion",dataType : "json",data : o})
