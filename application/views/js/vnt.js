@@ -191,6 +191,14 @@ vnt = {
 					
 				vnt.totalGeneral()
 			}			
+			if(o.id_venta && o.duplicar==1)
+			{
+				delete o.id_venta;
+				delete o.duplicar;
+				o.id_sucursal=vnt.id_sucursal;
+			}
+				
+			
 			md.find("#nvaVnt").validation({extend:o,success:function(ob){
 				l = Object.keys(vnt.productos).length;
 				if(!l){
