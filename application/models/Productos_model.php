@@ -278,12 +278,38 @@ class Productos_model extends CI_Model {
 	
 	function borrarProducto($d){
 		 $this->db->where('id_producto', $d['id_producto']);		 			
-         $this->db->delete('t_productos');	
+         $this->db->delete('t_productos');			 
+		 $this->borrarImagen($d);		 
 		 return array('status'=>1);
 	}	
 
+	function borrarImagen($d){
+		$c = '';
+		if($d['id_producto'])
+			$c .= " and id_producto = ".$d['id_producto'];			
+		if($d['imagen'])
+			$c .= " and imagen = '".$d['imagen']."'";				
+		
+		$imgs = $this->getImagenesProducto($d);
+		if(!empty($imgs)){
+			foreach ($imgs as $key => $i) {				
+				unlink(FCPATH.'application/views/img/uploads/'.$i['imagen']);
+			}			
+			$this -> db -> query("delete from r_producto_imagen where 1=1 ");		
+		}		
+		return array('status'=>1);		
+	}
+
+
+
 	function getImagenesProducto($d){
-		$q = $this -> db -> query("select * from  r_producto_imagen where id_producto= ".$d['id_producto']);		
+		
+		$c = '';
+		if($d['id_producto'])
+			$c .= " and id_producto = ".$d['id_producto'];			
+		if($d['imagen'])
+			$c .= " and imagen = '".$d['imagen']."'";		
+		$q = $this -> db -> query("select * from  r_producto_imagen where 1=1 ".$c);		
 		$r = $q->result_array();
 		return $r;
 	}

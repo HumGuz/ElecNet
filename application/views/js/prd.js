@@ -146,7 +146,7 @@ prd = {
 							$('a[href="#tab_1"]').tab('show'),							
 							(n = $("#tab_1 .carousel-indicators li").length),							
 							$("#tab_1 .carousel-indicators").append('<li class="'+(n==0?'active':'')+'" data-target="#img-prod" data-slide-to="'+n+'"></li>'),
-							$("#tab_1 .carousel-inner").append('<div class="item '+(n==0?'active':'')+'"><img src="'+($("#prodDet-modal").data('base_url'))+'application/views/img/uploads/'+r.imagen+'" style="margin:0px auto"><div class="carousel-caption">'+r.imagen+'</div></div>'),
+							$("#tab_1 .carousel-inner").append('<div class="item '+(n==0?'active':'')+'"><img src="'+($("#prodDet-modal").data('base_url'))+'application/views/img/uploads/'+r.imagen+'" style="margin:0px auto"><div class="carousel-caption">'+r.imagen+' <button onclick="prd.borrarImagen({id_producto:'+o.id_producto+',imagen:\''+r.imagen+'\'})" type="button" class="btn btn-link "><span class=" text-danger glyphicon glyphicon-trash"></span></button>   </div></div>'),
 							$("#img-prod").carousel(n),$("#subImg").hide(),$("#seimgO").text('Subir Imagen'),$("#image-cropper .cropit-preview-image").attr("src", ""), $("#imagen_producto").val("")
 							) : app.error();})
 						.fail(function(e, a, r) {console.log(e, a, r)})
@@ -188,6 +188,31 @@ prd = {
 			});				
 		}).fail(function(e, t, i) {console.log(e, t, i)});
 	},
+	
+	borrarImagen:function(o){
+		$.confirm({ title: 'Borrar imagen',content: '¿Esta seguro de querer borrar esta imagen?', type: 'orange',theme:"dark",
+		    buttons: {
+		    	a: {text: 'Cancelar'},
+		        b: {text: 'Borrar',btnClass: 'btn-orange', action: function(r){ 
+		        	$.confirm({ title: 'Borrar',content: 'Al borrar, se perderá toda la información relacionada con la imagen, ¿Continuar?',
+					    type: 'red',theme:"dark",
+					    buttons: {
+					    	a: {text: 'Cancelar'},
+					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
+					        	$.ajax({type : "POST",url : "borrarImagen",dataType : "json",data : o})
+								.done(function(r) {
+									1 == r.status ? (app.ok(),
+									 $("#prodDet-modal").one('hidden.bs.modal',function(){ prd.detalles({id_producto:o.id_producto,op:1}) }).modal('hide')
+									) : app.error();
+								}).fail(function(e, t, i) {console.log(e, t, i)})
+					        }}		        
+					}});
+		        }}		        
+		    }
+		});
+	},
+	
+	
 	/*almacenes light*/
 	nuevoAlmacen:function(o){
 		$.ajax({type:"POST",url :  "nuevoAlmacen",dataType : "html",data:o}).done(function(r) {

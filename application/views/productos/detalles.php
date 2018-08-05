@@ -123,7 +123,7 @@
 						  		if(!empty($img)){
 						  			$x = 0;									
 									foreach ($img as $key => $i) {
-										echo '<li data-target="#img-prod" data-slide-to="'.$x.'" class="'.($x==0 ? 'active' : '').'"></li>';
+										echo '<li data-target="#img-'.$i['imagen'].'" data-slide-to="'.$x.'" class="'.($x==0 ? 'active' : '').'"></li>';
 										$x++;
 									}
 						  		}
@@ -134,7 +134,7 @@
 						  		if(!empty($img)){
 						  			$x = 0;									
 									foreach ($img as $key => $i) {
-										echo '<div class="item '.($x==0 ? 'active' : '').'"><img src="'.base_url().'/application/views/img/uploads/'.$i['imagen'].'" style="margin:0px auto"><div class="carousel-caption">'.$i['imagen'].'</div></div>';
+										echo '<div id="img-'.$i['imagen'].'" class="item '.($x==0 ? 'active' : '').'"><img src="'.base_url().'/application/views/img/uploads/'.$i['imagen'].'" style="margin:0px auto"><div class="carousel-caption">'.$i['imagen'].' <button onclick="prd.borrarImagen({id_producto:'.$i['id_producto'].',imagen:\''.$i['imagen'].'\'})" type="button" class="btn btn-link "><span class=" text-danger glyphicon glyphicon-trash"></span></button></div></div>';
 										$x++;
 									}
 						  		}

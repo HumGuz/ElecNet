@@ -18,8 +18,7 @@ class Sitio_model extends CI_Model {
 				inner join t_departamentos d on d.id_departamento = p.id_departamento
 				where p.visible = 1
 				group by p.id_departamento
-			) a 
-			where a.salidas > 0
+			) a 			
 			 order by salidas desc
 			limit 4
 		");	
@@ -36,8 +35,21 @@ class Sitio_model extends CI_Model {
 				$deps[$k]['top_six'] =	$q->result_array();
 			}
 		}
-		return $result;		
+		return $deps;		
 		
+	}
+
+	function getValuation($p){		
+		$v = '<div class="rating">';
+		$m = 5;										
+		for ($i=0; $i < $p['valuacion']; $i++) { 
+			$v.= '<i class="fa fa-star"></i> ';
+			$m--;
+		}
+		for ($j=0; $j < $m; $j++) { 
+			$v.= '<i class="fa fa-star-o"></i> ';
+		}	
+		$v .= '</div>';
 	}
 	
 }
