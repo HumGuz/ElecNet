@@ -283,6 +283,13 @@ class Productos_model extends CI_Model {
 		 return array('status'=>1);
 	}	
 
+	function hacerPortada($d){
+		$this -> db -> query("update r_producto_imagen  set portada = 0 where id_producto = ".$d['id_producto']);		
+		$this -> db -> query("update r_producto_imagen  set portada = 1 where imagen = '".$d['imagen']."' and id_producto = ".$d['id_producto']);		
+		return array('status'=>1);
+	}	
+
+
 	function borrarImagen($d){
 		$c = '';
 		if($d['id_producto'])

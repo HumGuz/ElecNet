@@ -10,6 +10,20 @@ class Sitio_model extends CI_Model {
 		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
 	}
 	
+	function getSpecialOffers($d=null){
+		$q = $this -> db -> query("
+			select * from (
+				select p.id_departamento,d.nombre as departamento,sum(p.salidas) as salidas from t_productos p	
+				inner join t_departamentos d on d.id_departamento = p.id_departamento
+				where p.visible = 1
+				group by p.id_departamento
+			) a 			
+			 order by salidas desc
+			limit 4
+		");	
+		return $q->result_array();
+	}
+	
 	function getBestSelling($d=null){
 					
 		$q = $this -> db -> query("
@@ -29,7 +43,7 @@ class Sitio_model extends CI_Model {
 										   p.precio_venta,p.precio_oferta,p.nuevo , 
 										   ( select imagen from r_producto_imagen i where i.id_producto = p.id_producto order by portada desc limit 1 ) as imagen
 										   from t_productos p 
-										   where p.visible = 1 and p.id_departamento = ".$d['id_departamento']." and p.salidas > 0
+										   where p.visible = 1 and p.id_departamento = ".$d['id_departamento']."
 										   order by p.salidas desc
 										   limit 6");	
 				$deps[$k]['top_six'] =	$q->result_array();

@@ -58,13 +58,35 @@ $route['translate_uri_dashes'] = FALSE;
 $route['(:any)/(:num)'] = 'sitio/producto/$2';
 
 //departamentos
+$route['departamento/(:any)/(:num)'] = 'sitio/departamento/$2';
+//departamentos con busqueda
 $route['departamento/(:any)/(:num)/(:any)'] = 'sitio/departamento/$2/$3';
+//paginacion de departamentos sin busqueda
+$route['departamento/(:any)/(:num)/p/(:num)'] = 'sitio/departamento/$2/null/$3';
+//paginacion de departamentos con busqueda
+$route['departamento/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/departamento/$2/$3/$4';
 
-//paginacion de departamentos
-$route['departamento/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/departamento/$2/$3/$5';
+//categoria
+$route['categoria/(:any)/(:num)'] = 'sitio/categoria/$2';
+//categoria con busqueda
+$route['categoria/(:any)/(:num)/(:any)'] = 'sitio/categoria/$2/$3';
+//paginacion de categoria sin busqueda
+$route['categoria/(:any)/(:num)/p/(:num)'] = 'sitio/categoria/$2/null/$3';
+//paginacion de categoria con busqueda
+$route['categoria/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/categoria/$2/$3/$4';
+
+
+//subcategoria
+$route['subcategoria/(:any)/(:num)'] = 'sitio/subcategoria/$2';
+//subcategoria con busqueda
+$route['subcategoria/(:any)/(:num)/(:any)'] = 'sitio/subcategoria/$2/$3';
+//paginacion de subcategoria sin busqueda
+$route['subcategoria/(:any)/(:num)/p/(:num)'] = 'sitio/subcategoria/$2/null/$3';
+//paginacion de subcategoria con busqueda
+$route['subcategoria/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/subcategoria/$2/$3/$4';
+
 
 //busqueda
-$route['busqueda/(:any)/(:num)/(:any)'] = 'sitio/departamento/$2/$3';
-
+$route['busqueda/(:any)'] = 'sitio/busqueda/$1';
 //paginacion de busqueda
-$route['busqueda/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/departamento/$2/$3/$5';
+$route['busqueda/(:any)/p/(:num)'] = 'sitio/busqueda/$1/$2';

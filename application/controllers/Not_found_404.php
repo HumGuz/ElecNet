@@ -3,13 +3,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 session_start();
 class Not_found_404 extends CI_Controller 
 {
+	public $s = null;
     public function __construct() {
+    	date_default_timezone_set("America/Mexico_City");
+		setlocale(LC_TIME, "es_MX.utf8");
         parent::__construct(); 		
+		$this -> db = $this -> load -> database('elecnet', TRUE);
+		$this->load->library('app');	
+		$this->load->model('clasificaciones_model','c');
     } 
     public function index() 
     { 
         $this->output->set_status_header('404');       
-        $this->load->view('404.php');				
+        $this->load->view('sitio/404.php',array('departamentos'=>$this->c->getClasificaciones()));				
     } 
 } 
 ?> 
