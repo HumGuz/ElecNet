@@ -20,7 +20,12 @@ class Sitio extends CI_Controller {
 	
 	
 	function index(){
-		$this->load->view('sitio/index',array('departamentos'=>$this->c->getClasificaciones()));
+		$this->load->view('sitio/index',
+			array(
+				'departamentos'=>$this->c->getClasificaciones(),
+				'best_selling'=>$this->st->getBestSelling()
+			)
+		);
 	}
 	
 	// function catalogo(){
@@ -124,10 +129,9 @@ class Sitio extends CI_Controller {
                       <div class="product-thumbnail">
                         <div class="pr-img-area"><a title="'.$p['concepto'].'" href="'.base_url().app::poner_guion($p['concepto']).'/'.$p['id_producto'].'">
                           <figure> <img class="first-img" src="'.base_url().'/application/views/img/uploads/'.$p['imagen'].'" alt="'.$p['concepto'].'"> <img class="hover-img" src="'.base_url().'/application/views/img/uploads/'.$p['imagen'].'" alt="'.$p['concepto'].'"></figure>
-                          </a> </div>
-                        <div class="pr-info-area">
-                          <div class="pr-button">
-                            <div class="mt-button add_to_wishlist"> <a href="javascript:;"> <i class="fa fa-heart-o"></i> </a> </div>
+                          </a></div><div class="pr-info-area">
+ 							<div class="pr-button">
+                           	<div class="mt-button add_to_wishlist"> <a href="javascript:;"> <i class="fa fa-heart-o"></i> </a> </div>
                             <div class="mt-button add_to_compare"> <a href="javascript:;"> <i class="fa fa-link"></i> </a> </div>
                             <div class="mt-button quick-view"> <a href="javascript:;"> <i class="fa fa-search"></i> </a> </div>
                           </div>
@@ -149,7 +153,7 @@ class Sitio extends CI_Controller {
                               </div>							  
                             </div>
                             <div class="pro-action">
-                              <button type="button" class="add-to-cart"><span> Add to Cart</span> </button>
+                              <button type="button" class="add-to-cart"><span> Agregar al Carrito</span> </button>
                             </div>
                           </div>
                         </div>

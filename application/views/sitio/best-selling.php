@@ -19,7 +19,7 @@
 						echo '<div class="tab-pane '.($k==0?'active':'').' in" id="bs-'.$d['id_departamento'].'">
 								<div class="featured-pro">
 									<div class="slider-items-products">
-										<div id="computer-slider" class="product-flexslider hidden-buttons">
+										<div id="bs-slider-'.$d['id_departamento'].'"" class="product-flexslider hidden-buttons">
 											<div class="slider-items slider-width-col4">';
 											foreach ($d['top_six'] as $kd => $p) {
 												echo $this->getProductItem(null,$p);
