@@ -134,8 +134,8 @@
                             <div class="rating"> <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> </div>
                             <div class="item-price">
                               <div class="price-box">
-                                <p class="special-price"> <span class="price-label">Special Price</span> <span class="price"> $456.00 </span> </p>
-                                <p class="old-price"> <span class="price-label">Regular Price:</span> <span class="price"> $567.00 </span> </p>
+                                <p class="special-price"> <span class="price-label">Precio con Oferta</span> <span class="price"> $456.00 </span> </p>
+                                <p class="old-price"> <span class="price-label">Precio Regular:</span> <span class="price"> $567.00 </span> </p>
                               </div>
                             </div>
                             <div class="pro-action">

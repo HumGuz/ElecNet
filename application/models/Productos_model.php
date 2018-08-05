@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 session_start();
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Productos_model extends CI_Model {
@@ -68,10 +68,10 @@ class Productos_model extends CI_Model {
 								 	borrarProducto(p.id_producto) as borrar							 	
 									from 
 									t_productos p 
-									inner join r_almacen_productos r on r.id_producto = p.id_producto
-									inner join t_departamentos d on d.id_departamento = p.id_departamento
-									inner join t_categorias cp on cp.id_categoria = p.id_categoria_padre
-									inner join t_categorias c on c.id_categoria = p.id_categoria
+									left join r_almacen_productos r on r.id_producto = p.id_producto
+									left join t_departamentos d on d.id_departamento = p.id_departamento
+									left join t_categorias cp on cp.id_categoria = p.id_categoria_padre
+									left join t_categorias c on c.id_categoria = p.id_categoria
 									 where 1=1 ".$c;
 		
 		$q = $this -> db -> query($s);		

@@ -1,4 +1,4 @@
-cot = {
+﻿cot = {
 	id_sucursal:0,
 	init:function(){		
 		$("div.box-tools button.btn.btn-success").click(function(){cot.nuevaCotizacion({id_sucursal:cot.id_sucursal})});
@@ -331,7 +331,7 @@ cot = {
 	},
 	
 	setEditablesProducto:function(cn){		
-		$("#prtr"+cn.id_producto).find('td').eq(2).find('a').editable({type: 'text',title: 'Cantidad:',
+		$("#prtr"+cn.id_producto).find('td').eq(3).find('a').editable({type: 'text',title: 'Cantidad:',
             validate: function(value) {				    	
                 if($.trim(value) == '') 
                     return 'Capture la cantidad.';						    
@@ -350,7 +350,7 @@ cot = {
                 cot.totalGeneral();
             }
         });
-		$("#prtr"+cn.id_producto).find('td').eq(3).find('a').editable({type: 'text',title: 'Precio unitario:',
+		$("#prtr"+cn.id_producto).find('td').eq(4).find('a').editable({type: 'text',title: 'Precio unitario:',
             validate: function(value) {						    	
                     if($.trim(value) == '') 
                         return 'Capture el valor del precio.';						    
@@ -369,7 +369,7 @@ cot = {
                 cot.totalGeneral();
             }
         });        
-        $("#prtr"+cn.id_producto).find('td').eq(4).find('a').editable({type: 'text', title: 'Descuento:',
+        $("#prtr"+cn.id_producto).find('td').eq(5).find('a').editable({type: 'text', title: 'Descuento:',
             validate: function(value) {						    	
                     if($.trim(value) == '') 
                         return 'Capture el valor del descuento.';						    
