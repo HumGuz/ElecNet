@@ -50,58 +50,15 @@ jQuery(document).ready(function() {
         }),
 
  /******************************************
-           computer slider
+          best sellings sliders
   ******************************************/
 
-        jQuery("#computer-slider .slider-items").owlCarousel({
-            items: 4,
-            itemsDesktop: [1024, 4],
-            itemsDesktopSmall: [900, 3],
-            itemsTablet: [640, 2],
-            itemsMobile: [390, 1],
-            navigation: !0,
-            navigationText: ['<a class="flex-prev"></a>', '<a class="flex-next"></a>'],
-            slideSpeed: 500,
-            pagination: !1,
-            autoPlay: false
-        }),
-		
-        /******************************************
-          smartphone slider
-        ******************************************/
+        jQuery("#bs-slider-1 .slider-items").owlCarousel({ items: 4,  itemsDesktop: [1024, 4], itemsDesktopSmall: [900, 3], itemsTablet: [640, 2],itemsMobile: [390, 1],navigation: !0, navigationText: ['<a class="flex-prev"></a>', '<a class="flex-next"></a>'],slideSpeed: 500,pagination: !1, autoPlay: false}),
+        jQuery("#bs-slider-2 .slider-items").owlCarousel({ items: 4, itemsDesktop: [1024, 4],itemsDesktopSmall: [900, 3],itemsTablet: [640, 2], itemsMobile: [390, 1], navigation: !0, navigationText: ['<a class="flex-prev"></a>', '<a class="flex-next"></a>'], slideSpeed: 500,  pagination: !1,  autoPlay: false}),
+        jQuery("#bs-slider-3 .slider-items").owlCarousel({items: 4, itemsDesktop: [1024, 4], itemsDesktopSmall: [900, 3],itemsTablet: [640, 2], itemsMobile: [390, 1], navigation: !0, navigationText: ['<a class="flex-prev"></a>', '<a class="flex-next"></a>'], slideSpeed: 500,  pagination: !1,autoPlay: true}),
+	    jQuery("#bs-slider-4 .slider-items").owlCarousel({items: 4,  itemsDesktop: [1024, 4], itemsDesktopSmall: [900, 3], itemsTablet: [640, 2],itemsMobile: [390, 1], navigation: !0,navigationText: ['<a class="flex-prev"></a>', '<a class="flex-next"></a>'],slideSpeed: 500,pagination: !1, autoPlay: true}),
 
-        jQuery("#smartphone-slider .slider-items").owlCarousel({
-            items: 4,
-            itemsDesktop: [1024, 4],
-            itemsDesktopSmall: [900, 3],
-            itemsTablet: [640, 2],
-            itemsMobile: [390, 1],
-            navigation: !0,
-            navigationText: ['<a class="flex-prev"></a>', '<a class="flex-next"></a>'],
-            slideSpeed: 500,
-            pagination: !1,
-            autoPlay: false
-        }),
-
-
-        /******************************************
-        	watches slider
-        ******************************************/
-
-        jQuery("#watches-slider .slider-items").owlCarousel({
-            items: 4,
-            itemsDesktop: [1024, 4],
-            itemsDesktopSmall: [900, 3],
-            itemsTablet: [640, 2],
-            itemsMobile: [390, 1],
-            navigation: !0,
-            navigationText: ['<a class="flex-prev"></a>', '<a class="flex-next"></a>'],
-            slideSpeed: 500,
-            pagination: !1,
-            autoPlay: true
-        }),
-
-        /******************************************
+		/******************************************
         	daily deal slider
         ******************************************/
 
@@ -117,23 +74,7 @@ jQuery(document).ready(function() {
             pagination: !1,
             autoPlay: true
         }),
-		
-		/******************************************
-        	Photo slider
-        ******************************************/
 
-        jQuery("#photo-slider .slider-items").owlCarousel({
-            items: 4,
-            itemsDesktop: [1024, 4],
-            itemsDesktopSmall: [900, 3],
-            itemsTablet: [640, 2],
-            itemsMobile: [390, 1],
-            navigation: !0,
-            navigationText: ['<a class="flex-prev"></a>', '<a class="flex-next"></a>'],
-            slideSpeed: 500,
-            pagination: !1,
-            autoPlay: true
-        }),
 
         /******************************************
         	best sale slider

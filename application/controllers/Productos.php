@@ -62,6 +62,9 @@ class Productos extends CI_Controller {
 	function borrarProducto(){
 		echo json_encode($this->prd->borrarProducto($this->input->post()));		
 	}
+	function borrarImagen(){
+		echo json_encode($this->prd->borrarImagen($this->input->post()));		
+	}
 	
 	function detalles(){
 		$d = $this->input->post();
