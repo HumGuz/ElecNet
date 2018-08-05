@@ -755,6 +755,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Best Selling-->
+ 
+  <?php include_once FCPATH.'application/views/sitio/best-selling.php';?>  
+>
  
  
   <div class="inner-box">
@@ -1566,15 +1571,15 @@
         </div>
         <div class="col-sm-6 col-md-2 col-xs-12 collapsed-block">
           <div class="footer-links">
-            <h5 class="links-title">Information<a class="expander visible-xs" href="#TabBlock-1">+</a></h5>
+            <h5 class="links-title">Quienes Somos<a class="expander visible-xs" href="#TabBlock-1">+</a></h5>
             <div class="tabBlock" id="TabBlock-1">
               <ul class="list-links list-unstyled">
-                <li><a href="#s">Delivery Information</a></li>
-                <li><a href="#">Discount</a></li>
-                <li><a href="sitemap.html">Sitemap</a></li>
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="faq.html">FAQs</a></li>
-                <li><a href="#">Terms &amp; Condition</a></li>
+                <li><a href="#s">Código de Ética</a></li>
+                <li><a href="#">Calidad de los Productos</a></li>
+                <li><a href="sitemap.html">Envíos sin Costo</a></li>
+                <li><a href="#">Alta Fidelidad</a></li>
+                <li><a href="faq.html">Soporte Técnico</a></li>
+                <li><a href="#">Garantías </a></li>
               </ul>
             </div>
           </div>
@@ -1611,12 +1616,12 @@
         </div>
         <div class="col-sm-6 col-md-3 col-xs-12 collapsed-block">
           <div class="footer-links">
-            <h5 class="links-title">Working hours<a class="expander visible-xs" href="#TabBlock-5">+</a></h5>
+            <h5 class="links-title">HORAS LABORALES<a class="expander visible-xs" href="#TabBlock-5">+</a></h5>
             <div class="tabBlock" id="TabBlock-5">
-              <div class="footer-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</div>
-              <div class="footer-description"> <b>Monday-Friday:</b> 8.30 a.m. - 5.30 p.m.<br>
-                <b>Saturday:</b> 9.00 a.m. - 2.00 p.m.<br>
-                <b>Sunday:</b> Closed </div>
+              <div class="footer-description">Las órdenes de compra que se procesan en el siguiente horario son enviadas el mismo día.</div>
+              <div class="footer-description"> <b>Lunes-Viernes:</b> 8.00 a.m. - 5.30 p.m.<br>
+                <b>Sábado:</b> 9.00 a.m. - 2.00 p.m.<br>
+                <b>Domingo:</b> Cerrado </div>
               <div class="payment">
                 <ul>
                   <li><a href="#"><img title="Visa" alt="Visa" src="<?php echo base_url() ?>application/views/img/visa.png"></a></li>
@@ -1633,12 +1638,12 @@
     <div class="footer-coppyright">
       <div class="container">
         <div class="row">
-          <div class="col-sm-6 col-xs-12 coppyright"> Copyright © 2017 <a href="#"> Famous </a>. All Rights Reserved. </div>
+          <div class="col-sm-6 col-xs-12 coppyright"> Copyright © 2018 <a href="#"> Elecnet</a>. All Rights Reserved. </div>
           <div class="col-sm-6 col-xs-12">
             <ul class="footer-company-links">
-              <li> <a href="about_us.html">About Famous</a> </li>
-              <li> <a href="#">Careers</a> </li>
-              <li> <a href="#">Privacy Policy</a> </li>
+              <li> <a href="about_us.html">Acerca de Elecnet</a> </li>
+              <li> <a href="#">Contacto</a> </li>
+              <li> <a href="#">Aviso de Privacidad</a> </li>
             </ul>
           </div>
         </div>

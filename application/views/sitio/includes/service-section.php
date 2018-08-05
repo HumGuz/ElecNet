@@ -6,8 +6,8 @@
             <div class="text-des">
               <div class="icon-wrapper"><i class="fa fa-paper-plane"></i></div>
               <div class="service-wrapper">
-                <h3>World-Wide Shipping</h3>
-                <p>On order over $99</p>
+                <h3>Envio Gratis</h3>
+                <p>En Ordenes Superiores a $99 USD</p>
               </div>
             </div>
           </div>
@@ -17,8 +17,8 @@
             <div class="text-des">
               <div class="icon-wrapper"><i class="fa fa-rotate-right"></i></div>
               <div class="service-wrapper">
-                <h3>100% secure payments</h3>
-                <p>Credit/ Debit Card/ Banking </p>
+                <h3>Pagos 100% Seguros</h3>
+                <p>Tarjeta de Debito/ Transferencia/ PayPal/ OXXO</p>
               </div>
             </div>
           </div>
@@ -28,8 +28,8 @@
             <div class="text-des">
               <div class="icon-wrapper"><i class="fa fa-umbrella"></i></div>
               <div class="service-wrapper">
-                <h3>Support 24/7</h3>
-                <p>Call us: ( +123 ) 456 789</p>
+                <h3>Soporte 24/7</h3>
+                <p>Llamenos Ahora: <h3>+52 (449) 138-8110<h3></p>
               </div>
             </div>
           </div>
@@ -39,8 +39,8 @@
             <div class="text-des">
               <div class="icon-wrapper"><i class="fa fa-tags"></i></div>
               <div class="service-wrapper">
-                <h3>Member Discount</h3>
-                <p>25% on order over $199</p>
+                <h3>Descuento Para Miembros</h3>
+                <p>25% En Ordenes Superiores a $199 USD</p>
               </div>
             </div>
           </div>

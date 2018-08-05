@@ -162,6 +162,11 @@ vnt = {
 					pr = vnt.productosDS[p], pr.existencia = parseFloat(pr.existencia), pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),vnt.addFilaProducto(pr);					
 				vnt.totalGeneral(),md.find( "#factura" ).attr('disabled','disabled'),
 				md.find("#id_cliente").change()		
+				if(o.copiar==1){
+					delete o.id_venta;
+					delete o.copiar;
+					o.id_sucursal = $("#id_sucursal").val();
+				}
 			}else if(!o.id_venta && o.folio){
 				o.id_cotizacion = vnt.cotizacion.id_cotizacion;
 				delete o.folio;

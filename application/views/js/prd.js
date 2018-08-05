@@ -82,7 +82,6 @@ prd = {
 				prd.initClas(md)		
 				rules = {
 					clave:{remote:{ url: "claveUnica",type: "POST",data: {id_almacen:o.id_almacen,clave: function() {return md.find( "#clave" ).val();}}}},
-					//clave_secundaria:{remote:{ url: "claveUnica",type: "POST",data: {id_almacen:o.id_almacen,clave_secundaria: function() {return md.find( "#clave_secundaria" ).val();}}}}
 				},
 				msj = {clave:{remote:"Esta clave ya esta en uso"},clave_secundaria:{remote:"Esta clave ya esta en uso"}}
 			}			

@@ -67,7 +67,7 @@ class Productos_model extends CI_Model {
 								 	p.precio_venta,r.costo_promedio,p.tiempo_garantia,	round(p.valuacion) as valuacion,p.visible,p.stock,p.nuevo,	p.precio_oferta,						 	
 								 	borrarProducto(p.id_producto) as borrar							 	
 									from 
-									t_productos p 
+									t_productos p
 									left join r_almacen_productos r on r.id_producto = p.id_producto
 									left join t_departamentos d on d.id_departamento = p.id_departamento
 									left join t_categorias cp on cp.id_categoria = p.id_categoria_padre
