@@ -295,7 +295,7 @@ class Productos_model extends CI_Model {
 			foreach ($imgs as $key => $i) {				
 				unlink(FCPATH.'application/views/img/uploads/'.$i['imagen']);
 			}			
-			$this -> db -> query("delete from r_producto_imagen where 1=1 ");		
+			$this -> db -> query("delete from r_producto_imagen where 1=1 ".$c);		
 		}		
 		return array('status'=>1);		
 	}
