@@ -59,10 +59,8 @@
     </div>
   </div>
   <!-- service section -->
-  <?php include_once FCPATH.'application/views/sitio/includes/service-section.php';?>  
-  
-  <!-- Best Selling-->
- 
+  <?php include_once FCPATH.'application/views/sitio/includes/service-section.php';?>    
+  <!-- Best Selling--> 
   <?php include_once FCPATH.'application/views/sitio/best-selling.php';?>  
  
  
