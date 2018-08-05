@@ -211,7 +211,7 @@ class App {
 		}	
 	}
 	
-	public static function poner_guion($url){
+	public static function uri($url){
 		 $url = strtolower($url);
 		 //Reemplazamos caracteres especiales latinos
 		 $find = array('á','é','í','ó','ú','â','ê','î','ô','û','ã','õ','ç','ñ');

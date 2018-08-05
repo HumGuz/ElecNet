@@ -146,7 +146,7 @@ prd = {
 							$('a[href="#tab_1"]').tab('show'),							
 							(n = $("#tab_1 .carousel-indicators li").length),							
 							$("#tab_1 .carousel-indicators").append('<li class="'+(n==0?'active':'')+'" data-target="#img-prod" data-slide-to="'+n+'"></li>'),
-							$("#tab_1 .carousel-inner").append('<div class="item '+(n==0?'active':'')+'"><img src="'+($("#prodDet-modal").data('base_url'))+'application/views/img/uploads/'+r.imagen+'" style="margin:0px auto"><div class="carousel-caption">'+r.imagen+' <button onclick="prd.borrarImagen({id_producto:'+o.id_producto+',imagen:\''+r.imagen+'\'})" type="button" class="btn btn-link "><span class=" text-danger glyphicon glyphicon-trash"></span></button>   </div></div>'),
+							$("#tab_1 .carousel-inner").append('<div class="item '+(n==0?'active':'')+'"><img src="'+($("#prodDet-modal").data('base_url'))+'application/views/img/uploads/'+r.imagen+'" style="margin:0px auto"><div class="carousel-caption">'+r.imagen+' <button onclick="prd.borrarImagen({id_producto:'+o.id_producto+',imagen:\''+r.imagen+'\'})" type="button" class="btn btn-link "><span class=" text-danger glyphicon glyphicon-trash"></span></button> <button onclick="prd.hacerPortada({id_producto:'+o.id_producto+',imagen:\''+r.imagen+'\'})" type="button" class="btn btn-link "><span class=" text-primary glyphicon glyphicon-picture"></span></button>   </div></div>'),
 							$("#img-prod").carousel(n),$("#subImg").hide(),$("#seimgO").text('Subir Imagen'),$("#image-cropper .cropit-preview-image").attr("src", ""), $("#imagen_producto").val("")
 							) : app.error();})
 						.fail(function(e, a, r) {console.log(e, a, r)})
@@ -212,6 +212,26 @@ prd = {
 		});
 	},
 	
+	hacerPortada:function(o){
+		$.confirm({ title: 'Hacer Portada',content: '¿Esta seguro de querer hacer esta imagen la portada?', type: 'orange',theme:"dark",
+		    buttons: {
+		    	a: {text: 'Cancelar'},
+		        b: {text: 'Hacer Portada',btnClass: 'btn-orange', action: function(r){ 
+		        	$.confirm({ title: 'Hacer Portada',content: 'Al hacer portada esta imagen, se mostrara primero en la pagina E-commerce, ¿Continuar?',
+					    type: 'red',theme:"dark",
+					    buttons: {
+					    	a: {text: 'Cancelar'},
+					        b: {text: 'Hacer Portada',btnClass: 'btn-red', action: function(r){ 
+					        	$.ajax({type : "POST",url : "hacerPortada",dataType : "json",data : o})
+								.done(function(r) {
+									1 == r.status ? app.ok() : app.error();
+								}).fail(function(e, t, i) {console.log(e, t, i)})
+					        }}		        
+					}});
+		        }}		        
+		    }
+		});
+	},
 	
 	/*almacenes light*/
 	nuevoAlmacen:function(o){

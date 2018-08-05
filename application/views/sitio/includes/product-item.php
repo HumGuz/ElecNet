@@ -1,6 +1,6 @@
 <?php
 	if(!isset($p) || empty($p))
-		$p = $this->p->$this->p->etProductos();
+		$p = $this->p->$this->p->getProductos();
 	 
 ?>
 				<div class="product-item">
@@ -8,7 +8,7 @@
                       <?php echo ($p['precio_oferta']>0 ? '<div class="icon-sale-label sale-left">Oferta!!</div>':'') ?>
                       <?php echo ($p['precio_oferta']>0 ? '<div class="icon-new-label new-right">Nuevo</div>':'') ?>
                       <div class="product-thumbnail">
-                        <div class="pr-img-area"><a title="<?php echo $p['concepto'] ?>" href="<?php echo base_url().app::poner_guion($p['concepto']) ?>/<?php echo $p['id_producto'] ?>">
+                        <div class="pr-img-area"><a title="<?php echo $p['concepto'] ?>" href="<?php echo base_url().app::uri($p['concepto']) ?>/<?php echo $p['id_producto'] ?>">
                           <figure> <img class="first-img" src="<?php echo base_url() ?>/application/views/img/uploads/<?php echo $p['imagen'] ?>" alt="<?php echo $p['concepto'] ?>"> <img class="hover-img" src="<?php echo base_url() ?>/application/views/img/uploads/<?php echo $p['imagen'] ?>" alt="<?php echo $p['concepto'] ?>"></figure>
                           </a></div><div class="pr-info-area">
  							<div class="pr-button">
@@ -20,7 +20,7 @@
                       </div>
                       <div class="item-info">
                         <div class="info-inner">
-                          <div class="item-title"> <a title="<?php echo $p['concepto'] ?>" href="<?php echo base_url().app::poner_guion($p['concepto']) ?>/<?php echo $p['id_producto'] ?>"><?php echo $p['concepto'] ?></a> </div>
+                          <div class="item-title"> <a title="<?php echo $p['concepto'] ?>" href="<?php echo base_url().app::uri($p['concepto']) ?>/<?php echo $p['id_producto'] ?>"><?php echo $p['concepto'] ?></a> </div>
                           <div class="item-content">
                             <?php echo $this->st->getValuation($p) ?>
                             <div class="item-price">

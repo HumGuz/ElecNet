@@ -23,7 +23,8 @@ class Sitio extends CI_Controller {
 		$this->load->view('sitio/index',
 			array(
 				'departamentos'=>$this->c->getClasificaciones(),
-				'best_selling'=>$this->st->getBestSelling()
+				'best_selling'=>$this->st->getBestSelling(),
+				'special_offers'=>$this->st->getSpecialOffers()
 			)
 		);
 	}
