@@ -29,23 +29,9 @@
               <div id="jtv-best-sale-slider" class="product-flexslider">
                 <div class="slider-items">
                   <?php
-					if(!empty($special_offers)){
-						$x = 1;
-						foreach ($special_offers as $k => $d) {						
-							echo '<div class="tab-pane '.($k==0?'active':'').' in" id="bs-'.$d['id_departamento'].'">
-									<div class="featured-pro">
-										<div class="slider-items-products">
-											<div id="bs-slider-'.$x.'" class="product-flexslider hidden-buttons">
-												<div class="slider-items slider-width-col4">';
-												foreach ($d['top_six'] as $kd => $p) {
-													include FCPATH.'application/views/sitio/includes/product-item.php'; 
-												}	
-								echo '			</div>
-											</div>
-										</div>
-									</div>
-								</div>';
-							$x++;
+					if(!empty($special_offers)){					
+						foreach ($special_offers as $k => $p) {						
+							include FCPATH.'application/views/sitio/includes/product-item.php'; 				
 						}
 					}
 	        	?>

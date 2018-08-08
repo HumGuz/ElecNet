@@ -293,11 +293,11 @@
 				$("#descuentop").val(''),$("#descuentop").focus(),toastr["warning"]("Capture el descuento")
 				return 0;	
 			}			
-			if(p<cp && cp>0){				
+			if(p<cp && cp>0 && cot.producto.um!='SERV'){				
 				$.confirm({ title: 'Precio',content: 'El precio establecido es menor a el costo promedio del producto por lo que se generarán perdidas.<br>Costo Promedio:<b>$ '+app.number_format(cp,2)+'</b><br> Favor de revisar.', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){ $("#preciop").focus()}}}});
 				return 0;
 			}				
-			if(cp==0)
+			if(cp==0 && cot.producto.um!='SERV' )
 				$.confirm({ title: 'Sin costo promedio registrado',content: 'No se han realziado compras de este producto, revise las existencias antes de realizar la venta.', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){}}}});
 							
 			if(cot.productos[cot.producto.id_producto]){				
@@ -438,16 +438,52 @@
 		        }},
 		        b: {text: 'Elecnet',btnClass: 'btn-red', action: function(r){ 
 		        	cot.export(t,f,type,'mem_ele');
-		        }},c: {text: 'Cancelar',btnClass: 'btn-default'}		        
+		        }},
+		        c: {text: 'centralGPS',btnClass: 'btn-info', action: function(r){ 
+		        	cot.export(t,f,type,'bg-cntrlgps');
+		        }},
+		        d: {text: 'Cancelar',btnClass: 'btn-default'}		        
 		    }
 		});
 	},
 	export:function(t,f,type,m){
-		$.ajax({type : "POST",url : type,dataType : "json",data :{id_cotizacion: t,membrete:m}})
-		.done(function(a) {
-			1 == a.status ? location.href = ('download?folio='+f+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
-		}).fail(function(t, a, e) {
-			 app.error(), console.log(t, a, e);
+		
+		$.confirm({
+		    title: 'Nombrar Archivo',
+		    content: '' +
+		    '<form action="" class="formName">' +
+		    '<div class="form-group">' +
+		    '<label>Nombre para el archivo</label>' +
+		    '<input type="text"  class="name form-control" required />' +
+		    '</div>' +
+		    '</form>', type: 'blue',theme:"dark",
+		    buttons: {
+		        formSubmit: {
+		            text: 'Descargar',
+		            btnClass: 'btn-blue',
+		            action: function () {
+		                var name = this.$content.find('.name').val();
+		                if(!name){
+		                    $.alert('Capture un nombre para el archivo');
+		                    return false;
+		                }
+		                $.ajax({type : "POST",url : type,dataType : "json",data :{id_cotizacion: t,membrete:m,nombre:name}})
+						.done(function(a) {
+							1 == a.status ? location.href = ('download?nombre='+name+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
+						}).fail(function(t, a, e) {
+							 app.error(), console.log(t, a, e);
+						});
+		            }
+		        },
+		        d: {text: 'Cancelar',btnClass: 'btn-default'}		   
+		    },
+		    onContentReady: function () {		       
+		        var jc = this;
+		        this.$content.find('form').on('submit', function (e) {		            
+		            e.preventDefault();
+		            jc.$$formSubmit.trigger('click');
+		        });
+		    }
 		});
 	}
 };

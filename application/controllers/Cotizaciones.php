@@ -60,6 +60,111 @@ class Cotizaciones extends CI_Controller {
 		if(!empty($prd)){
 			$this->load->library('pdf');
 			$pdf = $this->pdf->load('utf-8',array(216,279.4),0,'"Helvetica Neue",Helvetica,Arial,sans-serif',8,5,5,20,5,2,"P");							
+				
+			if($d['membrete']=='bg-cntrlgps'){
+					$html = '
+					<html>
+						<head>
+							<style>
+								@page {
+									size: auto;
+									header: html_myHeader;
+									footer: html_myFooter;				
+									background: #ffffff url("./application/views/img/'.$d['membrete'].'.jpg") no-repeat left top;
+								}
+							</style>
+						</head>
+						<body>
+							<htmlpageheader name="myHeader" style="display:none;">										
+									<div align="right">
+										Jovanny Rodríguez Sepúlveda<br>
+										General Manuel M Diéguez 114<br>
+										Col. Insurgentes C.P.20287<br>
+										Aguascalientes, Ags.<br>
+										RFC ROSJ910907GC3
+									</div>
+									<h2 align="center"><b>Cotización</b></h2>
+									<div align="left">
+										'.$cot[0]['direccion'].'<br>
+									</div>	
+									<div align="right">
+									<br>
+										<b>Fecha de Vencimiento:</b>'.App::dateFormat($cot[0]['fecha_vencimiento']).'<br>
+										<b>Folio de Cotización</b>  '.$cot[0]['folio'].'
+									</div>													
+							</htmlpageheader>
+	
+							<htmlpagefooter name="myFooter" style="display:none;">				
+								<div  align="right">
+									<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+									<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
+									
+								</div>	
+							</htmlpagefooter>										
+					
+					<table  cellpadding="5" cellspacing="0" style="font-size:12px;width:100%">
+					<thead>					
+						<tr style="background-color:#333333;">	
+							<td style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF"><b>Clave</b></td>
+							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Descripción</b></td>	
+							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Cantidad</b></td>
+							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Unidad</b></td>										
+							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Precio Unitario</b></td>								
+							<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Importe</b></td>								
+						</tr>
+					</thead>						
+				    <tbody> ';	
+						foreach ($prd as $k => $u) {								
+							$html .= '				
+									<tr>	
+										<td style="border-left:1px solid #d3d3d3;font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+											'.$u['clave'].'
+										</td>	
+										<td style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+											'.$u['concepto'].'
+										</td>
+										<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+											'.$u['cantidad'].'
+										</td>
+										<td align="center" style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+											'.$u['um'].'
+										</td>					
+										<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+											$ '.number_format( $u['precio']   - ( $u['precio'] * $u['descuento'] / 100  ),2).'
+										</td>								
+										<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+											$ '.number_format( $u['subtotal'],2).'
+										</td>												
+									</tr>
+							';						
+						}
+						$html .= '
+						<tr>
+						<td colspan="5" align="right" style="">Subtotal:</td>
+						<td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['subtotal'],2).' </td>
+						</tr><tr>
+						<td colspan="5" align="right" style="">Descuento <b>'.round($cot[0]['descuento_general']).'%</b>:</td>
+						<td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['total_descuento'],2).' </td>
+						</tr><tr>
+						<td colspan="5" align="right" style="">Gastos de envío:</td>
+						<td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['gastos_envio'],2).'</td>
+						</tr><tr>
+						<td colspan="5" align="right" style="">I.V.A:</td>
+						<td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['iva'],2).'</td>
+						</tr><tr>
+						<td colspan="5" align="right" style="">Total:</td>
+						<td align="right" style="font-weight:bold">$ '.number_format($cot[0]['total'],2).'</td>
+						</tr>
+						<tr><td colspan="6" align="right" >'.($l->ValorEnLetras(round($cot[0]['total'],2),'Pesos')).'</td></tr>				
+						</tbody></table>	
+				<div align="left">
+					<br>
+				Dudas con la Cotizacion<br>
+				(449) 138 8110 o al (449) 940 2690	<br>					
+				'.(trim($cot[0]['condiciones'])!='' ? '<b>CONDICIONES</b>: '.$cot[0]['condiciones'].'':'').'
+				</body></html>';			
+			}else{	
+				
 				$html = '
 				<html>
 					<head>
@@ -127,7 +232,7 @@ class Cotizaciones extends CI_Controller {
 								$ '.number_format( $u['precio']   - ( $u['precio'] * $u['descuento'] / 100  ),2).'
 							</td>								
 							<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
-								$ '.number_format( $u['total'],2).'
+								$ '.number_format( $u['subtotal'],2).'
 							</td>												
 						</tr>
 				';
@@ -152,10 +257,11 @@ class Cotizaciones extends CI_Controller {
 			</tr>
 			<tr><td colspan="6" align="right" >'.($l->ValorEnLetras(round($cot[0]['total'],2),'Pesos')).'</td></tr>				
 			</tbody></table>			
-			'.(trim($cot[0]['condiciones'])!='' ? ' <div style="margin:10px"><b>CONDICIONES DE VENTA</b>: '.$cot[0]['condiciones'].'</div>':'').'
-			</body></html>';			
+			'.(trim($cot[0]['condiciones'])!='' ? ' <div style="margin:10px" ><b>CONDICIONES DE VENTA</b>: '.$cot[0]['condiciones'].'</div>':'').'
+			</body></html>';	
+		}		
 			$pdf->WriteHTML($html); 			
-			$pdf->Output('./application/files/'.$cot[0]['folio'].'.pdf', 'F');
+			$pdf->Output('./application/files/'.$d['nombre'].'.pdf', 'F');
 			echo json_encode(array('status'=>1));
 		}else{
 			echo json_encode(array('status'=>2));
@@ -164,7 +270,7 @@ class Cotizaciones extends CI_Controller {
 
 	function download(){			
 		$d = $this->input->get();
-		$f =$d['folio'];			
+		$f =$d['nombre'];			
 		App::downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
 	}	
 	

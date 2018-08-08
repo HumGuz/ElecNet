@@ -43,9 +43,11 @@ class Cotizaciones_model extends CI_Model {
 	function getProductosXCotizacion($d){
 				
 		if($d['id_cotizacion'])
-			$c .= ' and r.id_cotizacion = '.$d['id_cotizacion']." order by p.clave asc";
+			$c .= ' and r.id_cotizacion = '.$d['id_cotizacion']." ";
 		
 		$q = $this -> db -> query("
+			select * from (
+			
 			select 
 			r.id_producto,	
 			r.id_almacen,		
@@ -70,12 +72,35 @@ class Cotizaciones_model extends CI_Model {
 			r.um,
 			r.cantidad,
 			r.descuento,
-			r.precio,			
+			r.precio,
+			r.subtotal,			
 			r.total
 			from r_cotizacion_productos r
 			inner join t_productos p on p.id_producto = r.id_producto
 			inner join r_almacen_productos ra on ra.id_producto = p.id_producto and r.id_almacen = ra.id_almacen
-			where 1=1 ".$c);
+			where 1=1 ".$c."
+			
+			union
+			
+			select 
+			r.id_servicio,	
+			0,		
+			p.clave,
+			p.concepto,
+			0 as existencia,			
+			0 as costo_promedio,			
+			p.precio_venta as truput,		
+			0 as costo_promedio_ue,				
+			'SERV',
+			r.cantidad,
+			r.descuento,
+			r.precio,
+			r.subtotal,			
+			r.total
+			from r_cotizacion_servicios r
+			inner join t_servicios p on p.id_servicio = r.id_servicio
+			where 1=1 ".$c."
+			) p order by p.clave asc");
 		$r = $q->result_array();
 		return $r;	
 		
@@ -95,14 +120,43 @@ class Cotizaciones_model extends CI_Model {
         }else{
         	$id_cotizacion = $d['id_cotizacion'];
 			unset($d['id_cotizacion']);
+			
             $this->db->where('id_cotizacion', $id_cotizacion);			
-            $this->db->update('t_cotizaciones', $d);            
+            $this->db->update('t_cotizaciones', $d); 
+                       
             $this->db->where('id_cotizacion', $id_cotizacion);			
          	$this->db->delete('r_cotizacion_productos');
+			
+			$this->db->where('id_cotizacion', $id_cotizacion);			
+         	$this->db->delete('r_cotizacion_servicios');
         }  
         if(!empty($p)){        				
-        	foreach ($p as $k => $v) {						
-				$this->db->insert('r_cotizacion_productos', array('id_cotizacion' =>$id_cotizacion,'id_producto'=>$v['id_producto'],'id_almacen'=>$v['id_almacen'],'cantidad'=>$v['cantidad'],'um'=>$v['um'],'precio'=>$v['precio'],'subtotal'=>$v['subtotal'],'descuento'=>$v['descuento'],'total'=>$v['total'],'id_usuario' =>$d['id_usuario_cambio']));			
+        	foreach ($p as $k => $v) {					
+				if($v['um']=='SERV'){
+					$this->db->insert('r_cotizacion_servicios', array(
+						'id_cotizacion' =>$id_cotizacion,
+						'id_servicio'=>$v['id_producto'],						
+						'cantidad'=>$v['cantidad'],						
+						'precio'=>$v['precio'],
+						'subtotal'=>$v['subtotal'],
+						'descuento'=>$v['descuento'],
+						'total'=>$v['total'],
+						'id_usuario' =>$d['id_usuario_cambio'])
+					);								
+				}else{
+					$this->db->insert('r_cotizacion_productos', array(
+						'id_cotizacion' =>$id_cotizacion,
+						'id_producto'=>$v['id_producto'],
+						'id_almacen'=>$v['id_almacen'],
+						'cantidad'=>$v['cantidad'],
+						'um'=>$v['um'],
+						'precio'=>$v['precio'],
+						'subtotal'=>$v['subtotal'],
+						'descuento'=>$v['descuento'],
+						'total'=>$v['total'],
+						'id_usuario' =>$d['id_usuario_cambio'])
+					);		
+				}						
 			}
         }	
 		return array('status'=>1,'id_cotizacion'=>$id_cotizacion);

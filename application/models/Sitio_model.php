@@ -12,14 +12,13 @@ class Sitio_model extends CI_Model {
 	
 	function getSpecialOffers($d=null){
 		$q = $this -> db -> query("
-			select * from (
-				select p.id_departamento,d.nombre as departamento,sum(p.salidas) as salidas from t_productos p	
-				inner join t_departamentos d on d.id_departamento = p.id_departamento
-				where p.visible = 1
-				group by p.id_departamento
-			) a 			
-			 order by salidas desc
-			limit 4
+			select p.id_producto,p.id_departamento,p.salidas,p.concepto,p.valuacion,
+										   p.precio_venta,p.precio_oferta,p.nuevo , 
+										   ( select imagen from r_producto_imagen i where i.id_producto = p.id_producto order by portada desc limit 1 ) as imagen
+										   from t_productos p
+										   where p.precio_oferta <> 0
+										   
+										   limit 6
 		");	
 		return $q->result_array();
 	}

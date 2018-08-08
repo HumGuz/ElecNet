@@ -62,7 +62,7 @@
   <?php include_once FCPATH.'application/views/sitio/includes/service-section.php';?>    
   <!-- Best Selling--> 
 
-  <?php include_once FCPATH.'application/views/sitio/best-selling.php';?>  
+  <?php include_once FCPATH.'application/views/sitio/includes/best-selling.php';?>  
    
   <?php include_once FCPATH.'application/views/sitio/includes/special-offers.php';?>  
  
