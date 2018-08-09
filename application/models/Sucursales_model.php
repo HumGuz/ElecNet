@@ -71,7 +71,7 @@ class Sucursales_model extends CI_Model {
 					$a[$v['clave_sucursal']]['a'][$v['clave']]= $v;	
 			}
 			if(!empty($a)){				
-					$r = '<select  class="form-control selectpicker div-sucursal " id="id_almacen" name="id_almacen" data-container="body" data-width="150px">';						
+					$r = '<select  class="form-control selectpicker div-sucursal " id="id_almacen" name="id_almacen" data-container="body" data-width="150px" data-live-search="true" data-hide-disabled="true">';						
 					foreach ($a as $cs => $s) {								
 						if(!empty($s['a'])){
 							$r .= '<optgroup label="[ '.$s['clave_sucursal'].' ] '.$s['sucursal'].'"> ';	
@@ -93,7 +93,7 @@ class Sucursales_model extends CI_Model {
 		$q = $this -> db -> query("select s.id_sucursal,s.clave,s.nombre from t_sucursales s  where 1=1 ".$c);		
 		$r = $q->result_array();
 		if(!empty($r)){						
-			$res = '<select  class="form-control selectpicker div-sucursal " id="id_sucursal" name="id_sucursal" data-container="body" data-width="200px">';		
+			$res = '<select  class="form-control selectpicker div-sucursal " id="id_sucursal" name="id_sucursal" data-container="body" data-width="200px" data-live-search="true" data-hide-disabled="true">';		
 			foreach ($r as $k => $v) {
 				$res .= '<option value="'.$v['id_sucursal'].'" '.( $v['id_sucursal'] ==  $this->s['usuario']['id_sucursal'] ? 'selected':'' ).' >[ '.$v['clave'].' ]  '.$v['nombre'].' </option> ';
 			}

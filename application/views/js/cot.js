@@ -13,8 +13,7 @@
 	    };		
 		$("#srchFrm").find('#daterange-btn').daterangepicker({locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end,opens: "left",drops: "up",autoApply:true, ranges: { 'Hoy'       : [moment(), moment()],'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],'Últimos 7 Días' : [moment().subtract(6, 'days'), moment()],'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],'Este Mes'  : [moment().startOf('month'), moment().endOf('month')], 'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]}},cb);		 
 		cb(strt,end,'Últimos 7 Días');		 
-		$("#id_sucursal").change(function(){ cot.id_sucursal =$(this).val(), cot.clear()})
-		 cot.id_sucursal =$("#id_sucursal").val(),cot.clear({});
+		$("#id_sucursal").change(function(){ cot.id_sucursal =$(this).val(), cot.clear()}).change()
 	},
 	clear:function(){
 		$("#srchFrm").resetForm();		

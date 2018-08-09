@@ -23,8 +23,7 @@ ord = {
 	        }	     
 	      },cb);		 
 		  cb(strt,end,'Últimos 7 Días');
-		  $("#id_sucursal").change(function(){ ord.id_sucursal =$(this).val(), ord.clear()})
-		  ord.id_sucursal =$("#id_sucursal").val(),ord.clear({});
+		  $("#id_sucursal").change(function(){ ord.id_sucursal =$(this).val(), ord.clear()}).change()
 	},
 	clear:function(){
 		$("#srchFrm").resetForm();		

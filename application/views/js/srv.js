@@ -19,9 +19,11 @@ srv = {
 		srv.serviciosTable({limit:0});		
 	},	
 	initClas:function(c,d,cp,ch){	
+		suc = c.find("#id_sucursal"),
 		dep = c.find("#id_departamento"),
 		catp = c.find("#id_categoria_padre"),
-		cath = c.find("#id_categoria")			
+		cath = c.find("#id_categoria"),
+		suc.change(function(){srv.serviciosTable({limit:0})}),			
 		dep.change(function(){
 			vl =$(this).val(),c.find(".categorias").val(''),c.find(".categorias option").prop('disabled',true),					
 			(vl!='' &&  c.find(".categorias option[data-id_departamento='"+vl+"']").prop('disabled',false) ),

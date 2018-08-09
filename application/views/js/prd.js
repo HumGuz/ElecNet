@@ -9,14 +9,10 @@ prd = {
 		prd.md = md,prd.limit = 0,prd.filter= {},		
 		md.find(".selectpicker").selectpicker({});
 		var s;i = md.find("#busqueda_out").eq(0);
-		i.keyup(function(){if(s) clearTimeout(s); s = setTimeout(function() {$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),$("#prdTbl tbody").empty(),val = $.trim(i.val()),prd.productosTable({busqueda:val,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val(),limit:0})},1000)})	
+		i.keyup(function(){if(s) clearTimeout(s); s = setTimeout(function() {$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),$("#prdTbl tbody").empty(),val = $.trim(i.val()),prd.productosTable({busqueda:val,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val(),limit:0})},300)})	
 		prd.initClas(md);		
-		$("#fltrAlmFrm").validation({extend:{},success:function(ob){
-			$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),
-			$("#prdTbl tbody").empty(),ob.limit = 0,prd.productosTable(ob)
-		}})
-		prd.productosTable({limit:0});
-				
+		$("#fltrAlmFrm").validation({extend:{},success:function(ob){$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),$("#prdTbl tbody").empty(),ob.limit = 0,prd.productosTable(ob)}})
+		// prd.productosTable({limit:0});				
 	},	
 	initClas:function(c,d,cp,ch){		
 		suc = c.find("#id_sucursal"),
@@ -26,9 +22,11 @@ prd = {
 		cath = c.find("#id_categoria")	
 		suc.change(function(){
 			vl = $(this).val(),alm.find("option").prop('disabled',true),					
-			(vl!='' &&  alm.find("option[data-id_sucursal='"+vl+"']").prop('disabled',false) ),
-			alm.selectpicker('refresh');					
-		}),
+			(vl!='' &&  alm.find("option[data-id_sucursal='"+vl+"']").prop('disabled',false) ),			
+			alm.find("option").not('[disabled]').eq(0).prop('selected',true);			
+			alm.selectpicker('refresh');		
+			prd.productosTable({limit:0});						
+		}).change(),
 		dep.change(function(){
 			vl =$(this).val(),c.find(".categorias").val(''),c.find(".categorias option").prop('disabled',true),					
 			(vl!='' &&  c.find(".categorias option[data-id_departamento='"+vl+"']").prop('disabled',false) ),

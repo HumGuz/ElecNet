@@ -19,7 +19,7 @@
 					<form id="nvaCot">								
 							<div class="form-group col-sm-5 ">
 				                  <label for="id_cliente">Cliente</label>
-				                  <select  class="form-control selectpicker required" id="id_cliente" name="id_cliente" data-container="body">				                  	
+				                  <select  class="form-control selectpicker required" id="id_cliente" name="id_cliente" data-container="body" data-live-search="true">				                  	
 				                  	<?php
 										if(!empty($clt)) {
 											echo '<option>-- seleccione --</option>';							
