@@ -26,7 +26,7 @@ class Cotizaciones_model extends CI_Model {
 		if($d['fecha_inicial'] && $d['fecha_final'])
 			$c .= " and  date(c.fecha_registro)  >= '".$d['fecha_inicial']."' and date(c.fecha_registro) <= '".$d['fecha_final']."' ";				
 		if($d['busqueda'])
-			$c .= " and (  c.folio like '%".$d['busqueda']."%' or c.observaciones like '%".$d['busqueda']."%' or p.clave like '%".$d['busqueda']."%' or p.nombre like '%".$d['busqueda']."%'  )  ";
+			$c .= " and (  c.folio like '%".$d['busqueda']."%' or c.observaciones like '%".$d['busqueda']."%' or pr.clave like '%".$d['busqueda']."%' or pr.nombre like '%".$d['busqueda']."%'  )  ";
 		
 		$c .= " order by c.fecha_registro desc";	
 		
@@ -53,6 +53,12 @@ class Cotizaciones_model extends CI_Model {
 			r.id_almacen,		
 			p.clave,
 			p.concepto,
+			p.descripcion,
+			p.marca,
+			p.modelo,
+			p.dimensiones,
+			p.peso,
+			p.tiempo_garantia,
 			IF(
 				r.um = p.id_unidad_medida_entrada,
 				p.existencia,
@@ -74,7 +80,10 @@ class Cotizaciones_model extends CI_Model {
 			r.descuento,
 			r.precio,
 			r.subtotal,			
-			r.total
+			r.total,
+			
+			( select imagen from r_producto_imagen i where i.id_producto = p.id_producto order by portada desc limit 1 ) as imagen
+			
 			from r_cotizacion_productos r
 			inner join t_productos p on p.id_producto = r.id_producto
 			inner join r_almacen_productos ra on ra.id_producto = p.id_producto and r.id_almacen = ra.id_almacen
@@ -86,7 +95,7 @@ class Cotizaciones_model extends CI_Model {
 			r.id_servicio,	
 			0,		
 			p.clave,
-			p.concepto,
+			p.concepto,'','','','','','',
 			0 as existencia,			
 			0 as costo_promedio,			
 			p.precio_venta as truput,		
@@ -96,7 +105,8 @@ class Cotizaciones_model extends CI_Model {
 			r.descuento,
 			r.precio,
 			r.subtotal,			
-			r.total
+			r.total,
+			''
 			from r_cotizacion_servicios r
 			inner join t_servicios p on p.id_servicio = r.id_servicio
 			where 1=1 ".$c."

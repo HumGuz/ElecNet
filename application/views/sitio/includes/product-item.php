@@ -1,8 +1,3 @@
-<?php
-	if(!isset($p) || empty($p))
-		$p = $this->p->$this->p->getProductos();
-	 
-?>
 				<div class="product-item">
                     <div class="item-inner">
                       <?php echo ($p['precio_oferta']>0 ? '<div class="icon-sale-label sale-left">Oferta!!</div>':'') ?>

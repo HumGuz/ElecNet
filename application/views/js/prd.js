@@ -8,10 +8,8 @@ prd = {
 	initFilter:function(md){
 		prd.md = md,prd.limit = 0,prd.filter= {},		
 		md.find(".selectpicker").selectpicker({});
-		var s;i = md.find("#busqueda_out").eq(0);
-		i.keyup(function(){if(s) clearTimeout(s); s = setTimeout(function() {$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),$("#prdTbl tbody").empty(),val = $.trim(i.val()),prd.productosTable({busqueda:val,id_sucursal:md.find("#id_sucursal").val(),id_almacen:md.find("#id_almacen").val(),limit:0})},300)})	
-		prd.initClas(md);		
-		$("#fltrAlmFrm").validation({extend:{},success:function(ob){$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),$("#prdTbl tbody").empty(),ob.limit = 0,prd.productosTable(ob)}})
+		app.initBuscador(md,prd.productosTable);prd.initClas(md);		
+		$("#fltrAlmFrm").validation({extend:{},success:function(ob){$('.box-body-catalogo').slimScroll({ scrollTo: '0' }),$("#resultTbl tbody").empty(),ob.limit = 0,prd.productosTable(ob)}})
 		// prd.productosTable({limit:0});				
 	},	
 	initClas:function(c,d,cp,ch){		
@@ -48,9 +46,9 @@ prd = {
 		$(".overlay").show();		
 		$.ajax({type : "POST",url : "productosTable",dataType : "html",data :prd.filter})
 		.done(function(r) {
-			($.trim(r)!='' && $("#prdTbl tbody").append(r)),
+			($.trim(r)!='' && $("#resultTbl tbody").append(r)),
 			(r.indexOf('tr')>=0 && prd.scr()),$(".overlay").hide();			
-		}).fail(function(e, t, i) {console.log(e, t, i)})
+		}).fail(function(e, t, i) {$(".overlay").hide();console.log(e, t, i)})
 	},
 	scr:function(){	
 		$(".box-body-catalogo").scroll(function(){

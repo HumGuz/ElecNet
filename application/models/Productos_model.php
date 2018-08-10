@@ -81,6 +81,55 @@ class Productos_model extends CI_Model {
 	}
 	
 	
+	
+	function getProductosSitio($d){					
+		if($d['id_sucursal'])
+			$c = ' and r.id_sucursal =  '.$d['id_sucursal'];
+		else 
+			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';	
+				
+		if($d['id_almacen'])
+			$c .= ' and r.id_almacen = '.$d['id_almacen'];
+		if($d['id_producto'])		
+			$c .= ' and p.id_producto = '.$d['id_producto'];
+		if($d['id_departamento'])		
+			$c .= ' and p.id_departamento = '.$d['id_departamento'];	
+		if($d['id_categoria_padre'])		
+			$c .= ' and p.id_categoria_padre = '.$d['id_categoria_padre'];	
+		if($d['id_categoria'])		
+			$c .= ' and p.id_categoria = '.$d['id_categoria'];
+			
+		if($d['busqueda'])
+			$c .= " and (  p.descripcion like '%".$d['busqueda']."%' or p.concepto like '%".$d['busqueda']."%' or p.marca like '%".$d['busqueda']."%'  )  ";
+				
+		$c .= " order by p.clave asc";
+				
+		$s = "select 
+									r.id_almacen_producto,r.id_almacen,r.id_sucursal,p.id_producto,
+									p.clave,p.clave_secundaria,
+									p.concepto,p.marca,p.modelo,
+									p.descripcion,p.colores,p.dimensiones,p.peso,
+									p.id_departamento, d.clave as dep,d.nombre as departamento,
+									p.id_categoria_padre, cp. clave as cat,cp.nombre as categoria,
+									p.id_categoria, c.clave as subcat,c.nombre as subcategoria,									
+									p.existencia as existencia,
+								 	p.precio_venta,p.tiempo_garantia,round(p.valuacion) as valuacion,
+								 	p.visible,p.stock,p.nuevo,p.precio_oferta	
+									from 
+									t_productos p
+									left join r_almacen_productos r on r.id_producto = p.id_producto
+									left join t_departamentos d on d.id_departamento = p.id_departamento
+									left join t_categorias cp on cp.id_categoria = p.id_categoria_padre
+									left join t_categorias c on c.id_categoria = p.id_categoria
+									 where 1=1 ".$c;
+		
+		$q = $this -> db -> query($s);		
+		$r = $q->result_array();
+	
+		return $r;		
+	}
+	
+	
 	function replace($str){
 		return str_replace(array('á','é','í','ó','ú','Á','É','Í','Ó','Ú'), array('a','e','i','o','u','A','E','I','O','U'), $str);
 	}	

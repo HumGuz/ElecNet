@@ -2,31 +2,23 @@
 	id_sucursal:0,
 	init:function(){		
 		$("div.box-tools button.btn.btn-success").click(function(){cot.nuevaCotizacion({id_sucursal:cot.id_sucursal})});
-		$("#cotTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,cot[f](d)});
-		$("#srchFrm").validation({success:function(o){$("#cotTbl tbody").empty(),cot.cotizacionesTable(o)}});		
-		strt = moment().subtract(6, 'days');
-		end =  moment();
-		cb =  function (start, end, lbl) {	      
-	       	$("#srchFrm").find('#daterange-btn span').html('<b>'+lbl+'</b> del '+start.format('D MMMM YYYY') + ' al ' + end.format('D MMMM YYYY'));	        
-	        $("#srchFrm").find("#fecha_inicial").val(start.format('YYYY-MM-DD'))
-	        $("#srchFrm").find("#fecha_final").val(end.format('YYYY-MM-DD'))
-	    };		
-		$("#srchFrm").find('#daterange-btn').daterangepicker({locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end,opens: "left",drops: "up",autoApply:true, ranges: { 'Hoy'       : [moment(), moment()],'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],'Últimos 7 Días' : [moment().subtract(6, 'days'), moment()],'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],'Este Mes'  : [moment().startOf('month'), moment().endOf('month')], 'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]}},cb);		 
-		cb(strt,end,'Últimos 7 Días');		 
+		$("#resultTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,cot[f](d)});
+		$("#srchFrm").validation({success:function(o){$("#resultTbl tbody").empty(),cot.cotizacionesTable(o)}});
+		app.dateRangeFilter();app.initBuscador($("section.content"),cot.cotizacionesTable);	
 		$("#id_sucursal").change(function(){ cot.id_sucursal =$(this).val(), cot.clear()}).change()
 	},
 	clear:function(){
 		$("#srchFrm").resetForm();		
-		$("#cotTbl tbody").empty();
+		$("#resultTbl tbody").empty();
 		cot.cotizacionesTable({});
 	},
 	cotizacionesTable:function(o){
-			$(".overlay").show();
+		$(".overlay").show();
 		o.id_sucursal = cot.id_sucursal;
 		$.ajax({type : "POST",url : "cotizacionesTable",dataType : "html",data : o})
 		.done(function(r) {
-			$("#cotTbl tbody").append(r),$(".overlay").hide();
-		}).fail(function(e, t, i) {console.log(e, t, i)})
+			$("#resultTbl tbody").append(r),$(".overlay").hide();
+		}).fail(function(e, t, i) {$(".overlay").hide();console.log(e, t, i)})
 	},		
 	nuevaCotizacion:function(o){
 		cot.producto = {},cot.productos = {},cot.productosDS = {};
@@ -429,60 +421,33 @@
 		    }
 		});
 	},	
-	exportDialog : function(t,f,type) {		
+	exportDialog : function(t,f,type,o) {		
 		$.confirm({ title: 'Membrete',content: 'Selecciona el membrete a utilizar en el documento', type: 'blue',theme:"dark",
 		    buttons: {
-		    	a: {text: 'Syscam',btnClass: 'btn-blue', action: function(r){ 
-		        	cot.export(t,f,type,'mem_sys');
-		        }},
-		        b: {text: 'Elecnet',btnClass: 'btn-red', action: function(r){ 
-		        	cot.export(t,f,type,'mem_ele');
-		        }},
-		        c: {text: 'centralGPS',btnClass: 'btn-info', action: function(r){ 
-		        	cot.export(t,f,type,'bg-cntrlgps');
-		        }},
+		    	a: {text: 'Syscam',btnClass: 'btn-blue', action: function(r){cot.export(t,f,type,'mem_sys.png',o); }},
+		        b: {text: 'Elecnet',btnClass: 'btn-red', action: function(r){cot.export(t,f,type,'mem_ele.png',o); }},
+		        c: {text: 'centralGPS',btnClass: 'btn-info', action: function(r){cot.export(t,f,type,'bg-cntrlgps.jpg',o);}},
 		        d: {text: 'Cancelar',btnClass: 'btn-default'}		        
 		    }
 		});
 	},
-	export:function(t,f,type,m){
-		
+	export:function(t,f,type,m,o){		
 		$.confirm({
-		    title: 'Nombrar Archivo',
-		    content: '' +
-		    '<form action="" class="formName">' +
-		    '<div class="form-group">' +
-		    '<label>Nombre para el archivo</label>' +
-		    '<input type="text"  class="name form-control" required />' +
-		    '</div>' +
-		    '</form>', type: 'blue',theme:"dark",
+		    title: 'Nombrar Archivo',content: '<form action="" class="formName"><div class="form-group"><label>Nombre para el archivo</label><input type="text" value="'+(o ? 'Catálogo de Conceptos No. '+f:'Cotización No. '+f)+'" class="name form-control" required /></div></form>', type: 'blue',theme:"dark",
 		    buttons: {
 		        formSubmit: {
-		            text: 'Descargar',
-		            btnClass: 'btn-blue',
+		            text: 'Descargar', btnClass: 'btn-blue',
 		            action: function () {
 		                var name = this.$content.find('.name').val();
-		                if(!name){
-		                    $.alert('Capture un nombre para el archivo');
-		                    return false;
-		                }
-		                $.ajax({type : "POST",url : type,dataType : "json",data :{id_cotizacion: t,membrete:m,nombre:name}})
-						.done(function(a) {
-							1 == a.status ? location.href = ('download?nombre='+name+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
-						}).fail(function(t, a, e) {
-							 app.error(), console.log(t, a, e);
-						});
+		                if(!name){ $.alert('Capture un nombre para el archivo'); return false;}
+		                $.ajax({type : "POST",url : type,dataType : "json",data :{id_cotizacion: t,membrete:m,nombre:name,o:o}})
+						.done(function(a) {1 == a.status ? location.href = ('download?nombre='+name+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});})
+						.fail(function(t, a, e) {app.error(), console.log(t, a, e);});
 		            }
 		        },
 		        d: {text: 'Cancelar',btnClass: 'btn-default'}		   
 		    },
-		    onContentReady: function () {		       
-		        var jc = this;
-		        this.$content.find('form').on('submit', function (e) {		            
-		            e.preventDefault();
-		            jc.$$formSubmit.trigger('click');
-		        });
-		    }
+		    onContentReady: function () { var jc = this;this.$content.find('form').on('submit', function (e) {e.preventDefault();jc.$$formSubmit.trigger('click');});}
 		});
 	}
 };

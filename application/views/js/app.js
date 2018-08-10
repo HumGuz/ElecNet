@@ -54,6 +54,23 @@ var app = function() {
 			$(document).ajaxStop(function() {setTimeout(function() { $(".spinner").hide(); }, 1e3)}), 
 			$(document).ajaxComplete(function(t, a, e) {setTimeout(function() {$(".spinner") }, 2e3)}) 
 		},
+		dateRangeFilter:function(){
+			strt = moment().subtract(6, 'days');end =  moment();
+			cb =  function (start, end, lbl) {	      
+		       	$("#srchFrm").find('#daterange-btn span').html('<b>'+lbl+'</b> del '+start.format('D MMMM YYYY') + ' al ' + end.format('D MMMM YYYY'));	        
+		        $("#srchFrm").find("#fecha_inicial").val(start.format('YYYY-MM-DD'))
+		        $("#srchFrm").find("#fecha_final").val(end.format('YYYY-MM-DD'))
+		    };		
+			$("#srchFrm").find('#daterange-btn').daterangepicker({locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end,opens: "left",drops: "up",autoApply:true, ranges: { 'Hoy'       : [moment(), moment()],'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],'Últimos 7 Días' : [moment().subtract(6, 'days'), moment()],'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],'Este Mes'  : [moment().startOf('month'), moment().endOf('month')], 'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]}},cb);		 
+			cb(strt,end,'Últimos 7 Días');
+		},
+		initBuscador:function(md,fn){
+			var s;i = md.find("#busqueda_out").eq(0);			
+			i.keyup(function() { (s && clearTimeout(s)),s = setTimeout(function() {$('.box-body-catalogo').slimScroll({scrollTo : '0'}), $("#resultTbl tbody").empty(), val = $.trim(i.val()), fn({busqueda : val,	limit : 0},app.getData(md))}, 300)})
+		},
+		getData:function(md){
+			return obj = {},(md.find("#id_sucursal").length && (obj.id_sucursal = md.find("#id_sucursal").val())),(md.find("#id_almacen").length && (obj.id_almacen = md.find("#id_almacen").val())),obj;
+		},
 		getUniqueID : function(t) { return (t || "") + Math.floor(Math.random() * (new Date).getTime()) },
 		number_format : function(t, a, e, i) {
 			t = (t + "").replace(/[^0-9+\-Ee.]/g, "");

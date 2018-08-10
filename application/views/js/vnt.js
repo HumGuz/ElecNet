@@ -4,15 +4,7 @@ vnt = {
 		$("div.box-tools button.btn.btn-success").click(function(){vnt.nuevaVentaDialog({id_sucursal:vnt.id_sucursal})});
 		$("#vntTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,vnt[f](d)});
 		$("#srchFrm").validation({success:function(o){$("#vntTbl tbody").empty(),vnt.ventasTable(o)}});		
-		strt = moment().subtract(6, 'days');
-		end =  moment();
-		cb =  function (start, end, lbl) {	      
-	       	$("#srchFrm").find('#daterange-btn span').html('<b>'+lbl+'</b> del '+start.format('D MMMM YYYY') + ' al ' + end.format('D MMMM YYYY'));	        
-	        $("#srchFrm").find("#fecha_inicial").val(start.format('YYYY-MM-DD'))
-	        $("#srchFrm").find("#fecha_final").val(end.format('YYYY-MM-DD'))
-	    };		
-		$("#srchFrm").find('#daterange-btn').daterangepicker({locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end,opens: "left",drops: "up",autoApply:true, ranges: { 'Hoy'       : [moment(), moment()],'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],'Últimos 7 Días' : [moment().subtract(6, 'days'), moment()],'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],'Este Mes'  : [moment().startOf('month'), moment().endOf('month')], 'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]}},cb);		 
-		cb(strt,end,'Últimos 7 Días');		 
+		app.dateRangeFilter();			 
 		$("#id_sucursal").change(function(){ vnt.id_sucursal =$(this).val(), vnt.clear()}).change()
 	},
 	clear:function(){

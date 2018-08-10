@@ -34,7 +34,7 @@
             </table> 
             <!-- /.box-header -->
             <div class="box-body box-body-catalogo table-responsive no-padding" >
-              <table class="table table-hover table-condensed table-striped table-body table-bordered" id="prdTbl">
+              <table class="table table-hover table-condensed table-striped table-body table-bordered" id="resultTbl">
                 <tbody> </tbody>
               </table>
             </div>

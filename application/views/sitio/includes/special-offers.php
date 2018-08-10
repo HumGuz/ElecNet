@@ -10,7 +10,7 @@
                 <div class="hover_data">
                   <div class="title"> Gran Venta </div>
                   <div class="desc-text">55% de descuento</div>
-                  <span>Camaras, Laptops y Redes</span>
+                  <span>Computo y Videovigilancia</span>
                   <p><a href="#" class="shop-now">Compra Ahora!</a></p>
                 </div>
               </div>

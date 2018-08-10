@@ -10,18 +10,33 @@ class Sitio_model extends CI_Model {
 		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
 	}
 	
-	function getSpecialOffers($d=null){
+	function getProductList($d=null){
+		$c = '';
+		
+		if($d['special_offers'])
+			$c .= " and p.precio_oferta <> 0 ";
+		
+		if($d['best_rated'])
+			$c .= " and p.valuacion <> 0  order by valuacion desc	";
+		
+		if($d['new_products'])
+			$c .= " and p.nuevo = 1  ";
+		
+		if($d['best_selling'])
+			$c .= " and p.id_departamento = ".$d['id_departamento']."  order by p.salidas desc  ";
+		
+		
 		$q = $this -> db -> query("
 			select p.id_producto,p.id_departamento,p.salidas,p.concepto,p.valuacion,
 										   p.precio_venta,p.precio_oferta,p.nuevo , 
 										   ( select imagen from r_producto_imagen i where i.id_producto = p.id_producto order by portada desc limit 1 ) as imagen
 										   from t_productos p
-										   where p.precio_oferta <> 0
-										   
+										   where  p.visible = 1  ".$c."										   
 										   limit 6
 		");	
 		return $q->result_array();
 	}
+		
 	
 	function getBestSelling($d=null){
 					
@@ -37,15 +52,8 @@ class Sitio_model extends CI_Model {
 		");	
 		$deps = $q->result_array();
 		if(!empty($deps)){
-			foreach ($deps as $k => $d) {							
-				$q = $this -> db -> query("select p.id_producto,p.id_departamento,p.salidas,p.concepto,p.valuacion,
-										   p.precio_venta,p.precio_oferta,p.nuevo , 
-										   ( select imagen from r_producto_imagen i where i.id_producto = p.id_producto order by portada desc limit 1 ) as imagen
-										   from t_productos p 
-										   where p.visible = 1 and p.id_departamento = ".$d['id_departamento']."
-										   order by p.salidas desc
-										   limit 6");	
-				$deps[$k]['top_six'] =	$q->result_array();
+			foreach ($deps as $k => $d) {	
+				$deps[$k]['top_six'] =	$this->getProductList(array('best_selling'=>1,'id_departamento'=>$d['id_departamento']));
 			}
 		}
 		return $deps;		
@@ -63,6 +71,7 @@ class Sitio_model extends CI_Model {
 			$v.= '<i class="fa fa-star-o"></i> ';
 		}	
 		$v .= '</div>';
+		return $v;
 	}
 	
 }

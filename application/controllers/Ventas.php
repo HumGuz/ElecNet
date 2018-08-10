@@ -186,7 +186,7 @@ class Ventas extends CI_Controller {
 									size: auto;
 									header: html_myHeader;
 									footer: html_myFooter;				
-									background: #ffffff url("./application/views/img/'.$d['membrete'].'.jpg") no-repeat left top;
+									background: #ffffff url("./application/views/img/'.$d['membrete'].'.png") no-repeat left top;
 								}
 							</style>
 						</head>

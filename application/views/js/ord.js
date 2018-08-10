@@ -4,26 +4,8 @@ ord = {
 		$("div.box-tools button.btn.btn-success").click(function(){ord.nuevaOrden({id_sucursal:ord.id_sucursal})});
 		$("#ordTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,ord[f](d)});
 		$("#srchFrm").validation({success:function(o){$("#ordTbl tbody").empty(),ord.ordenesTable(o)}});	
-		strt = moment().subtract(6, 'days');
-		end =  moment();
-		cb =  function (start, end, lbl) {	      
-	       	$("#srchFrm").find('#daterange-btn span').html('<b>'+lbl+'</b> del '+start.format('D MMMM YYYY') + ' al ' + end.format('D MMMM YYYY'));	        
-	        $("#srchFrm").find("#fecha_inicial").val(start.format('YYYY-MM-DD'))
-	        $("#srchFrm").find("#fecha_final").val(end.format('YYYY-MM-DD'))
-	    };		
-		$("#srchFrm").find('#daterange-btn').daterangepicker({
-			locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end, opens: "left",drops: "up",autoApply:true,
-	        ranges: {
-	          'Hoy'       : [moment(), moment()],
-	          'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-	          'Últimos 7 Días' : [moment().subtract(6, 'days'), moment()],
-	          'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],
-	          'Este Mes'  : [moment().startOf('month'), moment().endOf('month')],
-	          'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-	        }	     
-	      },cb);		 
-		  cb(strt,end,'Últimos 7 Días');
-		  $("#id_sucursal").change(function(){ ord.id_sucursal =$(this).val(), ord.clear()}).change()
+		app.dateRangeFilter();	
+		$("#id_sucursal").change(function(){ ord.id_sucursal =$(this).val(), ord.clear()}).change()
 	},
 	clear:function(){
 		$("#srchFrm").resetForm();		
