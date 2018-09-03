@@ -19,6 +19,8 @@ if(!empty($cot)){
 		                  <ul class="dropdown-menu pull-right" role="menu">
 		                    <li><a href="#" onclick="cot.exportDialog('.$p['id_cotizacion'].',\''.$p['folio'].'\',\'pdf\')" ><span style="color:#bb0706" class="fa fa-file-pdf-o"></span> Exportar Cotización PDF </a></li>		                     
 		                    <li><a href="#" onclick="cot.exportDialog('.$p['id_cotizacion'].',\''.$p['folio'].'\',\'pdf\',1)" ><span style="color:#bb0706" class="fa fa-file-pdf-o"></span> Exportar Catálogo de Conceptos PDF </a></li>		                     
+		                    <li><a href="#" data-id_cotizacion="'.$p['id_cotizacion'].'" data-duplicar="1" data-fn="nuevaCotizacion"><span class="fa fa-copy"></span> Duplicar</a></li>			                     
+		                    
 		                    '.( $p['borrar'] ? '<li><a href="#" data-id_cotizacion="'.$p['id_cotizacion'].'" data-fn="nuevaCotizacion"><span class="fa fa-pencil"></span> Editar </a></li><li class="divider"></li><li><a href="#"  data-id_cotizacion="'.$p['id_cotizacion'].'" data-fn="borrarCotizacion"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
 		                  </ul>
 		     	</div>

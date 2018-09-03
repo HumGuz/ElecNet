@@ -3,6 +3,8 @@ if(!empty($vnt)){
 	foreach ($vnt as $k => $p) {		
 		echo '
 			<tr >
+			<td width="90px" class="bold">'.App::dateFormat($p['fecha_entrega']).'</td>
+			<td width="90px" class="bold">'.App::dateFormat($p['fecha_limite_pago']).'</td>
 			<td width="120px" class="bold">'.App::dateFormat($p['fecha_cambio'],2).'</td>			
 			<td width="80px"  class="bold">'.$p['folio'].'</td>				
 			<td width="80px"  class="bold">'.$p['cotizacion'].'</td>

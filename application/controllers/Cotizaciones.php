@@ -65,7 +65,7 @@ class Cotizaciones extends CI_Controller {
 					</div>
 					<h2 align="center"><b>'.(empty($d['o']) ? 'Cotización' :  'Catálogo de Conceptos').'</b></h2>
 					<div align="left">
-						<b>Cliente:</b> '.$cot[0]['nombre_cliente'].' '.( trim($cot[0]['direccion']) != '' ? '<br><b>Dirección:</b> '.trim($cot[0]['direccion']) : '' ).( trim($cot[0]['observaciones']) != '' ? '<br><b>Observaciones:</b> '.trim($cot[0]['observaciones']) : '' ).'<br>
+						<b>Cliente:</b> '.$cot[0]['nombre_cliente'].' '.( trim($cot[0]['direccion']) != '' ? '<br><b>Dirección:</b> '.trim($cot[0]['direccion']) : '' ).( trim($cot[0]['observaciones']) != '' && empty($d['o']) ? '<br><b>Observaciones:</b> '.trim($cot[0]['observaciones']) : '' ).'<br>
 					</div>	
 					<div align="right">
 						<br><b>Fecha de Vencimiento:</b>'.App::dateFormat($cot[0]['fecha_vencimiento']).'<br><b>Folio de Cotización</b>  '.$cot[0]['folio'].'
@@ -79,7 +79,7 @@ class Cotizaciones extends CI_Controller {
 				</htmlpagefooter>							
 				'.(empty($d['o']) ? $this->getTablePDF($prd,$cot) :  $this->getProductoCard($prd,$cot)).'										
 				<div align="left">
-					<br>Dudas con la Cotizacion<br>(449) 138 8110 o al (449) 940 2690<br>'.(trim($cot[0]['condiciones'])!='' ? '<br><b>CONDICIONES</b>: '.$cot[0]['condiciones'].'':'').'
+					<br>Dudas con la Cotizacion<br>(449) 138 8110 o al (449) 940 2690<br>'.(trim($cot[0]['condiciones'])!='' && empty($d['o']) ? '<br><b>CONDICIONES</b>: '.$cot[0]['condiciones'].'':'').'
 				</div>';			
 			}else{					
 				$html .= '<htmlpageheader name="myHeader" style="display:none;">												
@@ -89,7 +89,7 @@ class Cotizaciones extends CI_Controller {
 					</div>
 					<h2 align="center"><b>'.(empty($d['o']) ? 'Cotización' :  'Catálogo de Conceptos').'</b></h2>
 					<div align="left">			
-						'.($d['membrete']=='mem_ele.png' ? '<br/><br/>':'').'<b>Cliente:</b> '.$cot[0]['nombre_cliente'].( trim($cot[0]['direccion']) != '' ? '<br><b>Dirección:</b> '.trim($cot[0]['direccion']) : '' ).( trim($cot[0]['observaciones']) != '' ? '<br><b>Observaciones:</b> '.trim($cot[0]['observaciones']) : '' ).'
+						'.($d['membrete']=='mem_ele.png' ? '<br/><br/>':'').'<b>Cliente:</b> '.$cot[0]['nombre_cliente'].( trim($cot[0]['direccion']) != '' ? '<br><b>Dirección:</b> '.trim($cot[0]['direccion']) : '' ).( trim($cot[0]['observaciones']) != '' && empty($d['o']) ? '<br><b>Observaciones:</b> '.trim($cot[0]['observaciones']) : '' ).'
 					</div>							
 				</htmlpageheader>
 				<htmlpagefooter name="myFooter" style="display:none;">						
@@ -100,7 +100,7 @@ class Cotizaciones extends CI_Controller {
 					</div>	
 				</htmlpagefooter>	
 				'.(empty($d['o']) ? $this->getTablePDF($prd,$cot) :  $this->getProductoCard($prd,$cot)).'		 
-				'.(trim($cot[0]['condiciones'])!='' ? ' <div style="margin:10px" ><br><b>CONDICIONES DE VENTA</b>: '.$cot[0]['condiciones'].'</div>':'');	
+				'.(trim($cot[0]['condiciones'])!=''  && empty($d['o'])? ' <div style="margin:10px" ><br><b>CONDICIONES DE VENTA</b>: '.$cot[0]['condiciones'].'</div>':'');	
 			}
 			$html .= '</body></html>';	
 			
