@@ -101,7 +101,14 @@
 				for(p in cot.productosDS)
 					pr = cot.productosDS[p], pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),cot.addFilaProducto(pr);					
 				cot.totalGeneral(),md.find( "#factura" ).attr('disabled','disabled'),
-				md.find("#id_cliente").change(),rls={};				
+				md.find("#id_cliente").change(),rls={};	
+				
+				if(o.duplicar==1){
+					delete o.duplicar;
+					delete o.id_cotizacion;
+					o.id_sucursal = $("#id_sucursal").val();
+				}
+							
 			}		
 			md.find("#nvaCot").validation({extend:o,success:function(ob){
 				if(!Object.keys(cot.productos).length){

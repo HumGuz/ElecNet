@@ -8,7 +8,8 @@ vnt = {
 		$("#id_sucursal").change(function(){ vnt.id_sucursal =$(this).val(), vnt.clear()}).change()
 	},
 	clear:function(){
-		$("#srchFrm").resetForm();		
+		$("#srchFrm").resetForm();	
+		$("#srchFrm").selectpicker('refresh');	
 		$("#vntTbl tbody").empty();
 		vnt.ventasTable({});
 	},
@@ -517,7 +518,7 @@ vnt = {
 		o.total = vnt.total;		
 		console.log(o);			
 		$.ajax({type : "POST",url : "guardarVenta",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaVenta').modal('hide'),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaVenta').modal('hide'),$("#srchFrm").submit()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	

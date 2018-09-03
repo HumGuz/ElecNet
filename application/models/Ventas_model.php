@@ -27,14 +27,21 @@ class Ventas_model extends CI_Model {
 		}
 			
 		if($d['fecha_inicial'] && $d['fecha_final'])
-			$c .= " and  date(c.fecha_registro)  >= '".$d['fecha_inicial']."' and date(c.fecha_registro) <= '".$d['fecha_final']."' ";	
+			$c .= " and  date(c.fecha_entrega)  >= '".$d['fecha_inicial']."' and date(c.fecha_entrega) <= '".$d['fecha_final']."' ";	
 			
 		if($d['busqueda'])
 			$c .= " and (  c.folio like '%".$d['busqueda']."%' or c.observaciones like '%".$d['busqueda']."%' or p.clave like '%".$d['busqueda']."%' or p.nombre like '%".$d['busqueda']."%'  )  ";
 		
-		$c .= " order by c.fecha_registro desc";		
 		
-		$q = $this -> db -> query("select 
+		
+		if($d['producto'])
+			$c .= " and  ventaHasClave(c.id_venta,'".$d['producto']."') =  1 ";
+		
+		
+		
+		$c .= " order by c.fecha_entrega desc";		
+		
+		$sql = "select 
 									c.*,IF(c.status=2,1,0) as borrar,									
 									pr.clave clave_cliente,pr.nombre  nombre_cliente,ct.folio as cotizacion,
 									concat(pr.calle,' #',pr.exterior,if(pr.interior<>'',concat('Int. ',pr.interior),''),' Col.',pr.colonia,',',pr.municipio_delegacion,',',pr.estado,',Mex.') as direccion
@@ -42,7 +49,11 @@ class Ventas_model extends CI_Model {
 								    from t_ventas c 
 								    inner join t_clientes pr on pr.id_cliente = c.id_cliente 
 								    left join t_cotizaciones ct on ct.id_cotizacion = c.id_cotizacion											
-								    where 1=1 ".$c);		
+								    where 1=1 ".$c;		
+		// echo $sql;
+		
+		
+		$q = $this -> db -> query($sql);		
 		$r = $q->result_array();
 		return $r;		
 	}

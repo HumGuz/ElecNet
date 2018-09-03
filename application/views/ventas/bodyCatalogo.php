@@ -19,6 +19,8 @@
              <table class="table table-bordered table-condensed fixed">
                 <tbody>
                 	<tr>	
+                	  <th width="90px">Fecha Entr.</th> 
+                	  <th width="90px">Fecha Lim.</th> 
                 	  <th width="120px">Fecha Reg.</th> 					              
 	                  <th width="80px">Folio</th>		                   					              
 	                  <th width="80px">Cotización</th>	

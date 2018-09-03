@@ -22,9 +22,9 @@ prd = {
 			vl = $(this).val(),alm.find("option").prop('disabled',true),					
 			(vl!='' &&  alm.find("option[data-id_sucursal='"+vl+"']").prop('disabled',false) ),			
 			alm.find("option").not('[disabled]').eq(0).prop('selected',true);			
-			alm.selectpicker('refresh');		
-			prd.productosTable({limit:0});						
-		}).change(),
+			alm.selectpicker('refresh');$("#resultTbl tbody").empty();prd.productosTable({limit:0});						
+		}).change(),		
+		alm.change(function(){$("#resultTbl tbody").empty();prd.productosTable({limit:0})}),
 		dep.change(function(){
 			vl =$(this).val(),c.find(".categorias").val(''),c.find(".categorias option").prop('disabled',true),					
 			(vl!='' &&  c.find(".categorias option[data-id_departamento='"+vl+"']").prop('disabled',false) ),
