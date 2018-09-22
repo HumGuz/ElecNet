@@ -131,7 +131,9 @@ class Productos_model extends CI_Model {
 	
 	
 	function replace($str){
-		return str_replace(array('á','é','í','ó','ú','Á','É','Í','Ó','Ú'), array('a','e','i','o','u','A','E','I','O','U'), $str);
+		$find = array('á','é','í','ó','ú','â','ê','î','ô','û','ã','õ','ç','ñ','Á','É','Í','Ó','Ú','Â','Ê','Î','Ô','Û','Ã','Õ','Ç','Ñ');
+		$repl = array('a','e','i','o','u','a','e','i','o','u','a','o','c','n','A','E','I','O','U','A','E','I','O','U','A','O','C','N');		
+		return str_replace($find, $repl, $str);
 	}	
 		
 	
@@ -223,47 +225,79 @@ class Productos_model extends CI_Model {
 			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
 			$cs = ' and s.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
 		}
+		$sql = "  select a.*,
+			 d.clave as dep,d.nombre as departamento,
+			 cp.clave as cat,cp.nombre as categoria,
+			 c.clave as subcat,c.nombre as subcategoria			
 			
-						
-		$q = $this -> db -> query(" SELECT * FROM ( select 
+		 from (
+						select 
 									 p.id_producto, 
+									 p.id_departamento,
+									 p.id_categoria_padre,
+									 p.id_categoria,
 									 p.clave,
 									 p.concepto,
 									 p.existencia as existencia_ue,
 									 p.id_unidad_medida_entrada  as ue, 
-									 group_concat(getExistenciaUS(r.existencia,p.factor_unidades) SEPARATOR '-|-') as existencia_us,
+									 getExistenciaUS(r.existencia,p.factor_unidades) as existencia_us,
 									 p.id_unidad_medida_salida as us, 
 									 p.factor_unidades,
 									 p.precio_venta as precio_ue,
 									 getPrecioUS(p.precio_venta,p.factor_unidades)  as precio_us,	
 									 r.costo_promedio as costo_promedio_ue,
 									 getPrecioUS(r.costo_promedio,p.factor_unidades) as costo_promedio_us,
-									 group_concat(r.id_almacen SEPARATOR '-|-') as id_almacen, 
-									 group_concat(a.clave SEPARATOR '-|-') as clave_almacen,
-									 group_concat(a.nombre SEPARATOR '-|-') as almacen
+									 r.id_almacen  as id_almacen, 
+									 a.clave  as clave_almacen,
+									 a.nombre  as almacen
 									 from t_productos p 
 								    left join r_almacen_productos r on r.id_producto = p.id_producto
 								    left join t_almacenes a on a.id_almacen = r.id_almacen		
-								    where 1=1  ".$c." group by p.id_producto 
+								    where 1=1 ".$c." 
 								    
 								    UNION 
 									 
-									 select s.id_servicio,s.clave,s.concepto,1,'SERV',1,'SERV',1,s.precio_venta,s.precio_venta,0,0,0,'',''
+									 select s.id_servicio,s.id_departamento, s.id_categoria_padre, s.id_categoria,
+									 s.clave,s.concepto,1,'SERV',1,'SERV',1,s.precio_venta,s.precio_venta,0,0,0,'SERV','Servicios'
 									 from t_servicios s
-									 where 1=1  ".$cs."
+									 where 1=1 ".$cs ." ) a
 									 
-									 )  a");		
+									inner join t_departamentos d on d.id_departamento = a.id_departamento
+									inner join t_categorias cp on cp.id_categoria = a.id_categoria_padre
+									inner join t_categorias c on c.id_categoria = a.id_categoria
+									 
+									 ";
+						
+		$q = $this -> db -> query($sql);		
+									
 		$result = $q->result_array();
-		if(!empty($result)){
-			foreach ($result as $key => $v) {											
-				$result[$key]['concepto'] = $this->replace($v['concepto']);
-			}
-		}
-		return $result;		
+		return $this->armDataSet($result);		
 		
 	}
 
-	
+	function armDataSet($result){
+		if(!empty($result)){					
+			$aux = array('list'=>array(),'data'=>array(),'keys'=>array(),'names'=>array());
+			foreach ($result as $key => $v) {								
+				$v['concepto'] = trim(strtolower(self::replace($v['concepto'])));				
+				$v['clave'] = trim(strtolower(self::replace($v['clave'])));				
+				$v['uid'] = $v['tipo'].$v['id_producto'];				
+				if(!in_array($v['clave'],$aux['keys']))				
+					$aux['keys'][] = array('clave'=>$v['clave']);
+				if(!in_array($v['concepto'],$aux['names']))
+					$aux['names'][] =  array('concepto'=>$v['concepto']);
+				if(!isset($aux['data'][$v['clave']]))
+					$aux['data'][$v['clave']] = array();
+				if(!isset($aux['data'][$v['concepto']]))
+					$aux['data'][$v['concepto']] = array();	
+				$aux['data'][$v['clave']][] = $v['tipo'].$v['id_producto'];				
+				$aux['data'][$v['concepto']][] = $v['tipo'].$v['id_producto'];	
+				$aux['list'][$v['tipo'].$v['id_producto']] = $v;				
+			}
+			$result = $aux;
+		}
+		return $result;
+	}
 	
 	function claveUnica($d){	
 		if($d['id_almacen'])

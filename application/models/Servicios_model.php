@@ -51,7 +51,7 @@ class Servicios_model extends CI_Model {
 									s.clave,s.clave_secundaria,
 									s.concepto,s.descripcion,
 									s.id_departamento, d.clave as dep,d.nombre as departamento,
-									s.id_categoria_padre, cp. clave as cat,cp.nombre as categoria,
+									s.id_categoria_padre, cp.clave as cat,cp.nombre as categoria,
 									s.id_categoria, c.clave as subcat,c.nombre as subcategoria,								
 									'SERV' as us,s.salidas,									
 								 	s.precio_venta,s.tiempo_garantia,				 	

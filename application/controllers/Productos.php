@@ -12,7 +12,22 @@ class Productos extends CI_Controller {
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);
 		$this->load->model('productos_model','prd');
 		$this->load->library('app');
-	}		
+	}
+	function test(){
+		
+		$char = "INSTALACIÓN, CONFIGURACIÓN Y CAPACITACIÓN DE CONTROL DE ACCESO ";
+		
+		echo "<pre>";
+		print_r($char);
+		echo "<br>";
+		$char2 = $this->prd->replace($char);
+		print_r($char2);
+		echo "<br>";
+		print_r(strtolower($char2));
+		echo "</pre>";
+	}
+	
+			
 	function index(){
 		$this->load->model('sucursales_model','scr');
 		$this->load->model('clasificaciones_model','cls');		
@@ -83,6 +98,5 @@ class Productos extends CI_Controller {
 			$d =  $this->prd->guardarImagen($d);
 		}
 		echo json_encode($d);
-	}
-	
+	}	
 }

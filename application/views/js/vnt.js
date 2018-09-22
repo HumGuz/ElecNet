@@ -88,16 +88,16 @@ vnt = {
 			md.find(".selectpicker").selectpicker({});					
 			md.find('#fecha_entrega').daterangepicker({locale:{format: 'YYYY-MM-DD'},singleDatePicker: true, showDropdowns: true });	
 			md.find('#fecha_limite_pago').daterangepicker({locale:{format: 'YYYY-MM-DD'},singleDatePicker: true, showDropdowns: true });			
-			md.find('#clve_vnt').on('focusout',function(){event.preventDefault(),vnt.getCoincidence($(this).val(),vnt.keys)});		
-			md.find('#conc_vnt').on('focusout',function(){event.preventDefault(),vnt.getCoincidence($(this).val(),vnt.names)});		
+			md.find('#clve_vnt').on('focusout',function(){event.preventDefault(),vnt.getCoincidence($(this).val())});		
+			md.find('#conc_vnt').on('focusout',function(){event.preventDefault(),vnt.getCoincidence($(this).val())});		
 			md.find('#clve_vnt').keyup(function(){
 				event.preventDefault(),
-				(event.keyCode==13 && vnt.getCoincidence($(this).val(),vnt.keys)),
+				(event.keyCode==13 && vnt.getCoincidence($(this).val())),
 				(event.keyCode==27 && vnt.clearForm())														
 			});		
 			md.find('#conc_vnt').keyup(function(){
 				event.preventDefault(),
-				(event.keyCode==13 && vnt.getCoincidence($(this).val(),vnt.names)),
+				(event.keyCode==13 && vnt.getCoincidence($(this).val())),
 				(event.keyCode==27 && vnt.clearForm())				
 			});
 			md.find("#preciop,#cantidadp,#descuentop,#descuento_general,#costos_envio").keypress(function() {v = $(this).val();return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46;});		
@@ -220,16 +220,11 @@ vnt = {
 	},	
 	 
 	autocomplete:function(prdDtSt) {
-		vnt.prdDtSt = [];
-		vnt.keys = [];
-		vnt.names = [];
-		if (prdDtSt.length) 
-			for ( i = 0; i < prdDtSt.length; i++) 
-				c = prdDtSt[i],vnt.keys.push($.trim(c.clave.toLowerCase())),vnt.names.push($.trim(c.concepto.toLowerCase()));		
-		var keys = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.clave);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt});
+		vnt.prdDtSt = prdDtSt;
+		var keys = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.clave);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt.keys});
 		keys.initialize();
 		$('#clve_vnt').typeahead(null, {displayKey : 'clave',hint : true,source : keys.ttAdapter()});
-		var names = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.concepto);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt});
+		var names = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.concepto);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt.names});
 		names.initialize();
 		$('#conc_vnt').typeahead(null, {displayKey : 'concepto',hint : true,source : names.ttAdapter()});
 		vnt.prdDtSt = prdDtSt;
@@ -256,16 +251,34 @@ vnt = {
     	$("input.form-control.tt-hint.ignore").val('');
     	$("input.form-control.ignore.tt-hint").val('');
     },	
-	getCoincidence:function(val,dataSet){
+    
+    
+    getCoincidence:function(val){
     	$("span.tt-dropdown-menu").hide(); 	
     	val = $.trim(val).toLowerCase();
+    	
 		if(val!=''){
-			index = dataSet.indexOf(val);
-			coin = $.extend({},vnt.prdDtSt[ index ]);				
-			vnt.setPrdData(coin);
-            vnt.totalProducto();
+			coins = vnt.prdDtSt.data[val];		
+			coins_list = [];
+			for(kc in coins)
+				coins_list.push( vnt.prdDtSt.list[coins[kc]]);
+			
+			console.log(val,coins,coins_list);
+			if(coins_list.length > 1){
+				$.ajax({type : "POST",url : "coincidencias",dataType : "html",data : {busqueda:val,coins_list:coins_list}})
+				.done(function(a) {					
+					$('body').append(a);  
+					$("#coin-modal button.close-modal").click(function(){vnt.clearForm(),$('#coin-modal').modal('hide')})
+					$("#coin-modal tr.pointer").dblclick(function(){ vnt.setPrdData($.extend({}, vnt.prdDtSt.list[$(this).data('id')])),$('#coin-modal').modal('hide')})
+					$("#coin-modal tr.pointer .btn").click(function(){ $(this).parents('tr.pointer').eq(0).dblclick()})
+					$('#coin-modal').modal({show:true,backdrop:'static'}).on('hidden.bs.modal',function(){$('#coin-modal').remove(),$("#cantidadp").focus();});
+				}).fail(function(i, a, e) {console.log(i, a, e)})				
+			}else{
+				coin = coins_list[0];
+				vnt.setPrdData(coin);	          
+			}
 		}
-    },
+    }, 
 	setPrdData:function(dat){
     	if(dat){    		
     		$('#clve_vnt').val(dat.clave);    		

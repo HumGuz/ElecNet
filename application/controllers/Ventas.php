@@ -46,6 +46,11 @@ class Ventas extends CI_Controller {
 		}			
 		echo $this->load->view('ventas/nuevaVenta',array('vnt'=>$attr,'pcot'=>$pcot,'prd'=>$prd,'cot'=>$cot[0],'clt'=>$this->clt->getClientes()),TRUE);
 	}	
+	
+	function coincidencias(){		
+		echo $this->load->view('ventas/coincidencias',array('coins_list'=>$_POST['coins_list'],'busqueda'=>$_POST['busqueda']),TRUE);
+	}
+	
 	function guardarVenta(){
 		echo json_encode($this->vnt->guardarVenta($this->input->post()));		
 	}		

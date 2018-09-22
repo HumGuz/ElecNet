@@ -290,7 +290,8 @@ jQuery(function() {
                         visibility: "hidden",
                         overflow: "hidden"
                     }).appendTo(document.body), i.classmagnifier || d.css({
-                        border: f.magnifierborder
+                        border: f.magnifierborder,
+                        backgroundColor:"#FFFFFF"
                     }), u = A("<div />"), f.cursorshade && (u.attr({
                         "class": f.classcursorshade
                     }).css({
