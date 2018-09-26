@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Admin extends CI_Controller {
-	public $s = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
 		date_default_timezone_set("America/Mexico_City");
@@ -11,10 +11,6 @@ class Admin extends CI_Controller {
 		if(!isset($this->s['usuario']))			
 			redirect(base_url());	
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);
-		// echo "<pre>";
-		// print_r($this->s);
-		// echo "</pre>";
-		// die();
 	}	 
 	 
 	public function index()

@@ -21,8 +21,8 @@
         <div class="col-xs-12">
           <ul>
             <li class="home"> <a title="Ir al inicio" href="<?php echo base_url(); ?>">Elecnet</a><span>&raquo;</span></li>
-            <li class=""> <a title="Todo de este departamento" href="<?php echo base_url().'departamento/'.app::uri($p['departamento']).'/'.$p['id_departamento'] ?>"><?php echo $p['departamento'] ?></a><span>&raquo;</span></li>
-            <li><strong><?php echo $p['concepto'] ?></strong></li>
+            <li class=""> <a title="Todo de este departamento" href="<?php echo base_url().'departamento/'.app::uri($prd['departamento']).'/'.$prd['id_departamento'] ?>"><?php echo $prd['departamento'] ?></a><span>&raquo;</span></li>
+            <li><strong><?php echo $prd['concepto'] ?></strong></li>
           </ul>
         </div>
       </div>
@@ -31,7 +31,7 @@
 
   <!-- Breadcrumbs End --> 
   <!-- Main Container -->
-
+	<script>console.log(<?php echo json_encode($prd) ?>)</script>
   <div class="main-container col1-layout">
     <div class="container">
       <div class="row">
@@ -39,14 +39,14 @@
           <div class="product-view-area">
             <div class="product-big-image col-xs-12 col-sm-5 col-lg-5 col-md-5">
               <div class="icon-sale-label sale-left">En venta</div>
-              <div class="large-image"> <a href="javascript:;" class="cloud-zoom" id="zoom1" rel="useWrapper: false, adjustY:0, adjustX:20"> <img class="zoom-img" src="<?php echo base_url() ?>/application/views/img/uploads/<?php echo $p['imagenes'][0]['imagen'] ?>" alt="<?php echo $p['concepto'] ?>"> </a> </div>
+              <div class="large-image"> <a href="javascript:;" class="cloud-zoom" id="zoom1" rel="useWrapper: false, adjustY:0, adjustX:20"> <img class="zoom-img" src="<?php echo base_url() ?>application/views/img/uploads/<?php echo $prd['imagenes'][0]['imagen'] ?>" alt="<?php echo $prd['concepto'] ?>"> </a> </div>
               <div class="flexslider flexslider-thumb">
                 <ul class="previews-list slides">
                   <?php
-                  	if(count($p['imagenes'])>1){
-                  		foreach ($p['imagenes'] as $key => $i) {
+                  	if(count($prd['imagenes'])>1){
+                  		foreach ($prd['imagenes'] as $key => $i) {
                   			if($k>0)
-							  echo '<li><a href="javascript:;" class="cloud-zoom-gallery" rel="useZoom: \'zoom1\', smallImage: \''.$i['imagen'].'\' "><img src="'.$i['imagen'].'" alt = "'.$p['concepto'].'"/></a></li>';
+							  echo '<li><a href="javascript:;" class="cloud-zoom-gallery" rel="useZoom: \'zoom1\', smallImage: \''.base_url().'application/views/img/uploads/'.$i['imagen'].'\' "><img src="'.base_url().'application/views/img/uploads/'.$i['imagen'].'" alt = "'.$prd['concepto'].'"/></a></li>';
 						 }
                   	} 
                   ?>
@@ -56,22 +56,22 @@
             </div>
             <div class="col-xs-12 col-sm-7 col-lg-7 col-md-7 product-details-area">
               <div class="product-name">
-                <h1><?php echo $p['concepto'] ?></h1>
+                <h1><?php echo $prd['concepto'] ?></h1>
               </div>
               <div class="price-box">
-              	<?php echo ( $p['precio_oferta']>0 ? '
-                	<p class="special-price"> <span class="price-label">Precio Especial:</span> <span class="price"> $ '. number_format($p['precio_oferta'],2) .' </span> </p>
-                    <p class="old-price"> <span class="price-label">Precio Regular:</span> <span class="price"> $ '.  number_format($p['precio_venta'],2) .' </span> </p>                              	
-                    ':'<span class="regular-price"> <span class="price">$ '.  number_format($p['precio_venta'],2) .'</span> </span>') ?>	
+              	<?php echo ( $prd['precio_oferta']>0 ? '
+                	<p class="special-price"> <span class="price-label">Precio Especial:</span> <span class="price"> $ '. number_format($prd['precio_oferta'],2) .' </span> </p>
+                    <p class="old-price"> <span class="price-label">Precio Regular:</span> <span class="price"> $ '.  number_format($prd['precio_venta'],2) .' </span> </p>                              	
+                    ':'<span class="regular-price"> <span class="price">$ '.  number_format($prd['precio_venta'],2) .'</span> </span>') ?>	
               </div>
               <div class="ratings">
-              	<?php echo $p['valuation'] ?>               
+              	<?php echo $prd['valuation'] ?>               
                 <!-- <p class="rating-links"> <a href="javascript:;">1 Review(s)</a> <span class="separator">|</span> <a href="javascript:;">Add Your Review</a> </p> -->
                 <p class="availability in-stock pull-right">Disponibilidad: <span>En Stock</span></p>
               </div>
               <div class="short-description">
                 <h2>Descripción del producto</h2>
-                <p><?php echo $p['descripcion'] ?></p>
+                <p><?php echo $prd['descripcion'] ?></p>
               </div>
               <div class="product-color-size-area">
                 <div class="color-area">
@@ -79,7 +79,7 @@
                   <div class="color">
                     <ul>
                       <?php 
-                      	$cls = explode(',', $p['colores']);
+                      	$cls = explode(',', $prd['colores']);
                       	if(!empty($cls)){
                       		foreach ($cls as $key => $c) {
 								echo '<li><a href="javascript:;" style="background:'.$c.'!important"></a></li>';
@@ -93,7 +93,7 @@
                   <h2 class="saider-bar-title">Dimensiones</h2>
                   <div class="size">
                     <ul>
-                      <li><a href="javascript:;"><?php echo $p['dimensiones'] ?></a></li>                     
+                      <li><a href="javascript:;"><?php echo $prd['dimensiones'] ?></a></li>                     
                     </ul>
                   </div>
                 </div>
@@ -101,7 +101,7 @@
                   <h2 class="saider-bar-title">Peso</h2>
                   <div class="size">
                     <ul>
-                      <li><a href="javascript:;"><?php echo $p['peso'] ?></a></li>                     
+                      <li><a href="javascript:;"><?php echo $prd['peso'] ?></a></li>                     
                     </ul>
                   </div>
                 </div>
@@ -129,7 +129,7 @@
               <div class="pro-tags">
                 <div class="pro-tags-title">Tags:</div>                
                 <?php 
-                      	$tgs = explode(',', $p['tags']);
+                      	$tgs = explode(',', $prd['tags']);
                       	if(!empty($tgs)){
                       		$tags = '';
                       		foreach ($tgs as $key => $t) {

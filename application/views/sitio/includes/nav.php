@@ -12,7 +12,7 @@
             <!-- Shop by category -->
             <div class="mega-menu-category">
               <ul class="nav">   
-                <li><a href="#">Seguridad Electronica</a>
+                <li><a href="<?php echo base_url().'departamento/'.app::uri('Seguridad Electrónica').'/12' ?>">Seguridad Electrónica</a>
                   <div class="wrap-popup">
                     <div class="popup">
                       <div class="row">
@@ -68,7 +68,7 @@
                     </div>
                   </div>
                 </li>  
-                <li><a href="#">Computo</a>
+                <li><a href="<?php echo base_url().'departamento/'.app::uri('Computo').'/2' ?>">Computo</a>
                   <div class="wrap-popup">
                     <div class="popup">
                       <div class="row">
@@ -152,7 +152,7 @@
                     </div>
                   </div>
                 </li>  
-                <li><a href="#">Electrónica</a>
+                <li><a href="<?php echo base_url().'departamento/'.app::uri('Electrónica').'/1' ?>">Electrónica</a>
                   <div class="wrap-popup">
                     <div class="popup">
                       <div class="row">
@@ -219,7 +219,7 @@
                     </div>
                   </div>
                 </li> 
-                <li><a href="#">Material Eléctrico y Energía</a>
+                <li><a <?php echo base_url().'departamento/'.app::uri('Material Eléctrico y Energía').'/18' ?>>Material Eléctrico y Energía</a>
                   <div class="wrap-popup">
                     <div class="popup">
                       <div class="row">                        
@@ -280,7 +280,7 @@
                     </div>
                   </div>
                 </li>  
-                 <li><a href="<?php echo base_url().'subcategoria/'.app::uri('').'/117' ?>">Punto de Venta</a>
+                 <li><a href="<?php echo base_url().'departamento/'.app::uri('Punto de Venta').'/17' ?>">Punto de Venta</a>
                   <div class="wrap-popup column3">
                     <div class="popup">
                       <div class="row">
@@ -306,7 +306,7 @@
                     </div>
                   </div>
                 </li> 
-                <li><a href="#">Rastreo Satelital</a>
+                <li><a <?php echo base_url().'departamento/'.app::uri('Rastreo Satelital').'/13' ?>>Rastreo Satelital</a>
                   <div class="wrap-popup" style="width: 467px!important">
                     <div class="popup">
                       <div class="row">
@@ -338,7 +338,7 @@
                     </div>
                   </div>
                 </li>    
-                <li><a href="#">Redes</a>
+                <li><a <?php echo base_url().'departamento/'.app::uri('Redes').'/15' ?>>Redes</a>
                   <div class="wrap-popup" style="width: 467px!important">
                     <div class="popup">
                       <div class="row">
@@ -370,7 +370,7 @@
                     </div>
                   </div>
                 </li>    
-                 <li><a href="#">Videovigilancia</a>
+                 <li><a <?php echo base_url().'categoria/'.app::uri('Videovigilancia').'/234' ?>>Videovigilancia</a>
                   <div class="wrap-popup" style="width: 467px!important">
                     <div class="popup">
                       <div class="row">

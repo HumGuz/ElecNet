@@ -41,7 +41,7 @@ class Login_model extends CI_Model {
 					unset($r['status']);
 					$s['db'] = $r['db_name']; 
 					unset($r['db_name']);
-					$s['cliente'] = $r;
+					// $s['cliente'] = $r;
 					$this->session->set_userdata($s);
 					$_SESSION = $s;					
 					return array('code'=>1252);

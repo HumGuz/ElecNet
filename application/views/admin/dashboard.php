@@ -41,4 +41,7 @@
 </div>
 <!-- ./wrapper -->
 </body>
+<pre>
+	<?php print_r($_SESSION) ?>
+</pre>
 </html>

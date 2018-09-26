@@ -32,7 +32,7 @@ class Sitio extends CI_Controller {
 		$prd['valuation'] =$this->st->getValuation($prd);
 		$this->load->view('sitio/producto',
 			array(
-				'p'=>$prd,
+				'prd'=>$prd,
 				'departamentos'=>$this->c->getClasificaciones(),				
 				'related_products'=>$this->st->getProductList(array('related'=>1,'id_categoria_padre'=>$prd['id_categoria_padre'])),
 				'upsell_products'=>$this->st->getProductList(array('upsell'=>1,'id_categoria'=>$prd['id_categoria'])),
