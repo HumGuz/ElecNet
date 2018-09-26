@@ -125,4 +125,63 @@ class Sitio_model extends CI_Model {
 		return $v;
 	}
 	
+	
+	function paginar($page,$cat,$base_url,$perPage=18){								
+				$condition = '';				
+				//paginacion con categorias
+				//$route['categoria/(:any)/(:num)/p/(:num)'] = 'sitio/categoria/$2/$3';
+				//$route['categoria/lista/(:any)/(:num)/p/(:num)'] = 'sitio/categoria/$2/$3';								
+				// $base_url =  base_url().'categoria/'.app::uri($cat['categoria']).'/'.$cat['id_categoria'].'/p/'; 
+				if($cat)
+					$c .= ' and id_categoria = '.$cat;					
+				$sql = "select count(a.id_producto) as todos from t_productos a where 1=1 ".$c;
+				$res = $this->db->query($sql);		
+				$result =  $res->row_array();				
+				$todos = $result['todos'];		
+				$paginator = '';									
+				if( $todos > 5 ){
+										
+					$paginas = ceil($todos / $perPage);	
+					$paginasFaltantes = $paginas - $page;						
+					$paginator = '';
+					if($paginas>=2){						
+						$paginator .= '<div class="pagination-area"><ul>';
+						
+						if($page>2 && $paginas>=6)
+							$paginator .= '<li><a href="'.$base_url_clean.'" >« 1 ...</a></li>';
+											
+						if($page>1 && $paginas>=6)
+							$paginator .= '  <li><a href="'.$base_url.($page-1).'"><i class="fa fa-angle-left"></i></a></li>';
+						
+						
+						$page =  $page==0 ? 1 : $page ;	
+						$pageNow = $page;
+						if($paginasFaltantes>=6){
+							$paginator .= '<li><a href="javascript:;" class="active" >'.$page.'</a></li>';	
+							$page ++;
+							for ($i=0; ($i < 4 && $i < $paginasFaltantes ); $i++) { 									
+								$paginator .= '<li><a href="'.$base_url.($page).'" >'.$page.'</a></li>';									
+								$page ++;
+							}								
+							if(($page - $paginasFaltantes)>1)
+								$paginator .= '<li><a href="'.$base_url.($paginas).'">... '.$paginas.' »</a></li>';
+						
+						}else{																		
+							$page = ( $paginas - 5 > 0 ? $paginas - 5 : 1 );					
+							for($i= $paginas; $i>($paginas - 5 ) && $page <= $paginas;$i--){
+								$paginator .= '<li><a href="'.$base_url.($page).'" class="'.($pageNow == $page?'active':'').'">'.$page.'</a></li>';									
+								$page ++;
+							}
+							if(($i==($paginas - 5 )))
+								$paginator .= '<li><a href="'.$base_url.($paginas).'" class="'.($pageNow == $page?'active':'').' ">... '.$paginas.' »</a></li>';
+						}						
+						
+						if($page!=$paginas && $paginas>=6)	
+							$paginator .= '  <li><a href="'.$base_url.($page+1).'"><i class="fa fa-angle-right"></i></a></li>';
+							
+						$paginator .="</ul></div>";
+					}
+				}				
+				return $paginator;
+		}
 }

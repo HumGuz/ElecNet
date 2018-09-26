@@ -66,12 +66,16 @@ $route['departamento/(:any)/(:num)/p/(:num)'] = 'sitio/departamento/$2/null/$3';
 //paginacion de departamentos con busqueda
 $route['departamento/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/departamento/$2/$3/$4';
 
+
+
 //categoria
-$route['categoria/(:any)/(:num)'] = 'sitio/categoria/$2';
+$route['categoria/(:any)/(:num)'] = 'sitio/categoria_grid/$2';
+$route['categoria/lista/(:any)/(:num)'] = 'sitio/categoria_list/$2';
+
 //categoria con busqueda
 $route['categoria/(:any)/(:num)/(:any)'] = 'sitio/categoria/$2/$3';
 //paginacion de categoria sin busqueda
-$route['categoria/(:any)/(:num)/p/(:num)'] = 'sitio/categoria/$2/null/$3';
+$route['categoria/(:any)/(:num)/p/(:num)'] = 'sitio/categoria/$2/$3';
 //paginacion de categoria con busqueda
 $route['categoria/(:any)/(:num)/(:any)/p/(:num)'] = 'sitio/categoria/$2/$3/$4';
 

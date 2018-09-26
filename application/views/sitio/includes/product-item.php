@@ -4,7 +4,7 @@
                       <?php echo ($p['precio_oferta']>0 ? '<div class="icon-new-label new-right">Nuevo</div>':'') ?>
                       <div class="product-thumbnail">
                         <div class="pr-img-area"><a title="<?php echo $p['concepto'] ?>" href="<?php echo base_url().app::uri($p['concepto']) ?>/<?php echo $p['id_producto'] ?>">
-                          <figure> <img class="first-img" src="<?php echo base_url() ?>/application/views/img/uploads/<?php echo $p['imagen'] ?>" alt="<?php echo $p['concepto'] ?>"> <img class="hover-img" src="<?php echo base_url() ?>/application/views/img/uploads/<?php echo $p['imagen'] ?>" alt="<?php echo $p['concepto'] ?>"></figure>
+                          <figure> <img class="first-img" src="<?php echo base_url() ?>application/views/img/uploads/<?php echo $p['imagen'] ?>" alt="<?php echo $p['concepto'] ?>"> <img class="hover-img" src="<?php echo base_url() ?>application/views/img/uploads/<?php echo $p['imagen'] ?>" alt="<?php echo $p['concepto'] ?>"></figure>
                           </a></div><div class="pr-info-area">
  							<div class="pr-button">
                            	<div class="mt-button add_to_wishlist"> <a href="javascript:;"> <i class="fa fa-heart-o"></i> </a> </div>
