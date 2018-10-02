@@ -72,7 +72,7 @@ vnt = {
 		vnt.producto = {},vnt.productos = {},vnt.productosDS = {},vnt.productosCT = {},vnt.cotizacion={};
 		$.ajax({type:"POST",url :  "nuevaVenta",dataType : "html",data:o}).done(function(r) {
 			$('body').append(r),md = $('#nuevaVenta');			 
-			md.modal({show:true,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});				
+			md.modal({show:true,keyboard:false,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});				
 			md.find("#id_cliente").change(function(){
 				v = $(this).val();
 				if(v!=''){
@@ -227,7 +227,6 @@ vnt = {
 		var names = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.concepto);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt.names});
 		names.initialize();
 		$('#conc_vnt').typeahead(null, {displayKey : 'concepto',hint : true,source : names.ttAdapter()});
-		vnt.prdDtSt = prdDtSt;
 		$("#prdVntTbl").css('opacity',1)
 	},
 	

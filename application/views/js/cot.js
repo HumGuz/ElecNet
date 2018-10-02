@@ -24,7 +24,7 @@
 		cot.producto = {},cot.productos = {},cot.productosDS = {};
 		$.ajax({type:"POST",url :  "nuevaCotizacion",dataType : "html",data:o}).done(function(r) {					
 			$('body').append(r),md = $('#nuevaCotizacion');			 
-			md.modal({show:true,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});
+			md.modal({show:true,keyboard:false,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});
 			s = $('#nuevaCotizacion .modal-content').data();	
 			md.find("#id_cliente").change(function(){
 				v = $(this).val();
@@ -121,19 +121,13 @@
 	},	
 	 
 	autocomplete:function(prdDtSt) {
-		cot.prdDtSt = [];
-		cot.keys = [];
-		cot.names = [];
-		if (prdDtSt.length) 
-			for ( i = 0; i < prdDtSt.length; i++) 
-				c = prdDtSt[i],cot.keys.push($.trim(c.clave.toLowerCase())),cot.names.push($.trim(c.concepto.toLowerCase()));		
-		var keys = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.clave);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt});
+		cot.prdDtSt = prdDtSt;		
+		var keys = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.clave);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt.keys});
 		keys.initialize();
 		$('#clve_cot').typeahead(null, {displayKey : 'clave',hint : true,source : keys.ttAdapter()});
-		var names = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.concepto);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt});
+		var names = new Bloodhound({datumTokenizer : function(d) {return Bloodhound.tokenizers.whitespace(d.concepto);},queryTokenizer : Bloodhound.tokenizers.whitespace,local : prdDtSt.names});
 		names.initialize();
 		$('#conc_cot').typeahead(null, {displayKey : 'concepto',hint : true,source : names.ttAdapter()});
-		cot.prdDtSt = prdDtSt;
 		$("#prdCotTbl").css('opacity',1)
 	},
 	
@@ -168,6 +162,33 @@
             cot.totalProducto();
 		}
     },    
+    
+    getCoincidence:function(val){
+    	$("span.tt-dropdown-menu").hide(); 	
+    	val = $.trim(val).toLowerCase();
+    	
+		if(val!=''){
+			coins = cot.prdDtSt.data[val];		
+			coins_list = [];
+			for(kc in coins)
+				coins_list.push( cot.prdDtSt.list[coins[kc]]);
+			if(coins_list.length > 1){
+				$.ajax({type : "POST",url : "coincidencias",dataType : "html",data : {busqueda:val,coins_list:coins_list}})
+				.done(function(a) {					
+					$('body').append(a);  
+					$("#coin-modal button.close-modal").click(function(){cot.clearForm(),$('#coin-modal').modal('hide')})
+					$("#coin-modal tr.pointer").dblclick(function(){ cot.setPrdData($.extend({}, cot.prdDtSt.list[$(this).data('id')])),$('#coin-modal').modal('hide')})
+					$("#coin-modal tr.pointer .btn").click(function(){ $(this).parents('tr.pointer').eq(0).dblclick()})
+					$('#coin-modal').modal({show:true,backdrop:'static'}).on('hidden.bs.modal',function(){$('#coin-modal').remove(),$("#cantidadp").focus();});
+				}).fail(function(i, a, e) {console.log(i, a, e)})				
+			}else{
+				coin = coins_list[0];
+				cot.setPrdData(coin);	          
+			}
+		}
+    },
+    
+    
 	setPrdData:function(dat){
     	if(dat){    		
     		$('#clve_cot').val(dat.clave);    		

@@ -72,7 +72,7 @@ cmp = {
 		cmp.producto = {},cmp.productos = {},cmp.productosDS = {},cmp.productosOC = {},cmp.orden={};
 		$.ajax({type:"POST",url :  "nuevaCompra",dataType : "html",data:o}).done(function(r) {
 			$('body').append(r),md = $('#nuevaCompra');			 
-			md.modal({show:true,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});				
+			md.modal({show:true,keyboard:false,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});				
 			md.find("#id_proveedor").change(function(){
 				v = $(this).val();
 				if(v!=''){

@@ -21,6 +21,10 @@ class Cotizaciones extends CI_Controller {
 		$this->load->view('cotizaciones/cotizaciones',array('clt'=>$clt,'sucursales_select'=>$this->scr->getSucursalesSelect()));				
 	}
 	
+	function coincidencias(){		
+		echo $this->load->view('ventas/coincidencias',array('coins_list'=>$_POST['coins_list'],'busqueda'=>$_POST['busqueda']),TRUE);
+	}
+	
 	function cotizacionesTable(){
 		$cot = $this->cot->getCotizaciones($this->input->post());
 		echo $this->load->view('cotizaciones/cotizacionesTable',array('cot'=>$cot),TRUE);

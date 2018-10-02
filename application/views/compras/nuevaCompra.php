@@ -18,7 +18,7 @@
 					<form id="nvaCmp">								
 							<div class="form-group col-sm-5 col-sm-offset-1">
 				                  <label for="id_proveedor">Proveedor</label>
-				                  <select  class="form-control selectpicker " id="id_proveedor" name="id_proveedor" data-container="body">
+				                  <select  class="form-control selectpicker " id="id_proveedor" name="id_proveedor" data-container="body" data-live-search="true">
 				                  	
 				                  	<?php
 										if(!empty($prv)) {
