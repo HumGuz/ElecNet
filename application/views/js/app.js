@@ -46,8 +46,8 @@ var app = function() {
 			 // apertura de menu-filtro
 	        $('body').on('click', 'button.filter,a.filter', function(e) { e.stopPropagation(),$(this).siblings('div.box-filter').slideToggle(200); });
 	        //auto close filters
-	        $('body').on('click', 'div.box-filter,.bootstrap-select', function(e) { if($(".bootstrap-select.open:visible").length==0) e.stopPropagation();});
-	        $('body').click(function(e){if($(".bootstrap-select.open:visible").length==0)$('div.box-filter:visible').slideUp(200);});
+	        $('body').on('click', 'div.box-filter,.bootstrap-select', function(e) { if($(".bootstrap-select.open:visible").length==0 && $(".daterangepicker:visible").length==0) e.stopPropagation();});
+	        $('body').click(function(e){if($(".bootstrap-select.open:visible").length==0 && $(".daterangepicker:visible").length==0)$('div.box-filter:visible').slideUp(200);});
 	        $('body').on('click','div.daterangepicker.dropdown-menu.ltr',function(e){e.stopPropagation()});
 	        $('body').on('click', 'div.close-filter', function(e) {$(this).parents('div.box-filter').slideUp(200);});	        
 			$(document).ajaxSend(function(a,b,c) {$(".spinner").show()  }),

@@ -5,7 +5,7 @@ setlocale(LC_TIME, "es_MX.utf8");
 class Admin extends CI_Controller {
 	public $s = null;
 	function __construct() {
-		parent::__construct();		
+		parent::__construct();
 		$this->s = $this->session->userdata('usuario');
 		if(!isset($this->s['usuario']))			
 			redirect(base_url());	
