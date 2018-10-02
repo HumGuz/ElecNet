@@ -6,11 +6,11 @@ class Admin extends CI_Controller {
 	public $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this->session->userdata('usuario');
-		if(!isset($this->s['usuario']))			
-			redirect(base_url());	
+		$this->s = $this->session->userdata();
+		 if(!isset($this->s['usuario']))			
+			 redirect(base_url());	
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);
-	}	 
+	}	  
 	 
 	public function index() {
 		$this->load->view('admin/dashboard');
