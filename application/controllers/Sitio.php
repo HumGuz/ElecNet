@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct stipt access allowed');
+date_default_timezone_set("America/Mexico_City");
+setlocale(LC_TIME, "es_MX.utf8");
 class Sitio extends CI_Controller {
 	public $s = null;
 	function __construct() {
 		parent::__construct();
-		date_default_timezone_set("America/Mexico_City");
-		setlocale(LC_TIME, "es_MX.utf8");
 		$this -> db = $this -> load -> database('elecnet', TRUE);		
 		$this->load->library('app');
 		$this->load->model('sitio_model','st');

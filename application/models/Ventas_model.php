@@ -39,7 +39,7 @@ class Ventas_model extends CI_Model {
 		
 		
 		
-		$c .= " order by c.fecha_entrega desc";		
+		$c .= " order by c.fecha_entrega desc,c.fecha_registro desc";		
 		
 		$sql = "select 
 									c.*,IF(c.status=2,1,0) as borrar,									

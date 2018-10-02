@@ -1,12 +1,12 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
-session_start();
+date_default_timezone_set("America/Mexico_City");
+setlocale(LC_TIME, "es_MX.utf8");
 class Not_found_404 extends CI_Controller 
 {
 	public $s = null;
     public function __construct() {
-    	date_default_timezone_set("America/Mexico_City");
-		setlocale(LC_TIME, "es_MX.utf8");
+    	
         parent::__construct(); 		
 		$this -> db = $this -> load -> database('elecnet', TRUE);
 		$this->load->library('app');	
