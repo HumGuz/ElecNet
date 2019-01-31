@@ -177,7 +177,8 @@ class Cotizaciones extends CI_Controller {
 
 	function download(){			
 		$d = $this->input->get();
-		$f =$d['nombre'];			
+		$f =$d['nombre'];
+$this->load->helper('file');			
 		App::downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
 	}	
 	

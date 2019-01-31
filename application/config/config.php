@@ -23,8 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-#$config['base_url'] = 'http://elecnet.mx/';
-$config['base_url'] = 'http://35.192.127.66/ElecNet/';
+$config['base_url'] = 'http://elecnet.mx/';
+#$config['base_url'] = 'http://35.192.127.66/ElecNet/';
 
 /*
 |--------------------------------------------------------------------------

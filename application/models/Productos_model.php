@@ -232,7 +232,8 @@ class Productos_model extends CI_Model {
 			
 		 from (
 						select 
-									 p.id_producto, 
+									'p' as tipo, 
+									p.id_producto, 
 									 p.id_departamento,
 									 p.id_categoria_padre,
 									 p.id_categoria,
@@ -257,7 +258,7 @@ class Productos_model extends CI_Model {
 								    
 								    UNION 
 									 
-									 select s.id_servicio,s.id_departamento, s.id_categoria_padre, s.id_categoria,
+									 select 's' as tipo, s.id_servicio,s.id_departamento, s.id_categoria_padre, s.id_categoria,
 									 s.clave,s.concepto,1,'SERV',1,'SERV',1,s.precio_venta,s.precio_venta,0,0,0,'SERV','Servicios'
 									 from t_servicios s
 									 where 1=1 ".$cs ." ) a

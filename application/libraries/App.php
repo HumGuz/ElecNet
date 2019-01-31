@@ -189,10 +189,10 @@ class App {
 	}
 	
 
-	function downloadFile($path, $name){		
+	public static function downloadFile($path, $name){		
 		  if(is_file($path)){
 		    if(ini_get('zlib.output_compression')) { ini_set('zlib.output_compression', 'Off'); }	
-		    $this->load->helper('file');	
+		    	
 		    $mime = get_mime_by_extension($path);
 		    header('Pragma: public');     // required
 		    header('Expires: 0');         // no cache

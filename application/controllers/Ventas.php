@@ -173,7 +173,7 @@ class Ventas extends CI_Controller {
 					<br>
 					<b>CUENTA:</b> 6402638195<br>
 					<b>CLAVE:</b> 021320064026381958<br>
-					<b>PAGOS A TARJETA EN OXXO:</b> 4910 8960 9494 0329<br>
+					<b>PAGOS A TARJETA EN OXXO:</b> 4213 1660 8609 5241<br>
 					<b>DATOS DE BANCO:</b> HSBC<br>
 					<b>TOTAL A PAGAR:</b> $ '.number_format($vnt[0]['total'],2).'<br>
 					<b>PAGAR ANTES DE:</b>'.App::dateFormat($vnt[0]['fecha_limite_pago']).'
@@ -288,7 +288,8 @@ class Ventas extends CI_Controller {
 		}		
 	}
 
-	function download(){			
+	function download(){
+		$this->load->helper('file');			
 		$d = $this->input->get();
 		$f =$d['nombre'];			
 		App::downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
