@@ -18,16 +18,22 @@ if(!empty($vnt)){
 	                  	<div class="btn-group btn-group-sm">		                 
 		                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"> <span class="caret"></span></button>
 		                  <ul class="dropdown-menu pull-right" role="menu">
-		                    <li><a href="#" onclick="vnt.exportDialog('.$p['id_venta'].',\''.$p['folio'].'\',\'pdf\')"><span style="color:#bb0706" class="fa fa-file-pdf-o"></span> Exportar PDF </a></li>	
-		                    <li><a href="#" data-id_venta="'.$p['id_venta'].'" data-duplicar="1" data-fn="nuevaVenta"><span class="fa fa-copy"></span> Duplicar</a></li>			                     
-		                    '.( $p['borrar'] ? '<li><a href="#" data-id_venta="'.$p['id_venta'].'" data-fn="nuevaVenta"><span class="fa fa-pencil"></span> Editar </a></li><li class="divider"></li><li><a href="#"  data-id_venta="'.$p['id_venta'].'" data-fn="borrarVenta"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
-		                  </ul>
+		                    <li><a href="#" onclick="vnt.exportDialog('.$p['id_venta'].',\''.$p['folio'].'\',\'pdf\',\''.$p['nombre_cliente'].' '.App::dateFormat($p['fecha_limite_pago'],7).' \')"><span style="color:#bb0706" class="fa fa-file-pdf-o"></span> Exportar PDF </a></li>	
+							
+		                    <li><a href="#" data-id_venta="'.$p['id_venta'].'" data-scr="vnt" data-fn="nuevaVenta"><span class="fa fa-pencil"></span> Editar </a></li>
+		                    <li><a href="#" data-id_venta="'.$p['id_venta'].'" data-scr="vnt" data-duplicar="1" data-fn="nuevaVenta"><span class="fa fa-copy"></span> Duplicar</a></li>	
+		                    
+		                    
+		                    '.( $p['borrar'] ? '<li class="divider"></li><li><a href="#"  data-scr="vnt"  data-id_venta="'.$p['id_venta'].'" data-fn="borrarVenta"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
+							</ul>
 		     	</div>
-	        </td></tr>';
+			</td>
+			</tr>';
+		}
+        
+       
 	}
-}elseif(isset($d['busqueda']) && isset($d['limit']) && $d['limit']==50 ){
-	echo '<blockquote><p><i class="fa fa-info text-aqua"></i> No se encontraron resultados</p></blockquote>';
-}elseif(isset($d['limit'])  && $d['limit']==50){
-	echo '<blockquote><p><i class="fa fa-info text-aqua"></i> No hay información para mostrar</p></blockquote>';
-}
+
+?>
+
 

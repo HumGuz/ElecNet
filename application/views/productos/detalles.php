@@ -1,6 +1,5 @@
-<div id="prodDet-modal" class="modal fade" role="dialog" data-base_url="<?php echo base_url();?>">
-  <script src="<?php echo base_url();?>application/third_party/cropit/dist/jquery.cropit.js"></script> 
-  <div class="modal-dialog modal-lg" role="document">
+<div id="prd_det-modal" class="modal fade" role="dialog" data-base_url="<?php echo base_url(); ?>" data-width="800px" data-tag="prd" data-scr="prd" data-fn="detalles" data-id_producto="<?php echo $d['id_producto'] ?>">
+  <script src="<?php echo base_url(); ?>application/third_party/cropit/dist/jquery.cropit.js"></script>
     <div class="modal-content">      
         <div class="box main-box">
 		  <div class="box-header with-border">
@@ -8,6 +7,31 @@
 		    <button type="button" class="close" aria-label="Close" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"  title="Cerrar ventana"><span aria-hidden="true">&times;</span></button>               
 		  </div>         
           <div class="box-body">
+          	<script>
+          		console.log(<?php echo json_encode($prd) ?>)
+          	</script>
+          	<style>
+          		.color ul li a {
+				    clear: both;
+				    background: #333333;
+				    float: left;
+				    font-size: 11px;
+				    font-weight: 700;
+				    text-transform: uppercase;
+				    height: 20px;
+				    width: 20px;
+				    border: 1px solid #e5e5e5;
+				    border-radius: 3px;
+				}
+				.color ul li {
+				    border: 0 none;
+				    float: left;
+				    margin-right: 5px;
+				}
+				.color  li {
+				    list-style: none;
+				}
+          	</style>
             <div class="nav-tabs-custom">
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#tab_3" data-toggle="tab" >Datos del producto</a></li>
@@ -35,19 +59,18 @@
 							</div>
 							
 							<div class="col-sm-4">
-								<h5>Especificaciones</h5>
-								<b>Stock:</b> <?php echo $prd['existencia_general'] ?><br>
+								<h5>Especificaciones</h5>								
 								<b>Peso:</b> <?php echo $prd['peso'] ?><br>
 								<b>Dimensiones:</b> <?php echo $prd['dimensiones'] ?><br>
 								<b>Colores:</b> 								
 								<div class="color">
 				                    <ul>
-				                    <?php
-				                    	$c = explode(',', $prd['colores']);				                    	
-										foreach ($c as $key => $v) {
-											echo '<li><a href="#" style="background:'.$v.'"></a></li>';
-										}
-				                    ?>
+					                    <?php 
+						                    $c = explode(',', $prd['colores']);
+											foreach ($c as $key => $v) {
+												echo '<li><a href="#" style="background:' . $v . ';"></a></li>';
+											}
+					                    ?>
 				                     </ul>
 				               </div>					              				
 							</div>							
@@ -60,21 +83,22 @@
 					
 					
 					<div class="tab-pane" id="tab_4" >	
-						<div class="col-sm-4" >
+						
+						<div class="row">
+							<div class="col-sm-4" >
 								<h5>Datos del producto en el sitio</h5>
-								<b>Precio:</b> $ <?php echo number_format($prd['precio_venta'],2); ?><br>
+								<b>Precio:</b> $ <?php echo number_format($prd['precio_venta'], 2); ?><br>
 								<b>Tags:</b> <?php echo $prd['tags']; ?><br>
 								<b>Calificación:</b> 								
 								<div class="rating">
-									<?php 
-										$m = 5;										
-										for ($i=0; $i < $prd['valuacion']; $i++) { 
-											echo '<i class="fa fa-star"></i> ';
-											$m--;
-										}
-										for ($j=0; $j < $m; $j++) { 
-											echo '<i class="fa fa-star-o"></i> ';
-										}										
+									<?php $m = 5;
+									for ($i = 0; $i < $prd['valuacion']; $i++) {
+										echo '<i class="fa fa-star"></i> ';
+										$m--;
+									}
+									for ($j = 0; $j < $m; $j++) {
+										echo '<i class="fa fa-star-o"></i> ';
+									}
 									?>
 								</div>
 							</div>
@@ -100,7 +124,7 @@
 							
 							<div class="col-sm-3" >							
 								<h5>Marcar con precio especial:</h5>								
-								<b>Costo Promedio:</b> $ <?php echo number_format($prd['costo_promedio_general'],2); ?><br>
+								<b>Costo Promedio:</b> $ <?php echo number_format($prd['costo_promedio_general'], 2); ?><br>
 								<b>Precio Especial</b>
 								<div class="input-group input-group-sm">	
 			                        <span class="input-group-addon" style="line-height: 0">
@@ -112,7 +136,10 @@
 				                    </span>
 			                 	 </div>
 			                 	 <small>No puede ser menor al costo promedio.</small>
-							</div>	
+							</div>
+						</div>
+						
+								
 						
 					</div>
 					
@@ -120,24 +147,24 @@
 						<div id="img-prod" class="carousel slide" data-ride="carousel" style="min-height: 600px">
 						  <ol class="carousel-indicators">
 						  	<?php
-						  		if(!empty($img)){
-						  			$x = 0;									
-									foreach ($img as $key => $i) {
-										echo '<li data-target="#img-'.$i['imagen'].'" data-slide-to="'.$x.'" class="'.($x==0 ? 'active' : '').'"></li>';
-										$x++;
-									}
-						  		}
+							if (!empty($img)) {
+								$x = 0;
+								foreach ($img as $key => $i) {
+									echo '<li data-target="#img-' . $i['imagen'] . '" data-slide-to="' . $x . '" class="' . ($x == 0 ? 'active' : '') . '"></li>';
+									$x++;
+								}
+							}
 						  	?>						  	
 						  </ol>		
 						  <div class="carousel-inner" role="listbox">						  	
 						  	<?php
-						  		if(!empty($img)){
-						  			$x = 0;									
-									foreach ($img as $key => $i) {
-										echo '<div id="img-'.$i['imagen'].'" class="item '.($x==0 ? 'active' : '').'"><img src="'.base_url().'/application/views/img/uploads/'.$i['imagen'].'" style="margin:0px auto"><div class="carousel-caption">'.$i['imagen'].' <button onclick="prd.borrarImagen({id_producto:'.$i['id_producto'].',imagen:\''.$i['imagen'].'\'})" type="button" class="btn btn-link "><span class=" text-danger glyphicon glyphicon-trash"></span></button> <button onclick="prd.hacerPortada({id_producto:'.$i['id_producto'].',imagen:\''.$i['imagen'].'\'})" type="button" class="btn btn-link "><span class=" text-primary glyphicon glyphicon-picture"></span></button></div></div>';
-										$x++;
-									}
-						  		}
+							if (!empty($img)) {
+								$x = 0;
+								foreach ($img as $key => $i) {
+									echo '<div id="img-' . $i['imagen'] . '" class="item ' . ($x == 0 ? 'active' : '') . '"><img src="' . base_url() . '/application/views/img/uploads/' . $i['imagen'] . '" style="margin:0px auto"><div class="carousel-caption">' . $i['imagen'] . ' <button onclick="prd.borrarImagen({id_producto:' . $i['id_producto'] . ',imagen:\'' . $i['imagen'] . '\'})" type="button" class="btn btn-link "><span class=" text-danger glyphicon glyphicon-trash"></span></button> <button onclick="prd.hacerPortada({id_producto:' . $i['id_producto'] . ',imagen:\'' . $i['imagen'] . '\'})" type="button" class="btn btn-link "><span class=" text-primary glyphicon glyphicon-picture"></span></button></div></div>';
+									$x++;
+								}
+							}
 						  	?>							  	
 						  </div>		
 						  <a class="left carousel-control" href="#img-prod" role="button" data-slide="prev">
@@ -178,65 +205,8 @@
 				</div>					
 			</div>
           </div>		  	
-		</div>
-    </div>
+		</div>  
   </div>
-  <style>  	
-	.cropit-preview {
-		width: 600px;
-		height: 600px;
-		margin: 0px auto;
-	}	
-	.cropper-container{
-		    text-align: center;
-	}	
-	.slider-wrapper {
-		transition: opacity 0.25s;
-		margin:5px auto 5px;
-		width: 174px;
-	}
-	.cropit-image-input {
-		display: none!important;
-	}
-	.cropit-image-zoom-input {
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-		height: 5px;
-		background: #eee;
-		-webkit-border-radius: 5px;
-		border-radius: 5px;
-		outline: none;
-		width: 130px !important;
-		display: inline-block!important;
-	}
-	.cropit-image-zoom-input::-webkit-range-track {
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-		height: 5px;
-		background: #eee;
-		-webkit-border-radius: 5px;
-		border-radius: 5px;
-		outline: none
-	}
-	.cropit-image-zoom-input::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-		width: 15px;
-		height: 15px;
-		background: #888;
-		-webkit-border-radius: 50%;
-		border-radius: 50%;
-		-webkit-transition: background 0.25s;
-		-moz-transition: background 0.25s;
-		-o-transition: background 0.25s;
-		-ms-transition: background 0.25s;
-		transition: background 0.25s;
-	}
-  </style>
-  
   
 </div>
 

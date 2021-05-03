@@ -13,12 +13,12 @@ class Cotizaciones extends CI_Controller {
 		$this->load->model('cotizaciones_model','cot');
 		$this->load->library('letras');
 	}
+
 			
 	function index(){		
-		$this->load->model('clientes_model','clt');
-		$this->load->model('sucursales_model','scr');
+		$this->load->model('clientes_model','clt');		
 		$clt = $this->clt->getClientes($this->input->post());				
-		$this->load->view('cotizaciones/cotizaciones',array('clt'=>$clt,'sucursales_select'=>$this->scr->getSucursalesSelect()));				
+		echo $this->load->view('cotizaciones/cotizaciones',array('clt'=>$clt),true);				
 	}
 	
 	function coincidencias(){		
@@ -29,7 +29,7 @@ class Cotizaciones extends CI_Controller {
 		$cot = $this->cot->getCotizaciones($this->input->post());
 		echo $this->load->view('cotizaciones/cotizacionesTable',array('cot'=>$cot),TRUE);
 	}
-	
+
 	function nuevaCotizacion(){
 		$this->load->model('clientes_model','clt');
 		$d = $this->input->post();
@@ -62,7 +62,7 @@ class Cotizaciones extends CI_Controller {
 			$this->load->library('pdf');
 			$pdf = $this->pdf->load('utf-8',array(216,279.4),0,'"Helvetica Neue",Helvetica,Arial,sans-serif',8,5,5,20,5,2,"P");
 			$html = '<html><head><style>@page {size: auto;header: html_myHeader;footer: html_myFooter;background: #ffffff url("./application/views/img/'.$d['membrete'].'") no-repeat left top;}</style></head><body>';
-			if($d['membrete']=='bg-cntrlgps.jpg'){
+			if($d['membrete']=='bg-cntrlgps.jpg' || $d['membrete']=='bg-360.jpg'){
 				$html .= '<htmlpageheader name="myHeader" style="display:none;">													
 					<div align="right">
 						Jovanny Rodríguez Sepúlveda<br>General Manuel M Diéguez 114<br>Col. Insurgentes C.P.20287<br>Aguascalientes, Ags.<br>RFC ROSJ910907GC3
@@ -72,14 +72,23 @@ class Cotizaciones extends CI_Controller {
 						<b>Cliente:</b> '.$cot[0]['nombre_cliente'].' '.( trim($cot[0]['direccion']) != '' ? '<br><b>Dirección:</b> '.trim($cot[0]['direccion']) : '' ).( trim($cot[0]['observaciones']) != '' && empty($d['o']) ? '<br><b>Observaciones:</b> '.trim($cot[0]['observaciones']) : '' ).'<br>
 					</div>	
 					<div align="right">
-						<br><b>Fecha de Vencimiento:</b>'.App::dateFormat($cot[0]['fecha_vencimiento']).'<br><b>Folio de Cotización</b>  '.$cot[0]['folio'].'
+						<br><b>Fecha de Vencimiento:</b>'.$this->app->dateFormat($cot[0]['fecha_vencimiento']).'<br><b>Folio de Cotización</b>  '.$cot[0]['folio'].'
 					</div>													
 				</htmlpageheader>	
 				<htmlpagefooter name="myFooter" style="display:none;">							
-					<div  align="right">
-						<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
-						<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
-					</div>	
+					'.(
+						$d['membrete']=='bg-cntrlgps.jpg' ?
+						'<div  align="right">
+							<span style="font-size:12px;">Fecha de creación: '.$this->app->dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+							<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
+						</div>':
+						'<div  align="left">
+							<br>
+							<span style="font-size:12px;color:#FFFFFF">Fecha de creación: '.$this->app->dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+							<span style="font-size:16px;color:#FFFFFF">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
+						</div>'			
+					
+					).'
 				</htmlpagefooter>							
 				'.(empty($d['o']) ? $this->getTablePDF($prd,$cot) :  $this->getProductoCard($prd,$cot)).'										
 				<div align="left">
@@ -88,7 +97,7 @@ class Cotizaciones extends CI_Controller {
 			}else{					
 				$html .= '<htmlpageheader name="myHeader" style="display:none;">												
 					<div align="right">
-						Fecha Vencimiento: '.App::dateFormat($cot[0]['fecha_vencimiento']).'<br>
+						Fecha Vencimiento: '.$this->app->dateFormat($cot[0]['fecha_vencimiento']).'<br>
 						Numero de Cotización: <b>'.$cot[0]['folio'].'</b> 																
 					</div>
 					<h2 align="center"><b>'.(empty($d['o']) ? 'Cotización' :  'Catálogo de Conceptos').'</b></h2>
@@ -98,7 +107,7 @@ class Cotizaciones extends CI_Controller {
 				</htmlpageheader>
 				<htmlpagefooter name="myFooter" style="display:none;">						
 					<div  '.($d['membrete']=='mem_ele.png' ? 'align="right"':'').'>
-						<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+						<span style="font-size:12px;">Fecha de creación: '.$this->app->dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
 						<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
 						<br/><br/><br/><br/>'.($d['membrete']=='mem_ele.png' ? '':'<br/><br/>').'
 					</div>	
@@ -119,7 +128,7 @@ class Cotizaciones extends CI_Controller {
 		
 		$html = '<table  cellpadding="5" cellspacing="0" style="font-size:12px;width:100%"><tbody> ';
 		foreach ($prd as $k => $u) {
-			
+			if($u['um']!='SERV')
 			$html .='<tr>	
 					<td >
 						<img style="vertical-align: middle" src="./application/views/img/uploads/'.(trim($u['imagen'])!=''?$u['imagen']:'../products/product-1.jpg' ).'" width="200px" />					
@@ -127,6 +136,8 @@ class Cotizaciones extends CI_Controller {
 					<td >						
 						<h3>'.$u['concepto'].'</h3>
 						<b>Marca:</b> '.$u['marca'].' <b>Modelo:</b> '.$u['modelo'].' <b>Dimensiones:</b> '.$u['dimensiones'].' <b>Peso:</b> '.$u['peso'].' <b>Garantia:</b> '.$u['tiempo_garantia'].'<br> 
+						<h4>$ '.number_format($u['precio'],2).' MNX.</h4>
+						<br>
 						<b>Descripción:</b> <br> '.$u['descripcion'].'
 								
 					</td>
@@ -177,9 +188,8 @@ class Cotizaciones extends CI_Controller {
 
 	function download(){			
 		$d = $this->input->get();
-		$f =$d['nombre'];
-$this->load->helper('file');			
-		App::downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
+		$f =$d['nombre'];			
+		$this->app->downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
 	}	
 	
 }

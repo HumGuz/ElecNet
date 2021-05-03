@@ -13,7 +13,7 @@ class Proveedores extends CI_Controller {
 		$this->load->model('proveedores_model','prv');
 	}		
 	function index(){
-		$this->load->view('proveedores/proveedores');		
+		echo $this->load->view('proveedores/proveedores',array(),true);		
 	}
 	function proveedoresTable(){
 		$prv = $this->prv->getProveedores($this->input->post());

@@ -8,8 +8,10 @@ class App {
 			$dias =  array('Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sabado');
 			$dias_short =  array('Dom','Lun','Mar','Mié','Jue','Vie','Sab');
 			$meses_short = array("","Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
+			$meses_full = array("","Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 			$dia = date("d", strtotime($date));
 			$mes = $meses_short[intval(date("m", strtotime($date)))];
+			$mes_full = $meses_full[intval(date("m", strtotime($date)))];
 			$ano = date("Y", strtotime($date));
 			if($op==0)
 				return $dia.' '.$mes.' '.$ano;			
@@ -25,6 +27,8 @@ class App {
 				return $dia.' '.$mes.' '.date('y',strtotime($date)).' '.date('H:i',strtotime($date));
 			if($op==6)
 				return $dia.' '.$mes.' '.date('H:i:s',strtotime($date));
+			if($op==7)
+				return $mes_full.' '.$ano;
 	}	
 	
 	

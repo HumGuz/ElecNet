@@ -1,20 +1,15 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Almacenes_model extends CI_Model {
-	private $db = null;	
+class Almacenes_model extends CI_Model {	
 	private $id_sucursal = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
-		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
+		$this->s = $this -> session -> userdata();	
+		$this->id_sucursal = $this->s['id_sucursal'];
 	}	
-	function getAlmacenes($d){
-		if($d['id_sucursal'])
-			$c .= ' and a.id_sucursal = '.$d['id_sucursal'];
-		else
-			$c = ' and a.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
-		
+	function getAlmacenes($d){			
+		$c = ' and a.id_sucursal = '.$this->id_sucursal;
 		if($d['id_almacen'])
 			$c .= ' and a.id_almacen = '.$d['id_almacen'];
 		if($d['busqueda'])
@@ -28,9 +23,10 @@ class Almacenes_model extends CI_Model {
 	function guardarAlmacen($d){
 		$d['id_usuario_cambio'] = $this->s['usuario']['id_usuario'];
 		$d['fecha_cambio'] = date('Y-m-d H:i:s');	
-	  	if(empty($d['id_almacen'])){	
+	  	if(empty($d['id_almacen'])){
+	  		$d['fecha_registro'] = $d['fecha_cambio'];		
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
-			$d['fecha_registro'] = $d['fecha_cambio'];						
+			$d['id_sucursal'] = $this->id_sucursal;						
             $this->db->insert('t_almacenes', $d);			
 			$id_almacen = $this->db->insert_id();			
         }else{

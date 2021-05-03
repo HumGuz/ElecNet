@@ -1,24 +1,22 @@
 vnt = {
-	id_sucursal:0,
-	init:function(){		
-		$("div.box-tools button.btn.btn-success").click(function(){vnt.nuevaVentaDialog({id_sucursal:vnt.id_sucursal})});
-		$("#vntTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,vnt[f](d)});
-		$("#srchFrm").validation({success:function(o){$("#vntTbl tbody").empty(),vnt.ventasTable(o)}});		
-		app.dateRangeFilter();			 
-		$("#id_sucursal").change(function(){ vnt.id_sucursal =$(this).val(), vnt.clear()}).change()
+	path:'../application/views/ventas/',
+	request:'../Ventas/',
+	init:function(i){	
+		$("body").catalogo({
+			title : 'Ventas',id_c:"vnt_c",view : vnt.request,post : i,
+			callback : function(i) {			
+				$("#tbl-vnt").scrollTable({
+					parent : $("#catalogo-vnt"),
+					source : vnt.request+ "ventasTable",
+					extend : i,
+					singleFilter : $("#busqueda-vnt"),
+					advancedFilter: $("#srch-vnt")					
+				});	
+			}
+		});
 	},
-	clear:function(){
-		$("#srchFrm").resetForm();	
-		$("#srchFrm").selectpicker('refresh');	
-		$("#vntTbl tbody").empty();
-		vnt.ventasTable({});
-	},
-	ventasTable:function(o){
-		o.id_sucursal = vnt.id_sucursal;
-		$.ajax({type : "POST",url : "ventasTable",dataType : "html",data : o})
-		.done(function(r) {
-			$("#vntTbl tbody").append(r);
-		}).fail(function(e, t, i) {console.log(e, t, i)})
+	clear:function(){		
+		$("#tbl-vnt").scrollTable('clean')
 	},	
 	nuevaVentaDialog:function(o){	
 		if(o.id_venta){
@@ -70,11 +68,13 @@ vnt = {
 	
 	nuevaVenta:function(o){
 		vnt.producto = {},vnt.productos = {},vnt.productosDS = {},vnt.productosCT = {},vnt.cotizacion={};
-		$.ajax({type:"POST",url :  "nuevaVenta",dataType : "html",data:o}).done(function(r) {
-			$('body').append(r),md = $('#nuevaVenta');			 
-			md.modal({show:true,keyboard:false,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});				
+		$("body").formModal({title : "Nueva venta",id : "vnt",modal :vnt.request+"nuevaVenta",post : o,
+		callback : function(i) {
+			md = $('#vnt-modal');	
 			md.find("#id_cliente").change(function(){
 				v = $(this).val();
+				console.log($(this));
+				console.log(v);
 				if(v!=''){
 					$.ajax({type : "POST",url : "../productos/getPrecioXProductoServicio",dataType : "json",data : {id_cliente:v,id_sucursal:o.id_sucursal}})
 					.done(function(r) {
@@ -147,7 +147,7 @@ vnt = {
 			});
 			md.find("#gNO").click(function(){$("#nvaVnt").submit()});				
 			if(o && o.id_venta){				
-				s = $('#nuevaVenta .modal-content').data();
+				s =md.find('.modal-content').data();
 				for(i in s)
 					(md.find("#"+i).length && md.find("#"+i).val(s[i]));					
 				for(p in vnt.productosDS)
@@ -215,8 +215,10 @@ vnt = {
 					
 				}	
 			}});
-			md.find(".selectpicker").selectpicker('refresh');				
-		});
+			md.find(".selectpicker").selectpicker('refresh');	
+
+		}
+	})
 	},	
 	 
 	autocomplete:function(prdDtSt) {
@@ -402,7 +404,7 @@ vnt = {
 				$("#descuentop").val(''),$("#descuentop").focus(),toastr["warning"]("Capture el descuento")
 				return 0;	
 			}			
-			if(e<=0 && vnt.producto.um!='SERV'){				
+		/*	if(e<=0 && vnt.producto.um!='SERV'){				
 				$.confirm({ title: 'Sin existencia',content: 'Este producto no cuenta con existencia diponible, no sera posible cargar este producto a la venta', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){vnt.clearForm()}}}});
 				return 0;
 			}
@@ -413,7 +415,7 @@ vnt = {
 			if(p<cp && vnt.producto.um!='SERV'){				
 				$.confirm({ title: 'Precio',content: 'El precio establecido es menor a el costo promedio del producto por lo que se generarán perdidas.<br>Costo Promedio:<b>$ '+app.number_format(cp,2)+'</b><br> Favor de revisar.', type: 'orange',theme:"dark",buttons: { b: {text: 'Aceptar',btnClass: 'btn-orange', action: function(r){ $("#preciop").focus()}}}});
 				return 0;
-			}				
+			} */				
 			if(vnt.productos[vnt.producto.id_producto]){				
 				vnt.productos[vnt.producto.id_producto].cantidad += vnt.producto.cantidad;	
 				tot = (vnt.productos[vnt.producto.id_producto].cantidad * vnt.productos[vnt.producto.id_producto].precio);
@@ -519,7 +521,7 @@ vnt = {
 	},
 	
 	guardarVenta:function(o){	
-		(Ladda.create(document.querySelector( '#gNO' ))).start();		
+		app.spin('#vnt-modal button.ladda-button');			
 		o.observaciones = $("#observaciones").val();
 		o.condiciones = $("#condiciones").val();
 		o.productos = vnt.productos;
@@ -529,8 +531,9 @@ vnt = {
 		o.iva = vnt.iva;
 		o.total = vnt.total;		
 		console.log(o);			
-		$.ajax({type : "POST",url : "guardarVenta",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaVenta').modal('hide'),$("#id_sucursal").change()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});})
+		console.log(vnt.request+"guardarVenta");			
+		$.ajax({type : "POST",url : vnt.request+"guardarVenta",dataType : "json",data : o})
+		.done(function(r) {1 == r.status ? (app.ok(),app.close('vnt'),app.updateByTag('vnt')) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	
@@ -544,7 +547,7 @@ vnt = {
 					    buttons: {
 					    	a: {text: 'Cancelar'},
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
-					        	$.ajax({type : "POST",url : "borrarVenta",dataType : "json",data : o})
+					        	$.ajax({type : "POST",url :vnt.request+ "borrarVenta",dataType : "json",data : o})
 								.done(function(r) {
 									1 == r.status ? (app.ok(),vnt.clear()) : $.alert({title: 'Error',icon: 'fa fa-warning',content: 'Hubo un error al guardar los cambios, contecte con el area de sistemas',type: 'red',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-red',keys: ['enter']}}});
 								}).fail(function(e, t, i) {console.log(e, t, i)})
@@ -555,7 +558,7 @@ vnt = {
 		});
 	},
 	
-	exportDialog : function(t,f,type) {		
+	exportDialog : function(t,f,type,nombre) {		
 		$.confirm({ title: 'Membrete',content: 'Selecciona el membrete a utilizar en el documento', type: 'blue',theme:"dark",
 		    buttons: {
 		    	a: {text: 'Syscam',btnClass: 'btn-blue', action: function(r){ 
@@ -565,13 +568,13 @@ vnt = {
 		        	vnt.export(t,f,type,'mem_ele');
 		        }},
 		        c: {text: 'centralGPS',btnClass: 'btn-info', action: function(r){ 
-		        	vnt.export(t,f,type,'bg-cntrlgps');
+		        	vnt.export(t,f,type,'bg-cntrlgps',nombre);
 		        }},
 		        d: {text: 'Cancelar',btnClass: 'btn-default'}		        
 		    }
 		});
 	},
-	export:function(t,f,type,m){
+	export:function(t,f,type,m,nombre){
 		
 		$.confirm({
 		    title: 'Nombrar Archivo',
@@ -579,7 +582,7 @@ vnt = {
 		    '<form action="" class="formName">' +
 		    '<div class="form-group">' +
 		    '<label>Nombre para el archivo</label>' +
-		    '<input type="text"  class="name form-control" required />' +
+		    '<input type="text"  class="name form-control" required value="'+(nombre ? nombre : '')+'"/>' +
 		    '</div>' +
 		    '</form>', type: 'blue',theme:"dark",
 		    buttons: {
@@ -592,9 +595,9 @@ vnt = {
 		                    $.alert('Capture un nombre para el archivo');
 		                    return false;
 		                }
-		                $.ajax({type : "POST",url : type,dataType : "json",data :{id_venta: t,membrete:m,nombre:name}})
+		                $.ajax({type : "POST",url : vnt.request+type,dataType : "json",data :{id_venta: t,membrete:m,nombre:name}})
 						.done(function(a) {
-							1 == a.status ? location.href = ('download?nombre='+name+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
+							1 == a.status ? location.href = (vnt.request+'download?nombre='+name+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});
 						}).fail(function(t, a, e) {
 							 app.error(), console.log(t, a, e);
 						});

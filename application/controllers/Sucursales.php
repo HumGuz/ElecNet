@@ -21,15 +21,12 @@ class Sucursales extends CI_Controller {
 	}
 	
 	function nuevaSucursal(){
-		$d = $this->input->post();
-		$attr = '';		  	
+		$d = $this->input->post();			
 		if($d['id_sucursal']){
 			$scr = $this->scr->getSucursales($d);			
-			foreach ($scr[0] as $key => $v) {
-				$attr .= 'data-'.$key.'="'.htmlspecialchars($v).'" ';
-			}
+			$attr = $this->app->dataTag($scr[0]);
 		}		
-		echo $this->load->view('sucursales/nuevaSucursal',array('scr'=>$attr),TRUE);
+		echo $this->load->view('sucursales/nuevaSucursal',array('dt'=>$attr),TRUE);
 	}
 	
 	function guardarSucursal(){

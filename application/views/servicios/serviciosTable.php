@@ -13,15 +13,10 @@ if(!empty($srv)){
 	                  	<div class="btn-group btn-group-sm">							 
 						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"> <span class="caret"></span></button>
 		                  <ul class="dropdown-menu pull-right" role="menu">
-		                    <li><a href="#" data-id_servicio="'.$p['id_servicio'].'"   data-fn="nuevoServicio"><span class="fa fa-pencil"></span> Editar </a></li>
-		                    '.( $p['borrar']==33432 ? '<li class="divider"></li><li><a href="#"  data-id_servicio="'.$p['id_servicio'].'" data-fn="borrarServicio"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
+		                    <li><a href="#" data-scr="srv" data-id_servicio="'.$p['id_servicio'].'" data-fn="nuevoServicio"><span class="fa fa-pencil"></span> Editar </a></li>
+		                    '.( $p['borrar']==1 ? '<li class="divider"></li><li><a href="#"  data-scr="srv" data-id_servicio="'.$p['id_servicio'].'" data-fn="borrarServicio"><span class="fa fa-eraser text-danger"></span> Borrar </a></li>':'' ).'
 		                  </ul>
 		     	</div>
 	        </td></tr>';
 	}
-}elseif(isset($d['busqueda']) && isset($d['limit']) && $d['limit']==50 ){
-	echo '<blockquote><p><i class="fa fa-info text-aqua"></i> No se encontraron resultados</p></blockquote>';
-}elseif(isset($d['limit'])  && $d['limit']==50){
-	echo '<blockquote><p><i class="fa fa-info text-aqua"></i> No hay información para mostrar</p></blockquote>';
 }
-

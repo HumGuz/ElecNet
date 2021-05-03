@@ -8,8 +8,7 @@ class Almacenes extends CI_Controller {
 		parent::__construct();		
 		$this->s = $this -> session -> userdata();
 		if(!isset($this->s['usuario']))			
-			redirect(base_url());		
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);
+			redirect(base_url());	
 		$this->load->model('almacenes_model','alm');
 	}		
 	function index(){
@@ -26,11 +25,9 @@ class Almacenes extends CI_Controller {
 		$attr = '';		  	
 		if($d['id_almacen']){
 			$alm = $this->alm->getAlmacenes($d);			
-			foreach ($alm[0] as $key => $v) {
-				$attr .= 'data-'.$key.'="'.htmlspecialchars($v).'" ';
-			}
-		}	
-		echo $this->load->view('almacenes/nuevoAlmacen',array('alm'=>$attr,'scrs'=>$this->scr->getSucursales()),TRUE);
+			$attr = $this->app->dataTag($alm[0]);
+		}
+		echo $this->load->view('almacenes/nuevoAlmacen',array('alm'=>$attr),TRUE);
 	}
 	
 	function guardarAlmacen(){

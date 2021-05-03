@@ -15,9 +15,8 @@ class Compras extends CI_Controller {
 			
 	function index(){		
 		$this->load->model('proveedores_model','prv');
-		$this->load->model('sucursales_model','scr');
 		$prv = $this->prv->getProveedores($this->input->post());				
-		$this->load->view('compras/compras',array('prv'=>$prv,'sucursales_select'=>$this->scr->getSucursalesSelect()));				
+		echo $this->load->view('compras/compras',array('prv'=>$prv),true);				
 	}
 	
 	function comprasTable(){
@@ -58,5 +57,4 @@ class Compras extends CI_Controller {
 	function borrarCompra(){
 		echo json_encode($this->cmp->borrarCompra($this->input->post()));		
 	}
-	
 }

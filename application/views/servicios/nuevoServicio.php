@@ -1,11 +1,10 @@
-<div class="modal fade" id="nuevoServicio">
-	<div class="modal-dialog">
+<div class="modal fade" id="srv-modal" data-width="700px">	
 		<div class="modal-content" <?php echo $srv ?>>
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 				<h4 class="modal-title">Nuevo servicio</h4>
 			</div>
-			<form id="nvoPrdFrm" class="nvo">
+			<form id="nvoSrvFrm" class="nvo">
 				<div class="modal-body">					
 					<div class="row">						
 						<div class="clearfix"></div>
@@ -74,8 +73,7 @@
 			                  		}
 			                  	?>
 			                  </select>
-						</div>		
-																
+						</div>									
 					
 						<div class="clearfix"></div>
 						<p class="margin ">Venta y garantía </p>
@@ -99,8 +97,5 @@
 					<button type="submit" class="btn btn-success  btn-sm ladda-button" data-style="slide-right"><span class="ladda-label"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</span>  </button>
 				</div>
 			</form>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
+		</div>		
 </div>

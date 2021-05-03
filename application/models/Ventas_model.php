@@ -1,22 +1,16 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Ventas_model extends CI_Model {
-	private $db = null;	
+	private $id_sucursal = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
-		$this->load->library('app');
-	}
+		$this->s = $this -> session -> userdata();	
+		$this->id_sucursal = $this->s['id_sucursal'];
+	}	
 	
 	function getVentas($d=null){		
-		$c = '';
-		
-		if($d['id_sucursal'])
-			$c .= ' and c.id_sucursal = '.$d['id_sucursal'];
-		else
-			$c = ' and c.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
-		
+		$c = ' and c.id_sucursal = '.$this->id_sucursal;
 		if($d['id_venta'])
 			$c .= ' and c.id_venta = '.$d['id_venta'];
 		if($d['id_cliente']){
@@ -137,10 +131,11 @@ class Ventas_model extends CI_Model {
 		$d['id_cotizacion'] = empty($d['id_cotizacion']) ?0:$d['id_cotizacion'];			
 	  	if(empty($d['id_venta'])){	
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
-			$d['fecha_registro'] = $d['fecha_cambio'];						
+			$d['fecha_registro'] = $d['fecha_cambio'];				
+			$d['id_sucursal'] = $this->id_sucursal;										
             $this->db->insert('t_ventas', $d);			
 			$id_venta = $this->db->insert_id();	
-			$this->db->query("update t_ventas set folio = '".App::folio('V',$id_venta)."' where id_venta =".$id_venta);		
+			$this->db->query("update t_ventas set folio = '".$this->app->folio('V',$id_venta)."' where id_venta =".$id_venta);		
         }else{
         	$id_venta = $d['id_venta'];
 			unset($d['id_venta']);

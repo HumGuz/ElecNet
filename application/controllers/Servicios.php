@@ -12,27 +12,21 @@ class Servicios extends CI_Controller {
 		$this -> db = $this -> load -> database($this->s["db"], TRUE);
 		$this->load->model('servicios_model','srv');
 		$this->load->library('app');
-	}
-			
-	function index(){
-		$this->load->model('sucursales_model','scr');
+	}			
+	function index(){		
 		$this->load->model('clasificaciones_model','cls');
-		$this->load->view('servicios/servicios',array('sucursales_select'=>$this->scr->getSucursalesSelect(),'dep'=>$this->cls->getDepartamentos(),'cat'=>$this->cls->getCategorias()));		
-	}
-	
+		echo $this->load->view('servicios/servicios',array('dep'=>$this->cls->getDepartamentos(),'cat'=>$this->cls->getCategorias()),true);		
+	}	
 	function claveUnica(){
 		echo $this->srv->claveUnica($this->input->post());
-	}
-	
+	}	
 	function serviciosTable(){
 		$srv = $this->srv->getServicios($this->input->post());
 		echo $this->load->view('servicios/serviciosTable',array('srv'=>$srv),TRUE);
-	}
-	
+	}	
 	function getPrecioXServicio(){
 		echo json_encode($this->srv->getPrecioXServicio($this->input->post()));		
-	}
-	
+	}	
 	function nuevoServicio(){
 		$d = $this->input->post();
 		$this->load->model('clasificaciones_model','cls');

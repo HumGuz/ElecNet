@@ -6,71 +6,97 @@ var app = function() {
 	},
 	handleOnResize = function() {
 		var t;
-		$(window).resize(function() {
-			t && clearTimeout(t),
-			t = setTimeout(function() {
-				_runResizeHandlers()
-			}, 50)
-		}).resize()
+		$(window).resize(function() {t && clearTimeout(t),t = setTimeout(function() {_runResizeHandlers()}, 50)}).resize()
 	};	
 	return {
 		test : function(t) {},		
-		iconSpin : function(t) {
-		},
-		loaded : {},
+		spin : function(t) {(Ladda.create(document.querySelector(t))).start();},
+		loaded : {app:1},
 		script : function(script, fn, object) {
 			app.loaded[script] && 1 == app.loaded[script] ? eval(script) && eval(script)[fn](object) : $.ajax({
 				type : "POST",
-				url : "../application/views/js/" + script + ".js",
+				url : "../application/views/js/" + script + ".js?"+app.getUniqueID(1),
 				dataType : "script"
 			}).done(function(response) {
-				response && (app.loaded[script] = 1, fn ? eval(response)[fn](object) : eval(response)['init'])
-			})
+				 response && (app.loaded[script] = 1, fn!='' ? eval(response)[fn](object) : eval(response))
+			}).fail(function(i, a, e) {console.log(i, a, e)})
 		},
 		init : function() {			
-			handleOnResize(), wrapper = $(".box.catalog");
-			$(".box.catalog .box-body.table-responsive").each(function(t, a) {
-					var e = function() {
-						var t = $(a);
-						app.destroySlimScroll(a), dumpHeight = t.outerHeight() ,  t.attr("data-height", dumpHeight), app.initSlimScroll(a)
-					};
-					e(), app.addResizeHandler(e)
+			handleOnResize();			
+			$("body").on('click','[data-scr]:not([data-tag])',function() {
+				js = $(this).data("scr"),
+				fn = $(this).data("fn"),
+				fn = fn || "init",
+				ob = $.extend({}, {}, $(this).data()),
+				delete ob.scr,
+				delete ob.fn, app.script(js, fn, ob)
 			});				
 			$("body").on("hide.bs.modal", function() {$(".modal:visible").length > 1 && !1 === $("html").hasClass("modal-open") ? $("html").addClass("modal-open") : $(".modal:visible").length <= 1 && $("html").removeClass("modal-open")}), 
 			$("body").on("show.bs.modal", ".modal", function() {$(this).hasClass("modal-scroll") && $("body").addClass("modal-open-noscroll")}), 
 			$("body").on("hidden.bs.modal", ".modal", function() {$("body").removeClass("modal-open-noscroll")}),
 			$("body").on("hidden.bs.modal", ".modal:not(.modal-cached)", function() {$(this).removeData("bs.modal")}),
 			$('[data-toggle="tooltip"]').tooltip(),
-			
-			 //filters
-			 // apertura de menu-filtro
 	        $('body').on('click', 'button.filter,a.filter', function(e) { e.stopPropagation(),$(this).siblings('div.box-filter').slideToggle(200); });
-	        //auto close filters
 	        $('body').on('click', 'div.box-filter,.bootstrap-select', function(e) { if($(".bootstrap-select.open:visible").length==0 && $(".daterangepicker:visible").length==0) e.stopPropagation();});
 	        $('body').click(function(e){if($(".bootstrap-select.open:visible").length==0 && $(".daterangepicker:visible").length==0)$('div.box-filter:visible').slideUp(200);});
 	        $('body').on('click','div.daterangepicker.dropdown-menu.ltr',function(e){e.stopPropagation()});
 	        $('body').on('click', 'div.close-filter', function(e) {$(this).parents('div.box-filter').slideUp(200);});	        
 			$(document).ajaxSend(function(a,b,c) {$(".spinner").show()  }),
 			$(document).ajaxStop(function() {setTimeout(function() { $(".spinner").hide(); }, 1e3)}), 
-			$(document).ajaxComplete(function(t, a, e) {setTimeout(function() {$(".spinner") }, 2e3)}) 
+			$(document).ajaxComplete(function(t, a, e) {setTimeout(function() {$(".spinner") }, 2e3)});			
+			$("#id_sucursal").change(function(){
+				$.ajax({type : "POST",url : "setSucursal",dataType : "json",data : {id_sucursal:$(this).val()}})
+				.done(function(r) {
+					1 == r.status ? location.reload() : app.error();
+				}).fail(function(e, a, r) {console.log(e, a, r)});
+			})
 		},
-		dateRangeFilter:function(){
-			strt = moment().subtract(6, 'days');end =  moment();
+		close:function(id){			
+			$("#" + id + "-tab").next("i.fa-times").dblclick().click()
+		},
+		updateByTag : function(tag) {			
+			tags = tag.split(',');			
+			for(i=0;i<tags.length;i++){
+				tag = tags[i];
+				$("[data-tag='" + tag + "']").each(function(k, d) {				
+					if($(this).hasClass('tab-control') && !$(this).hasClass('initialized') )
+						return 0;				
+					ob = $.extend({}, {}, $(this).data()),
+					js = ob.scr,
+					fn = ob.fn,
+					delete ob.tag,
+					delete ob.fn,
+					delete ob.scr, eval(js)[fn](ob)
+				})
+			}
+		},
+		dateRangePicker:function(frm){
+			strt = moment().subtract(29, 'days');end =  moment();
 			cb =  function (start, end, lbl) {	      
-		       	$("#srchFrm").find('#daterange-btn span').html('<b>'+lbl+'</b> del '+start.format('D MMMM YYYY') + ' al ' + end.format('D MMMM YYYY'));	        
-		        $("#srchFrm").find("#fecha_inicial").val(start.format('YYYY-MM-DD'))
-		        $("#srchFrm").find("#fecha_final").val(end.format('YYYY-MM-DD'))
+		       	frm.find('.daterange-button span').html('<b>'+lbl+'</b> del '+start.format('D MMMM YYYY') + ' al ' + end.format('D MMMM YYYY'));	        
+		        frm.find("#fecha_inicial").val(start.format('YYYY-MM-DD'))
+		        frm.find("#fecha_final").val(end.format('YYYY-MM-DD'))
 		    };		
-			$("#srchFrm").find('#daterange-btn').daterangepicker({locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end,opens: "left",drops: "up",autoApply:true, ranges: { 'Hoy'       : [moment(), moment()],'Ayer'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],'Últimos 7 Días' : [moment().subtract(6, 'days'), moment()],'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],'Este Mes'  : [moment().startOf('month'), moment().endOf('month')], 'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]}},cb);		 
-			cb(strt,end,'Últimos 7 Días');
+			frm.find('.daterange-button').daterangepicker({locale:{format: 'YYYY-MM-DD'},startDate: strt,endDate: end,opens: "left",drops: "up",autoApply:true, ranges: { 'Hoy':[moment(), moment()],'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],'Últimos 7 Días' : [moment().subtract(6, 'days'), moment()],'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],'Este Mes'  : [moment().startOf('month'), moment().endOf('month')], 'Mes Anterior'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]}},cb);		 
+			cb(strt,end,'Últimos 30 Días');
 		},
-		initBuscador:function(md,fn){
-			var s;i = md.find("#busqueda_out").eq(0);			
-			i.keyup(function() { (s && clearTimeout(s)),s = setTimeout(function() {$('.box-body-catalogo').slimScroll({scrollTo : '0'}), $("#resultTbl tbody").empty(), val = $.trim(i.val()), fn({busqueda : val,	limit : 0},app.getData(md))}, 300)})
-		},
-		getData:function(md){
-			return obj = {},(md.find("#id_sucursal").length && (obj.id_sucursal = md.find("#id_sucursal").val())),(md.find("#id_almacen").length && (obj.id_almacen = md.find("#id_almacen").val())),obj;
-		},
+		reset:function(frm){
+    		frm.find('button[type="reset"]').click(function(){
+				if(frm.find('.daterange-button').length){
+	    			strt = moment().subtract(29, 'days'),end =  moment();
+	    			frm.find("#fecha_inicial").val(strt.format('YYYY-MM-DD')),
+	    			frm.find("#fecha_final").val(end.format('YYYY-MM-DD')); 	    			
+	    			frm.find('.daterange-button').data('daterangepicker').setStartDate(strt),
+	    			frm.find('.daterange-button').data('daterangepicker').setEndDate(end);
+	    			frm.find('.daterange-button span').html('<b>Últimos 30 Días</b> del '+strt.format('D MMM YYYY') + ' al ' + end.format('D MMM YYYY'));	        
+				}	
+				setTimeout(function(){frm.find('.selectpicker').selectpicker('refresh'),frm.submit()},5);  
+			});	
+    	},
+    	initSelects:function(frm){
+			frm.find(".selectpicker").not('.no-multiple').attr('multiple','multiple').each(function(k,s){$(s).addClass('pull-right').removeClass('required'),$(s).find('option[value=""]').eq(0).remove()}).selectpicker({});
+			frm.find(".selectpicker.no-multiple").each(function(k,s){$(s).addClass('pull-right').removeClass('required')}).selectpicker({})
+		},  	
 		getUniqueID : function(t) { return (t || "") + Math.floor(Math.random() * (new Date).getTime()) },
 		number_format : function(t, a, e, i) {
 			t = (t + "").replace(/[^0-9+\-Ee.]/g, "");

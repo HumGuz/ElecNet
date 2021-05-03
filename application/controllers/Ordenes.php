@@ -79,7 +79,7 @@ class Ordenes extends CI_Controller {
 
 						<htmlpagefooter name="myFooter" style="display:none;">				
 							<div align="right" style="color:white;">
-								<span style="font-size:12px;">'.App::dateFormat(date('Y-m-d')).'</span><br>
+								<span style="font-size:12px;">'.$this->app->dateFormat(date('Y-m-d')).'</span><br>
 								<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}</span>
 							</div>	
 						</htmlpagefooter>										
@@ -147,8 +147,7 @@ class Ordenes extends CI_Controller {
 
 	function download(){			
 		$d = $this->input->get();
-		$f =$d['folio'];
-		$this->load->helper('file');			
-		App::downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
+		$f =$d['folio'];			
+		$this->app->downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
 	}	
 }

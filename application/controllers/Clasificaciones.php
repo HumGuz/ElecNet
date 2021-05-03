@@ -14,7 +14,7 @@ class Clasificaciones extends CI_Controller {
 	}
 	
 	function index(){
-		$this->load->view('clasificaciones/clasificaciones');		
+		echo $this->load->view('clasificaciones/clasificaciones',array(),true);		
 	}	
 	
 	function elementsList(){
@@ -47,7 +47,7 @@ class Clasificaciones extends CI_Controller {
 		if($d['op']==2 || $d['op']==3)
 			$dep = $this->obj->getDepartamentos();		
 		if($d['op']==3)
-			$cat = $this->obj->getCategorias();
+			$cat = $this->obj->getCategorias(array('padres'=>1));
 		echo $this->load->view('clasificaciones/nuevaClasificacion',array('d'=>$d,'obj'=>$attr,'title'=>$title,'dep'=>$dep,'cat'=>$cat),TRUE);
 	}
 	

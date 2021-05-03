@@ -15,9 +15,8 @@ class Ventas extends CI_Controller {
 			
 	function index(){		
 		$this->load->model('clientes_model','clt');
-		$this->load->model('sucursales_model','scr');
 		$clt = $this->clt->getClientes($this->input->post());				
-		$this->load->view('ventas/ventas',array('clt'=>$clt,'sucursales_select'=>$this->scr->getSucursalesSelect()));				
+	echo $this->load->view('ventas/ventas',array('clt'=>$clt),TRUE);				
 	}
 	
 	function ventasTable(){
@@ -45,8 +44,7 @@ class Ventas extends CI_Controller {
 			$pcot = $this->cot->getProductosXCotizacion(array('id_cotizacion'=>$cot[0]['id_cotizacion']));			
 		}			
 		echo $this->load->view('ventas/nuevaVenta',array('vnt'=>$attr,'pcot'=>$pcot,'prd'=>$prd,'cot'=>$cot[0],'clt'=>$this->clt->getClientes()),TRUE);
-	}	
-	
+	}		
 	function coincidencias(){		
 		echo $this->load->view('ventas/coincidencias',array('coins_list'=>$_POST['coins_list'],'busqueda'=>$_POST['busqueda']),TRUE);
 	}
@@ -111,7 +109,7 @@ class Ventas extends CI_Controller {
 	
 							<htmlpagefooter name="myFooter" style="display:none;">				
 								<div  align="right">
-									<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+									<span style="font-size:12px;">Fecha de creación: '.$this->app->dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
 									<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
 									
 								</div>	
@@ -173,13 +171,13 @@ class Ventas extends CI_Controller {
 					<br>
 					<b>CUENTA:</b> 6402638195<br>
 					<b>CLAVE:</b> 021320064026381958<br>
-					<b>PAGOS A TARJETA EN OXXO:</b> 4213 1660 8609 5241<br>
+					<b>PAGOS A TARJETA EN OXXO:</b> 4213 1661 1604 3104<br>
 					<b>DATOS DE BANCO:</b> HSBC<br>
 					<b>TOTAL A PAGAR:</b> $ '.number_format($vnt[0]['total'],2).'<br>
-					<b>PAGAR ANTES DE:</b>'.App::dateFormat($vnt[0]['fecha_limite_pago']).'
+					<b>PAGAR ANTES DE:</b>'.$this->app->dateFormat($vnt[0]['fecha_limite_pago']).'
 				</div>	
 				Dudas con estado de Cuenta<br>
-				(449) 138 8110 o al 9904575	<br>					
+				(449) 138 8110 o al (449) 940 2690 <br>					
 				'.(trim($vnt[0]['condiciones'])!='' ? '<b>CONDICIONES DE VENTA</b>: '.$vnt[0]['condiciones'].'':'').'
 				</body></html>';			
 			}else{
@@ -198,7 +196,7 @@ class Ventas extends CI_Controller {
 						<body>
 							<htmlpageheader name="myHeader" style="display:none;">										
 									<div align="right">
-										Fecha Vencimiento: '.App::dateFormat($vnt[0]['fecha_vencimiento']).'<br>
+										Fecha Vencimiento: '.$this->app->dateFormat($vnt[0]['fecha_vencimiento']).'<br>
 										Numero de vntización: <b>'.$vnt[0]['folio'].'</b> 																
 									</div>
 									<h2 align="center"><b>Cotización</b></h2>
@@ -211,7 +209,7 @@ class Ventas extends CI_Controller {
 	
 							<htmlpagefooter name="myFooter" style="display:none;">				
 								<div  '.($d['membrete']=='mem_ele' ? 'align="right"':'').'>
-									<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+									<span style="font-size:12px;">Fecha de creación: '.$this->app->dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
 									<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
 									<br/><br/><br/><br/>'.($d['membrete']=='mem_ele' ? '':'<br/><br/>').'
 								</div>	
@@ -288,11 +286,10 @@ class Ventas extends CI_Controller {
 		}		
 	}
 
-	function download(){
-		$this->load->helper('file');			
+	function download(){			
 		$d = $this->input->get();
 		$f =$d['nombre'];			
-		App::downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
+		$this->app->downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
 	}	
 	
 }

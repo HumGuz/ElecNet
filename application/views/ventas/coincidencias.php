@@ -1,4 +1,4 @@
-<div id="coin-modal" class="modal fade" tabindex="-1"  data-width="1000" >	
+<div id="coin-modal" class="modal " tabindex="-1"  data-width="1000" >	
 	<div class="modal-dialog" style="width:1000px">
 		<div class="modal-content" >
 			<div class="modal-header">				

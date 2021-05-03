@@ -1,40 +1,49 @@
-<!DOCTYPE html>
-<html>
-<?php include_once FCPATH.'application/views/includes/head.php';?>
-<body class="sidebar-mini skin-blue-light fixed">
-<div class="wrapper">
-  <?php include_once FCPATH.'application/views/includes/header.php';?> 
-   <!-- Left side column. contains the logo and sidebar -->
-  <?php include_once FCPATH.'application/views/includes/aside.php';?>
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        <i class="fa fa-building-o"></i> Sucursales
-        <small></small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
-        <li class="active"> Sucursales</li>
-      </ol>
-    </section>
-    <!-- Main content -->
-    <section class="content">    
-      <?php include_once FCPATH.'application/views/sucursales/bodyCatalogo.php';?> 
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      <b>Versión</b> 1.0.0
-    </div>
-    <strong>Copyright &copy; 2017 <a href="#">Halammeshta Devs</a>.</strong> Todos los derechos reservados.
-  </footer>
-  <?php include_once FCPATH.'application/views/includes/foot.php';?> 
-  <script>app.script('scr','init')</script>
+<div id="seccion-scr">
+	<section class="content-header">
+		<h1><i class="fa fa-building-o"></i> Sucursales <small></small></h1>
+		<ol class="breadcrumb">
+			<li>
+				<a href="#"><i class="fa fa-dashboard"></i> Inicio</a>
+			</li>
+			<li class="active">
+				Sucursales
+			</li>
+		</ol>
+	</section>
+	<section class="content">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="box box-info catalog">
+					<div class="box-header">
+						<h3 class="box-title"> Lista de sucursales</h3>
+						<div class="box-tools" >						
+								<div class="input-group input-group-sm" style="width: 350px;">
+									<input type="text" name="busqueda-scr" id="busqueda-scr" class="form-control pull-right" placeholder="buscar....">
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-success" title="Nueva sucursal" data-scr="scr" data-fn="nuevaSucursal"><i class="fa fa-plus"></i></button>
+									</div>
+								</div>						
+						</div>
+					</div>
+					<div id="catalogo-scr"  class="box-body box-body-catalogo table-responsive no-padding" >
+						<table id="tbl-scr" class="table fixed">
+							<thead>
+								<tr>
+									<th width="50px">#</th>
+									<th width="60px">Clave</th>
+									<th>Nombre</th>
+									<th width="150px">Encargado</th>
+									<th width="90px">Tel. Fijo</th>
+									<th width="90px">Tel. Cel</th>
+									<th width="250px">Email</th>
+									<th width="50px" class="center"><span class="glyphicon glyphicon-cog"></span></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+					<div class="overlay" style="display: none"><i class="fa fa-spinner fa-spin fa-2x" ></i></div>
+				</div>
+			</div>
+		</div>
+	</section>
 </div>
-<!-- ./wrapper -->
-</body>
-</html>

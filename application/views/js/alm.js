@@ -1,41 +1,36 @@
 alm = {
-	init:function(){		
-		$("div.box-tools button.btn.btn-success").click(function(){alm.nuevoAlmacen({})});
-		$("#almTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,alm[f](d)});
-		$("#srchFrm").validation({success:function(o){$("#almTbl tbody").empty(),alm.almacenesTable(o)}})
-		alm.clear({});
-	},
-	clear:function(){
-		$("#srchFrm").resetForm();
-		$("#almTbl tbody").empty();
-		alm.almacenesTable({});
-	},
-	almacenesTable:function(o){
-		$(".overlay").show();
-		$.ajax({type : "POST",url : "almacenesTable",dataType : "html",data : o})
-		.done(function(r) {
-			$("#almTbl tbody").append(r),$(".overlay").hide();
-		}).fail(function(e, t, i) {console.log(e, t, i)})
-	},
-	nuevoAlmacen:function(o){
-		$.ajax({type:"POST",url :  "nuevoAlmacen",dataType : "html",data:o}).done(function(r) {
-			$('body').append(r);  
-			$('#nuevoAlmacen').modal({show:true,backdrop:'static'});
-			$('#nuevoAlmacen').on('hidden.bs.modal',function(){$(this).remove();});		
-			if(o && o.id_almacen){				
-				s = $('#nuevoAlmacen .modal-content').data();
-				for(i in s)
-					($("#"+i).length && $("#"+i).val(s[i]));
+	path:'../application/views/almacenes/',
+	request:'../almacenes/',
+	init:function(i){
+		$("body").catalogo({
+			title : 'Almacenes',id_c:"alm_c",view : alm.request,post : i,
+			callback : function(i) {			
+				$("#tbl-alm").scrollTable({
+					parent : $("#catalogo-alm"),
+					source :  alm.request+"almacenesTable",
+					extend : i,
+					singleFilter : $("#busqueda-alm")
+				});
 			}
-			$("#nvoAlmFrm .selectpicker").selectpicker({}),
-			$("#nvoAlmFrm").validation({extend:o,success:function(ob){alm.guardarAlmacen(ob)}})
 		});
+	},	
+	nuevoAlmacen:function(i){		
+		$("body").formModal({title : "Nuevo Almacen",id : "alm",modal :alm.request+"nuevoAlmacen",post : i,
+			callback : function(i) {				
+				if(i && i.id_almacen){				
+					s = $('#alm-modal .modal-content').data();
+					for(k in s)
+						($("#"+k).length && $("#"+k).val(s[k]));
+				}				
+				$("#nvoAlmFrm").validation({extend:i,success:function(i){alm.guardarAlmacen(i)}})	
+			}
+		})
 	},
 	guardarAlmacen:function(o){	
-		(Ladda.create(document.querySelector( '#gNO' ))).start();				
+		app.spin('#nvoAlmFrm button.ladda-button');				
 		console.log(o)
-		$.ajax({type : "POST",url : "guardarAlmacen",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevoAlmacen').modal('hide'),alm.clear()) : app.error();})
+		$.ajax({type : "POST",url : alm.request+"guardarAlmacen",dataType : "json",data : o})
+		.done(function(r) {1 == r.status ? (app.ok(),app.close('alm')) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarAlmacen:function(o){
@@ -48,9 +43,9 @@ alm = {
 					    buttons: {
 					    	a: {text: 'Cancelar'},
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
-					        	$.ajax({type : "POST",url : "borrarAlmacen",dataType : "json",data : o})
+					        	$.ajax({type : "POST",url :  alm.request+"borrarAlmacen",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (app.ok(),alm.clear()) : app.error();
+									1 == r.status ? (app.ok(),app.close('alm')) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});

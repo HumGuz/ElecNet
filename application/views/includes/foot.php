@@ -13,23 +13,6 @@
 <script src="<?php echo base_url();?>application/third_party/jquery-validation/dist/additional-methods.min.js"></script>
 <script src="<?php echo base_url();?>application/third_party/jquery-validation/dist/messages_es.min.js"></script>
 <script src="<?php echo base_url();?>application/third_party/jquery-validation/dist/validation.js"></script>
-<!-- Morris.js charts 
-<script src="<?php echo base_url();?>application/third_party/raphael/raphael.min.js"></script>
-<script src="<?php echo base_url();?>application/third_party/morris.js/morris.min.js"></script>-->
-<!-- Sparkline 
-<script src="<?php echo base_url();?>application/third_party/jquery-sparkline/dist/jquery.sparkline.min.js"></script>-->
-<!-- jvectormap 
-<script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-<script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>-->
-<!-- jQuery Knob Chart 
-<script src="<?php echo base_url();?>application/third_party/jquery-knob/dist/jquery.knob.min.js"></script>-->
-<!-- daterangepicker 
-<script src="<?php echo base_url();?>application/third_party/moment/min/moment.min.js"></script>
-<script src="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.js"></script>-->
-<!-- datepicker 
-<script src="<?php echo base_url();?>application/third_party/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>-->
-<!-- Bootstrap WYSIHTML5 
-<script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>-->
 <!-- Slimscroll -->
 <script src="<?php echo base_url();?>application/third_party/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
@@ -39,12 +22,25 @@
 <script src="<?php echo base_url();?>application/third_party/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 <script src="<?php echo base_url();?>application/third_party/bootstrap-select/dist/js/defaults-es_ES.min.js"></script>
 
+<script src="<?php echo base_url();?>application/third_party/bootstrap-modal/js/bootstrap-modal.js"></script>
+<script src="<?php echo base_url();?>application/third_party/bootstrap-modal/js/bootstrap-modalmanager.js"></script>
+
+<script src="<?php echo base_url();?>application/third_party/bootstrap-editable/js/bootstrap-editable.min.js"></script>
+
 <script src="<?php echo base_url();?>application/third_party/ladda-bootstrap/dist/spin.min.js"></script>
 <script src="<?php echo base_url();?>application/third_party/ladda-bootstrap/dist/ladda.min.js"></script>
-
+<script src="<?php echo base_url();?>application/third_party/catalogo.js"></script>
+<script src="<?php echo base_url();?>application/third_party/scrollTable.js"></script>
+<script src="<?php echo base_url();?>application/third_party/formModal.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url();?>application/views/js/adminlte.min.js"></script>
 <script src="<?php echo base_url();?>application/views/js/app.js"></script>
+<script src="<?php echo base_url();?>application/third_party/moment/moment.js"></script>
+<script src="<?php echo base_url();?>application/third_party/moment/es.js"></script>
+<link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.css">
+<script src="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="<?php echo base_url();?>application/third_party/typeahead/typeahead.bundle.min.js"></script>
+
 
 <div class="spinner">
   <div class="double-bounce1"></div>

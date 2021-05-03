@@ -1,20 +1,18 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Cotizaciones_model extends CI_Model {
-	private $db = null;	
+class Cotizaciones_model extends CI_Model {	
+	private $id_sucursal = null;
+	private $s = null;
+	
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
-		$this->load->library('app');
+		$this->s = $this -> session -> userdata();		
+		$this->id_sucursal = $this->s['id_sucursal'];
 	}
 	
 	function getCotizaciones($d=null){		
-		$c = '';		
-		if($d['id_sucursal'])
-			$c .= ' and c.id_sucursal = '.$d['id_sucursal'];
-		else
-			$c = ' and c.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
+		$c = ' and c.id_sucursal = '.$this->id_sucursal;		
+		
 		if($d['id_cotizacion'])
 			$c .= ' and c.id_cotizacion = '.$d['id_cotizacion'];
 		if($d['id_cliente']){
@@ -123,20 +121,18 @@ class Cotizaciones_model extends CI_Model {
 		$d['productos'] = count($p);			
 	  	if(empty($d['id_cotizacion'])){	
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
-			$d['fecha_registro'] = $d['fecha_cambio'];						
+			$d['fecha_registro'] = $d['fecha_cambio'];	
+			$d['id_sucursal'] = $this->id_sucursal;						
             $this->db->insert('t_cotizaciones', $d);			
 			$id_cotizacion = $this->db->insert_id();	
-			$this->db->query("update t_cotizaciones set folio = '".App::folio('CT',$id_cotizacion)."' where id_cotizacion =".$id_cotizacion);		
+			$this->db->query("update t_cotizaciones set folio = '".$this->app->folio('CT',$id_cotizacion)."' where id_cotizacion =".$id_cotizacion);		
         }else{
         	$id_cotizacion = $d['id_cotizacion'];
-			unset($d['id_cotizacion']);
-			
+			unset($d['id_cotizacion']);			
             $this->db->where('id_cotizacion', $id_cotizacion);			
-            $this->db->update('t_cotizaciones', $d); 
-                       
+            $this->db->update('t_cotizaciones', $d);                        
             $this->db->where('id_cotizacion', $id_cotizacion);			
-         	$this->db->delete('r_cotizacion_productos');
-			
+         	$this->db->delete('r_cotizacion_productos');			
 			$this->db->where('id_cotizacion', $id_cotizacion);			
          	$this->db->delete('r_cotizacion_servicios');
         }  

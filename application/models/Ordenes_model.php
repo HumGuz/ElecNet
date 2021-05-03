@@ -1,21 +1,16 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Ordenes_model extends CI_Model {
-	private $db = null;	
+	private $id_sucursal = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
-		$this->load->library('app');
-	}
-	
+		$this->s = $this -> session -> userdata();	
+		$this->id_sucursal = $this->s['id_sucursal'];
+	}	
+
 	function getOrdenes($d=null){		
-		$c = '';
-		
-		if($d['id_sucursal'])
-			$c .= ' and o.id_sucursal = '.$d['id_sucursal'];
-		else
-			$c = ' and o.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+		$c = ' and o.id_sucursal = '.$this->id_sucursal;
 		
 		if($d['id_orden_compra'])
 			$c .= ' and o.id_orden_compra = '.$d['id_orden_compra'];
@@ -78,10 +73,11 @@ class Ordenes_model extends CI_Model {
 			
 	  	if(empty($d['id_orden_compra'])){	
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
-			$d['fecha_registro'] = $d['fecha_cambio'];						
+			$d['fecha_registro'] = $d['fecha_cambio'];	
+			$d['id_sucursal'] = $this->id_sucursal;						
             $this->db->insert('t_ordenes_compra', $d);			
 			$id_orden_compra = $this->db->insert_id();				
-			$this->db->query("update t_ordenes_compra set folio = '".App::folio('OC',$id_orden_compra)."' where id_orden_compra =".$id_orden_compra);
+			$this->db->query("update t_ordenes_compra set folio = '".$this->app->folio('OC',$id_orden_compra)."' where id_orden_compra =".$id_orden_compra);
         }else{
         	$id_orden_compra = $d['id_orden_compra'];
 			unset($d['id_orden_compra']);

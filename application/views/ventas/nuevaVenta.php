@@ -1,22 +1,15 @@
-<div class="modal fade" id="nuevaVenta">
-	<div class="modal-dialog modal-lg" style="width: 90%">
-		<div class="modal-content" <?php echo $vnt ?>>
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-				<h4 class="modal-title">Nueva Venta</h4>
-			</div>			
-			<script src="<?php echo base_url();?>application/third_party/bootstrap-editable/js/bootstrap-editable.min.js"></script>
-			<link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-editable/css/bootstrap-editable.css">  
-			<script>
+<div class="modal fade" id="vnt-modal" data-width="90%">
+	<div class="modal-content" <?php echo $vnt ?>>
+		<div class="modal-header">
+			<h4 class="modal-title">Nueva Venta</h4>
+		</div>		
+		
+		<script>
 				vnt.productosDS = <?php echo !empty($prd)?json_encode($prd):'{}'; ?>;
 				vnt.productosCT = <?php echo !empty($pcot)?json_encode($pcot):'{}'; ?>;
 				vnt.cotizacion = <?php echo !empty($cot)?json_encode($cot):'{}'; ?>;
 			</script>
-			<style>
-				#nuevaVenta button[data-id='umc']{padding-left: 2px!important;}
-				#nuevaVenta .bootstrap-select.btn-group .dropdown-toggle .caret {right: 2px!important;}
-				.col-sm-50-4{width:12.5%!important}
-			</style>
+			
 				<div class="modal-body">					
 					<div class="row">				
 					<form id="nvaVnt">								
@@ -188,13 +181,13 @@
 					</div>
 				</div>			
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default btn-sm" id="clsNO">Cancelar</button>
-					<button id="gNO" type="button" class="btn btn-success  btn-sm ladda-button" data-style="slide-right"><span class="ladda-label"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</span>  </button>
-				
-				</div>
+					<button type="button" class="btn btn-default btn-sm close-modal" >Cancelar</button>
+					<button type="button" class="btn btn-success  btn-sm ladda-button" id="gNO" name="gNO" data-style="slide-right">
+					<span class="ladda-label"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</span>
+				</button>
+			</div>	
 			
 		</div>
 		<!-- /.modal-content -->
 	</div>
-	<!-- /.modal-dialog -->
-</div>
+

@@ -13,8 +13,9 @@ class Clientes extends CI_Controller {
 		$this->load->model('clientes_model','clt');
 	}	
 		
+	
 	function index(){
-		$this->load->view('clientes/clientes');		
+		echo $this->load->view('clientes/clientes',array(),true);		
 	}
 	
 	function clientesTable(){

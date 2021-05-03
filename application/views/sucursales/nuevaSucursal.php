@@ -1,8 +1,6 @@
-<div class="modal fade" id="nuevaSucursal">
-	<div class="modal-dialog">
-		<div class="modal-content" <?php echo $scr ?>>
+<div class="modal fade" id="scr-modal">	
+		<div class="modal-content" <?php echo $dt ?>>
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 				<h4 class="modal-title">Nueva Sucursal</h4>
 			</div>
 			<form id="nvaScrFrm" class="nvo">
@@ -21,7 +19,7 @@
 			                </div>
 						</div>
 						<div class="clearfix"></div>
-						<p class="margin separator">Contacto </p>
+						<p class="col-sm-12 bold">Contacto </p>
 						
 						<div class="col-sm-12">
 							<div class="form-group">
@@ -51,7 +49,7 @@
 			                </div>
 						</div>	
 						<div class="clearfix"></div>
-						<p class="margin separator">Domicilio social </p>
+						<p class="col-sm-12 bold">Domicilio social </p>
 						
 						
 						<div class="col-sm-8">
@@ -106,13 +104,9 @@
 					</div>
 				</div>			
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
-					<button id="gNO"type="submit" class="btn btn-success  btn-sm ladda-button" data-style="slide-right"><span class="ladda-label"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</span>  </button>
-				
+					<button type="button" class="btn btn-default btn-sm close-modal" >Cancelar</button>
+					<button id="sb-scr" name="sb-scr" type="submit" class="btn btn-success  btn-sm ladda-button" data-style="slide-right"><span class="ladda-label"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</span>  </button>
 				</div>
 			</form>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
+		</div>	
 </div>

@@ -1,9 +1,18 @@
 scr = {
-	init:function(){		
-		$("div.box-tools button.btn.btn-success").click(function(){scr.nuevaSucursal({})});
-		$("#scrTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,scr[f](d)});
-		$("#srchFrm").validation({success:function(o){$("#scrTbl tbody").empty(),scr.sucursalesTable(o)}})
-		scr.clear({});
+	path:'../application/views/sucursales/',
+	request:'../sucursales/',
+	init:function(i){		
+		$("body").catalogo({
+			title : 'Sucursales',id_c:"scr_c",view : scr.request,post : i,tag : "scr",
+			callback : function(i) {			
+				$("#tbl-scr").scrollTable({
+					parent : $("#catalogo-scr"),
+					source :  "../sucursales/sucursalesTable",
+					extend : i,
+					singleFilter : $("#busqueda-scr")
+				});
+			}
+		})
 	},
 	clear:function(){
 		$("#srchFrm").resetForm();
@@ -17,24 +26,22 @@ scr = {
 			$("#scrTbl tbody").append(r),$(".overlay").hide();
 		}).fail(function(e, t, i) {console.log(e, t, i)})
 	},
-	nuevaSucursal:function(o){
-		$.ajax({type:"POST",url :  "nuevaSucursal",dataType : "html",data:o}).done(function(r) {
-			$('body').append(r);  
-			$('#nuevaSucursal').modal({show:true,backdrop:'static'});
-			$('#nuevaSucursal').on('hidden.bs.modal',function(){$(this).remove();});		
-			if(o && o.id_sucursal){				
-				s = $('#nuevaSucursal .modal-content').data();
-				for(i in s)
-					($("#"+i).length && $("#"+i).val(s[i]));
+	nuevaSucursal:function(i){
+		$("body").formModal({title : "Nueva Sucursal",id : "scr",modal :scr.request+"nuevaSucursal",post : i,
+			callback : function(i) {				
+				if(i && i.id_sucursal){				
+					s = $('#scr-modal .modal-content').data();
+					for(k in s)
+						($("#"+k).length && $("#"+k).val(s[k]));
+				}				
+				$("#nvaScrFrm").validation({extend:i,success:function(i){scr.guardarSucursal(i)}})	
 			}
-			$("#nvaScrFrm").validation({extend:o,success:function(ob){scr.guardarSucursal(ob)}})
 		});
 	},
 	guardarSucursal:function(o){	
-		(Ladda.create(document.querySelector( '#gNO' ))).start();			
-		console.log(o)
-		$.ajax({type : "POST",url : "guardarSucursal",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaSucursal').modal('hide'),scr.clear()) : app.error();})
+		(Ladda.create(document.querySelector( '#sb-scr' ))).start();
+		$.ajax({type : "POST",url : scr.request+"guardarSucursal",dataType : "json",data : o})
+		.done(function(r) {1 == r.status ? (app.ok(),app.close('scr')) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarSucursal:function(o){
@@ -47,7 +54,7 @@ scr = {
 					    buttons: {
 					    	a: {text: 'Cancelar'},
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
-					        	$.ajax({type : "POST",url : "borrarSucursal",dataType : "json",data : o})
+					        	$.ajax({type : "POST",url : "../sucursales/borrarSucursal",dataType : "json",data : o})
 								.done(function(r) {
 									1 == r.status ? (app.ok(),scr.clear()) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})

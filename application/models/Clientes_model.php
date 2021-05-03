@@ -1,11 +1,12 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Clientes_model extends CI_Model {
-	private $db = null;	
+	private $id_sucursal = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
+		$this->s = $this -> session -> userdata();	
+		$this->id_sucursal = $this->s['id_sucursal'];
 	}	
 	function getClientes($d=null){		
 		$c = '';

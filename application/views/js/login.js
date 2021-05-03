@@ -1,6 +1,6 @@
 lgn = {
 	init:function(){		
-			$('input').iCheck({ checkboxClass: 'icheckbox_square-blue', radioClass: 'iradio_square-blue', increaseArea: '20%' });
+			// s$('input').iCheck({ checkboxClass: 'icheckbox_square-blue', radioClass: 'iradio_square-blue', increaseArea: '20%' });
 			$("#lgnFrm").validation({
 			 	success:function(e){
 			 		$.ajax({type : "POST",url : "login/signin",dataType : "json",data : e})

@@ -21,4 +21,10 @@
   <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-select/dist/css/bootstrap-select.min.css">  
   <link rel="stylesheet" href="<?php echo base_url();?>application/views/css/custom.css">
   <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/ladda-bootstrap/dist/ladda-themeless.min.css">
+  <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-modal/css/bootstrap-modal-bs3patch.css">
+  <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-modal/css/bootstrap-modal.css">
+  
+  
+    <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-editable/css/bootstrap-editable.css">
+  
 </head>

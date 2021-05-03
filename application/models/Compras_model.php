@@ -1,22 +1,16 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Compras_model extends CI_Model {
-	private $db = null;	
+class Compras_model extends CI_Model {	
+	private $id_sucursal = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
-		$this->load->library('app');
+		$this->s = $this -> session -> userdata();					
+		$this->id_sucursal = $this->s['id_sucursal'];
 	}
 	
 	function getCompras($d=null){		
-		$c = '';
-		
-		if($d['id_sucursal'])
-			$c .= ' and c.id_sucursal = '.$d['id_sucursal'];
-		else
-			$c = ' and c.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
-		
+		$c = ' and c.id_sucursal = '.$this->id_sucursal;		
 		if($d['id_compra'])
 			$c .= ' and c.id_compra = '.$d['id_compra'];
 		if($d['id_proveedor']){
@@ -30,7 +24,7 @@ class Compras_model extends CI_Model {
 			$c .= " and  date(c.fecha_registro)  >= '".$d['fecha_inicial']."' and date(c.fecha_registro) <= '".$d['fecha_final']."' ";	
 			
 		if($d['busqueda'])
-			$c .= " and (  c.folio like '%".$d['busqueda']."%' or c.observaciones like '%".$d['busqueda']."%' or p.clave like '%".$d['busqueda']."%' or p.nombre like '%".$d['busqueda']."%'  )  ";
+			$c .= " and (  c.folio like '%".$d['busqueda']."%' or c.observaciones like '%".$d['busqueda']."%' or pr.clave like '%".$d['busqueda']."%' or pr.nombre like '%".$d['busqueda']."%'  )  ";
 		
 		$c .= " order by c.fecha_registro desc";		
 		
@@ -123,10 +117,11 @@ class Compras_model extends CI_Model {
 			
 	  	if(empty($d['id_compra'])){	
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
-			$d['fecha_registro'] = $d['fecha_cambio'];						
+			$d['fecha_registro'] = $d['fecha_cambio'];		
+			$d['id_sucursal'] = $this->id_sucursal;							
             $this->db->insert('t_compras', $d);			
 			$id_compra = $this->db->insert_id();	
-			$this->db->query("update t_compras set folio = '".App::folio('CM',$id_compra)."' where id_compra =".$id_compra);		
+			$this->db->query("update t_compras set folio = '".$this->app->folio('CM',$id_compra)."' where id_compra =".$id_compra);		
         }else{
         	$id_compra = $d['id_compra'];
 			unset($d['id_compra']);

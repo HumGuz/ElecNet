@@ -9,10 +9,16 @@ class Admin extends CI_Controller {
 		$this->s = $this->session->userdata();
 		 if(!isset($this->s['usuario']))			
 			 redirect(base_url());	
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);
 	}	  
 	 
-	public function index() {
-		$this->load->view('admin/dashboard');
+	public function index() {		
+		$this->load->model('sucursales_model','scr');		
+		$this->load->view('admin/dashboard',array('sucursales'=>$this->scr->getSucursalesSelect()));
+	}
+	
+	public function setSucursal() {		
+		$d = $this->input->post();
+		$this->session->set_userdata('id_sucursal',$d['id_sucursal']);
+		echo json_encode(array('status'=>1));
 	}
 }

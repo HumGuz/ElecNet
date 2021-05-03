@@ -1,5 +1,4 @@
-<div class="modal fade" id="nuevaClasificacion">
-	<div class="modal-dialog">
+<div class="modal fade" id="cls-modal" data-width="700px">
 		<div class="modal-content" <?php echo $obj ?>>
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -55,26 +54,19 @@
 				                  </select>
 				                </div>
 							</div>	
-						<?php endif; ?>
-						
-						
+						<?php endif; ?>						
 						<div class="col-sm-12">
 							<div class="form-group">
 			                  <label for="encargado">Descripción</label>
 			                  <input type="text" class="form-control required" id="descripcion" name="descripcion">
 			                </div>
-						</div>	
-						
+						</div>						
 					</div>
 				</div>			
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
 					<button id="gNO" type="submit" class="btn btn-success  btn-sm ladda-button" data-style="slide-right"><span class="ladda-label"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</span>  </button>
-			
 				</div>
 			</form>
 		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
 </div>

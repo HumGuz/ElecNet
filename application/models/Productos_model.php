@@ -2,20 +2,61 @@
 session_start();
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Productos_model extends CI_Model {
-	private $db = null;	
 	private $id_sucursal = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database('elecnet', TRUE);		
-		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
-	}
+		$this->s = $this -> session -> userdata();	
+		$this->id_sucursal = $this->s['id_sucursal'];
+	}	
 		
-	function getProductos($d){					
-		if($d['id_sucursal'])
-			$c = ' and r.id_sucursal =  '.$d['id_sucursal'];
-		else 
-			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
+	function getProductos($d){
+		if($d['id_producto'])		
+			$c .= ' and p.id_producto = '.$d['id_producto'];
+		if($d['id_departamento'])		
+			$c .= ' and p.id_departamento = '.$d['id_departamento'];	
+		if($d['id_categoria_padre'])		
+			$c .= ' and p.id_categoria_padre = '.$d['id_categoria_padre'];	
+		if($d['id_categoria'])		
+			$c .= ' and p.id_categoria = '.$d['id_categoria'];
+		if($d['id_unidad_medida_entrada'])		
+			$c .= " and p.id_unidad_medida_entrada ='".$d['id_unidad_medida_entrada']."' ";	
+		if($d['id_unidad_medida_salida'])		
+			$c .= " and p.id_unidad_medida_salida = '".$d['id_unidad_medida_salida']."' ";		
+		if($d['busqueda'])
+			$c .= " and (  p.clave like '%".$d['busqueda']."%' or p.clave_secundaria like '%".$d['busqueda']."%' or p.descripcion like '%".$d['busqueda']."%' or p.concepto like '%".$d['busqueda']."%' or p.marca like '%".$d['busqueda']."%'  )  ";
+				
+		if($d['order_by']){			
+			$c .= " order by ".$d['order_by'].' '.($d['order_flag'] ?$d['order_flag']:'asc');
+		}else
+			$c .= " order by p.clave asc";	
+		
+		$s = "select 
+									p.id_producto,p.clave,p.concepto,p.marca,p.modelo,
+									p.colores,p.dimensiones,p.peso,
+									p.id_departamento, d.clave as dep,d.nombre as departamento,
+									p.id_categoria_padre, cp. clave as cat,cp.nombre as categoria,
+									p.id_categoria, c.clave as subcat,c.nombre as subcategoria,																	
+									p.costo_promedio,p.valuacion,p.tags,
+								 	p.precio_venta,p.tiempo_garantia,p.visible,p.nuevo,p.stock,p.precio_oferta,	
+								 	p.id_unidad_medida_entrada,p.id_unidad_medida_salida,p.factor_unidades,p.descripcion,					 	
+								 	borrarProducto(p.id_producto) as borrar							 	
+									from 
+									t_productos p								
+									left join t_departamentos d on d.id_departamento = p.id_departamento
+									left join t_categorias cp on cp.id_categoria = p.id_categoria_padre
+									left join t_categorias c on c.id_categoria = p.id_categoria
+									 where 1=1 ".$c;
+		
+		$q = $this -> db -> query($s);		
+	$r = $q->result_array();
+	
+		return $r;		
+	}
+	
+	function getProductosAlmacen($d){					
+		$c = ' and r.id_sucursal = '.$this->id_sucursal;
+		
 		if($d['id_almacen'])
 			$c .= ' and r.id_almacen = '.$d['id_almacen'];
 		if($d['id_producto'])		
@@ -80,13 +121,8 @@ class Productos_model extends CI_Model {
 		return $r;		
 	}
 	
-	
-	
 	function getProductosSitio($d){					
-		if($d['id_sucursal'])
-			$c = ' and r.id_sucursal =  '.$d['id_sucursal'];
-		else 
-			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';	
+		$c = ' and r.id_sucursal = '.$this->id_sucursal;	
 				
 		if($d['id_almacen'])
 			$c .= ' and r.id_almacen = '.$d['id_almacen'];
@@ -139,10 +175,7 @@ class Productos_model extends CI_Model {
 	
 	function getProductosXProveedor($d){
 					
-		if($d['id_sucursal'])
-			$c .= ' and r.id_sucursal = '.$d['id_sucursal'];
-		else
-			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
+		$c = ' and r.id_sucursal = '.$this->id_sucursal;
 			
 		// if($d['id_proveedor'])
 			// $c .= ' and rp.id_proveedor = '.$d['id_proveedor']." or r.clave is null";		
@@ -177,10 +210,7 @@ class Productos_model extends CI_Model {
 
 	function getPrecioXProducto(){
 				
-		if($d['id_sucursal'])
-			$c .= ' and r.id_sucursal = '.$d['id_sucursal'];
-		else
-			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+		$c = ' and r.id_sucursal = '.$this->id_sucursal;
 		
 		$c .= " group by p.id_producto ";		
 						
@@ -218,13 +248,11 @@ class Productos_model extends CI_Model {
 	
 	function getPrecioXProductoServicio(){
 		$c = $cs = '';		
-		if($d['id_sucursal']){
-			$c .= ' and r.id_sucursal = '.$d['id_sucursal'];
-			$cs .= ' and s.id_sucursal = '.$d['id_sucursal'];
-		}else{
-			$c = ' and r.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
-			$cs = ' and s.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
-		}
+		
+		$c = ' and r.id_sucursal = '.$this->id_sucursal;
+		$cs = ' and s.id_sucursal = '.$this->id_sucursal;
+		
+		
 		$sql = "  select a.*,
 			 d.clave as dep,d.nombre as departamento,
 			 cp.clave as cat,cp.nombre as categoria,
@@ -232,8 +260,8 @@ class Productos_model extends CI_Model {
 			
 		 from (
 						select 
-									'p' as tipo, 
-									p.id_producto, 
+									 'p' as tipo,
+									 p.id_producto, 
 									 p.id_departamento,
 									 p.id_categoria_padre,
 									 p.id_categoria,
@@ -258,7 +286,7 @@ class Productos_model extends CI_Model {
 								    
 								    UNION 
 									 
-									 select 's' as tipo, s.id_servicio,s.id_departamento, s.id_categoria_padre, s.id_categoria,
+									 select 's' as tipo,s.id_servicio,s.id_departamento, s.id_categoria_padre, s.id_categoria,
 									 s.clave,s.concepto,1,'SERV',1,'SERV',1,s.precio_venta,s.precio_venta,0,0,0,'SERV','Servicios'
 									 from t_servicios s
 									 where 1=1 ".$cs ." ) a
@@ -307,7 +335,7 @@ class Productos_model extends CI_Model {
 			$c .= " and p.clave = '".$d['clave']."'";
 		if($d['clave_secundaria'])		
 			$c .= " and p.clave_secundaria = '".$d['clave_secundaria']."'";				
-		$q = $this -> db -> query("select p.id_producto from t_productos p inner join r_almacen_productos r on r.id_producto = p.id_producto where 1=1  ".$c);		
+		$q = $this -> db -> query("select p.id_producto from t_productos p left join r_almacen_productos r on r.id_producto = p.id_producto where 1=1  ".$c);		
 		$r = $q->result_array();
 		return empty($r)?'true':'false';		
 	}	
@@ -317,13 +345,30 @@ class Productos_model extends CI_Model {
 		$d['fecha_cambio'] = date('Y-m-d H:i:s');		  	
 	  	$d['colores'] = implode(',', $d['colores']);	
 	  	if(empty($d['id_producto'])){
-	  		$rp = array('id_sucursal'=>$d['id_sucursal'],'id_almacen'=>$d['id_almacen'],'stock_max'=>$d['stock_max'],'stock_min'=>$d['stock_min']);			
+			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
+			$d['fecha_registro'] = $d['fecha_cambio'];						
+            $this->db->insert('t_productos', $d);			
+			$id_producto = $this->db->insert_id();	
+        }else{
+        	$id_producto = $d['id_producto'];
+            $this->db->where('id_producto', $id_producto);			
+            $this->db->update('t_productos', $d);
+        } 
+		return array('status'=>1,'id_producto'=>$id_producto);
+	}
+
+	function guardarProductoAlmacen($d){
+		$d['id_usuario_cambio'] = $this->s['usuario']['id_usuario'];
+		$d['fecha_cambio'] = date('Y-m-d H:i:s');		  	
+	  	$d['colores'] = implode(',', $d['colores']);	
+	  	if(empty($d['id_producto'])){
+	  		$rp = array('id_sucursal'=>$this->id_sucursal,'id_almacen'=>$d['id_almacen'],'stock_max'=>$d['stock_max'],'stock_min'=>$d['stock_min']);			
 			unset($d['stock_max']);unset($d['stock_min']);	unset($d['id_sucursal']);unset($d['id_almacen']);								
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
 			$d['fecha_registro'] = $d['fecha_cambio'];						
             $this->db->insert('t_productos', $d);			
 			$id_producto = $this->db->insert_id();	
-			$rp['id_producto'] = $id_producto;
+			$rp['id_producto'] = $id_producto;					
 			$this->db->insert('r_almacen_productos', $rp);
         }else{
         	$id_producto = $d['id_producto'];   

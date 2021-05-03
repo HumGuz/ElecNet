@@ -1,11 +1,12 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Clasificaciones_model extends CI_Model {
-	private $db = null;	
+	private $id_sucursal = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database('elecnet', TRUE);		
+		$this->s = $this -> session -> userdata();	
+		$this->id_sucursal = $this->s['id_sucursal'];
 	}	
 	function getDepartamentos($d=null){		
 		$c = '';
@@ -27,6 +28,8 @@ class Clasificaciones_model extends CI_Model {
 			$c .= ' and c.id_departamento = '.$d['id_departamento'];
 		if(isset($d['id_categoria_padre']) && $d['id_categoria_padre'] >=0 )
 			$c .= ' and c.id_categoria_padre = '.$d['id_categoria_padre'];	
+		if($d['padres'])
+			$c .= ' and c.id_categoria_padre = 0';
 		if($d['busqueda'])
 			$c .= " and (  c.clave like '%".$d['busqueda']."%' or c.nombre like '%".$d['busqueda']."%' or c.descripcion like '%".$d['descripcion']."%'  )  ";
 		$c .= " order by c.clave asc";		

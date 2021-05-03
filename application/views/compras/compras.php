@@ -1,45 +1,54 @@
-<!DOCTYPE html>
-<html>
-<?php include_once FCPATH.'application/views/includes/head.php';?>
-<body class="sidebar-mini skin-blue-light fixed">
-<div class="wrapper">
-  <?php include_once FCPATH.'application/views/includes/header.php';?> 
-   <!-- Left side column. contains the logo and sidebar -->
-  <?php include_once FCPATH.'application/views/includes/aside.php';?>
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        <i class="fa fa-cart-arrow-down"></i> Compras
-        <small></small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
-        <li class="active"> Compras</li>
-      </ol>
-    </section>
-    <!-- Main content -->
-    <section class="content">    
-      <?php include_once FCPATH.'application/views/compras/bodyCatalogo.php';?> 
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      <b>Versión</b> 1.0.0
-    </div>
-    <strong>Copyright &copy; 2017 <a href="#">Halammeshta Devs</a>.</strong> Todos los derechos reservados.
-  </footer>
-  <?php include_once FCPATH.'application/views/includes/foot.php';?> 
-  <script src="<?php echo base_url();?>application/third_party/moment/moment.js"></script>
-  <script src="<?php echo base_url();?>application/third_party/moment/es.js"></script>
-  <link rel="stylesheet" href="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.css">
-  <script src="<?php echo base_url();?>application/third_party/bootstrap-daterangepicker/daterangepicker.js"></script>
-  <script src="<?php echo base_url();?>application/third_party/typeahead/typeahead.bundle.min.js"></script>
-  <script>app.script('cmp','init')</script>
-</div>
-<!-- ./wrapper -->
-</body>
-</html>
+<section class="content-header">
+	<h1><i class="fa fa-cart-arrow-down"></i> Compras <small></small></h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="#"><i class="fa fa-dashboard"></i> Inicio</a>
+		</li>
+		<li class="active">
+			Compras
+		</li>
+	</ol>
+</section>
+<section class="content">
+	<div class="box box-info catalog">
+		<div class="box-header">
+			<h3 class="box-title"> Lista de compras</h3>
+			<div class="box-tools pull-right">
+				<div class="input-group input-group-sm" style="width: 500px;">
+					<input type="text" name="busqueda-cmp" id="busqueda-cmp" class="form-control pull-right" placeholder="buscar....">
+					<div class="input-group-btn box-filter-parent">
+						<button type="button" class="btn btn-default filter"  title="Filtro avanzado">
+							<i class="fa fa-filter"></i><i class="fa fa-caret-down"></i>
+						</button>
+						<?php include_once 'filter.php'; ?>
+						
+						<button type="button" class="btn btn-success"   title="Nueva compra" data-scr="cmp" data-fn="nuevaCompra">
+										<i class="fa fa-plus"></i>
+									</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="catalogo-cmp"  class="box-body box-body-catalogo table-responsive no-padding" data-tag="cmp" data-scr="cmp" data-fn="clean" >
+			<table id="tbl-cmp" class="table fixed">
+				<thead>
+					<tr>
+						<th width="120px">Fecha Reg.</th>
+						<th width="80px">Folio</th>
+						<th width="90px">Factura</th>
+						<th>Proveedor</th>
+						<th width="45px" class="right">Prod.</th>
+						<th width="100px"  class="right">Subtotal</th>
+						<th width="77px"  class="right">Descuento</th>
+						<th width="100px"  class="right">Iva</th>
+						<th width="100px"  class="right">Total</th>
+						<th width="30px" align="center"><span class="glyphicon glyphicon-cog"></span></th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		<div class="overlay" style="display: none">
+			<i class="fa fa-spinner fa-spin fa-2x" ></i>
+		</div>
+	</div>
+</section>

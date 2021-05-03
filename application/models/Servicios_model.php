@@ -1,20 +1,16 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Servicios_model extends CI_Model {
-	private $db = null;	
 	private $id_sucursal = null;
+	private $s = null;
 	function __construct() {
 		parent::__construct();
-		$this->s = $this -> session -> userdata();			
-		$this -> db = $this -> load -> database($this->s["db"], TRUE);		
-		$this->id_sucursal = $this->s['usuario']['id_sucursal'];
-	}
+		$this->s = $this -> session -> userdata();	
+		$this->id_sucursal = $this->s['id_sucursal'];
+	}	
 		
 	function getServicios($d){					
-		if($d['id_sucursal'])
-			$c = ' and s.id_sucursal =  '.$d['id_sucursal'];
-		else 
-			$c = ' and s.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';		
+		$c = ' and s.id_sucursal = '.$this->id_sucursal;
 		
 		if($d['id_servicio'])		
 			$c .= ' and s.id_servicio = '.$d['id_servicio'];
@@ -72,10 +68,7 @@ class Servicios_model extends CI_Model {
 	
 	function getPrecioXServicio(){
 				
-		if($d['id_sucursal'])
-			$c .= ' and s.id_sucursal = '.$d['id_sucursal'];
-		else
-			$c = ' and s.id_sucursal in ('.$this->s['usuario']['sucursales'].') ';
+		$c = ' and s.id_sucursal = '.$this->id_sucursal;
 		
 		$c .= " group by s.id_servicio ";		
 						
@@ -115,7 +108,8 @@ class Servicios_model extends CI_Model {
 		
 	  	if(empty($d['id_servicio'])){
 			$d['id_usuario_registro'] = $d['id_usuario_cambio'];
-			$d['fecha_registro'] = $d['fecha_cambio'];						
+			$d['fecha_registro'] = $d['fecha_cambio'];	
+			$d['id_sucursal'] = $this->id_sucursal;						
             $this->db->insert('t_servicios', $d);			
 			$id_servicio = $this->db->insert_id();	
         }else{

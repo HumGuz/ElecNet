@@ -27,14 +27,14 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page" style="background-color:#FFFFFF ">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>Admin</b>LTE</a>
+  	 <img src="<?php echo base_url() ?>application/views/img/logo.png" alt="fotter logo">
   </div>
   <!-- /.login-logo -->
-  <div class="login-box-body">
-    <p class="login-box-msg">Accede para iniciar tu sesión</p>
+  <div class="login-box-body" style="background: #118fc6;">
+    <p class="login-box-msg" style="color:white">Accede para iniciar tu sesión</p>
     <form id="lgnFrm" autocomplete="off">
       <div class="form-group has-feedback">
         <input type="text" class="form-control required email" placeholder="Email" id="email" name="email" autocomplete="off">
@@ -46,20 +46,20 @@
       </div>
       <div class="row">
         <div class="col-xs-8">
-          <div class="checkbox icheck">
-            <label>
+          <div class="checkbox">
+            <label style="color:white">
               <input type="checkbox"  id="remember" name="remember"> Recordarme
             </label>
           </div>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat" name="sbmt"><span class="fa fa-sign-in"></span> Acceder</button>
+          <button type="submit" class="btn btn-danger btn-block btn-flat" name="sbmt"><span class="fa fa-sign-in"></span> Acceder</button>
         </div>
         <!-- /.col -->
       </div>
     </form>
-    <a href="#">Olvidé mi contraseña</a>
+    <a href="#" style="color:white">Olvidé mi contraseña</a>
   </div>
   <!-- /.login-box-body -->
 </div>

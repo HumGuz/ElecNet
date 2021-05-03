@@ -1,31 +1,27 @@
-﻿cot = {
-	id_sucursal:0,
-	init:function(){		
-		$("div.box-tools button.btn.btn-success").click(function(){cot.nuevaCotizacion({id_sucursal:cot.id_sucursal})});
-		$("#resultTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,cot[f](d)});
-		$("#srchFrm").validation({success:function(o){$("#resultTbl tbody").empty(),cot.cotizacionesTable(o)}});
-		app.dateRangeFilter();app.initBuscador($("section.content"),cot.cotizacionesTable);	
-		$("#id_sucursal").change(function(){ cot.id_sucursal =$(this).val(), cot.clear()}).change()
+﻿cot = {	
+	path:'../application/views/cotizaciones/',
+	request:'../cotizaciones/',
+	init:function(i){			
+		$("body").catalogo({
+			title : 'Cotizaciones',id_c:"cot_c",view : cot.request,post : i,
+			callback : function(i) {			
+				$("#tbl-cot").scrollTable({
+					parent : $("#catalogo-cot"),
+					source :  cot.request+"cotizacionesTable",
+					extend : i,
+					singleFilter : $("#busqueda-cot"),
+					advancedFilter: $("#srch-cot")	
+				});
+			}
+		});
 	},
-	clear:function(){
-		$("#srchFrm").resetForm();		
-		$("#resultTbl tbody").empty();
-		cot.cotizacionesTable({});
-	},
-	cotizacionesTable:function(o){
-		$(".overlay").show();
-		o.id_sucursal = cot.id_sucursal;
-		$.ajax({type : "POST",url : "cotizacionesTable",dataType : "html",data : o})
-		.done(function(r) {
-			$("#resultTbl tbody").append(r),$(".overlay").hide();
-		}).fail(function(e, t, i) {$(".overlay").hide();console.log(e, t, i)})
-	},		
+	clean:function(i){$("#tbl-cot").scrollTable('clean')},	
 	nuevaCotizacion:function(o){
 		cot.producto = {},cot.productos = {},cot.productosDS = {};
-		$.ajax({type:"POST",url :  "nuevaCotizacion",dataType : "html",data:o}).done(function(r) {					
-			$('body').append(r),md = $('#nuevaCotizacion');			 
-			md.modal({show:true,keyboard:false,backdrop:'static'}).on('hidden.bs.modal',function(){$(this).remove();});
-			s = $('#nuevaCotizacion .modal-content').data();	
+		$("body").formModal({title : "Nuevo Cotización",id : "cot",modal :cot.request+"nuevaCotizacion",post : o,
+			callback : function(i) {
+			md = $('#cot-modal');	
+			console.log(o,i);	
 			md.find("#id_cliente").change(function(){
 				v = $(this).val();
 				if(v!=''){
@@ -37,8 +33,8 @@
 				}else{
 					$("#prdCotTbl").css('opacity',0).eq(0).find('body').empty(),cot.productos = {},cot.prdDtSt = [],cot.keys = [],cot.names = []
 				}
-			});							
-			md.find(".selectpicker").selectpicker({});					
+			});	
+		 	md.find(".selectpicker").selectpicker({});					
 			md.find('#fecha_vencimiento').daterangepicker({locale:{format: 'YYYY-MM-DD'},singleDatePicker: true, showDropdowns: true });			
 			md.find('#clve_cot').on('focusout',function(){event.preventDefault(),cot.getCoincidence($(this).val(),cot.keys)});		
 			md.find('#conc_cot').on('focusout',function(){event.preventDefault(),cot.getCoincidence($(this).val(),cot.names)});		
@@ -87,36 +83,26 @@
 			});	
 			md.find("#add-btn").click(function(){cot.addProducto()});
 			md.find("#subtotal").html('$ 0.00'),$("#descuento").html('$ 0.00'),$("#iva").html('$ 0.00'),$("#total").html('$ 0.00');	
-			md.find('#conc_cot,#clve_cot').off('blur');			
-			md.find("#clsNO").click(function(){				
-				if(Object.keys(cot.productos).length)
-					$.confirm({ title: 'Cerrar Nueva Cotizacion',content: 'Hay productos cargados a la cotizacion, al cerrar perdera los cambios ¿Decea Cerrar?', type: 'orange',theme:"dark",buttons: {a: {text: 'Cancelar'},b: {text: 'Cerrar',btnClass: 'btn-orange', action: function(r){md.modal('hide'); }} }});
-				else
-					md.modal('hide');
-			});
+			md.find('#conc_cot,#clve_cot').off('blur');
 			md.find("#gNO").click(function(){$("#nvaCot").submit()});
 			if(o && o.id_cotizacion){	
+				s = md.find('.modal-content').data();
 				for(i in s)
 					(md.find("#"+i).length && md.find("#"+i).val(s[i]));					
 				for(p in cot.productosDS)
 					pr = cot.productosDS[p], pr.cantidad = parseFloat(pr.cantidad), pr.descuento = parseFloat(pr.descuento), pr.precio = parseFloat(pr.precio), pr.subtotal = parseFloat(pr.subtotal), pr.total = parseFloat(pr.total),cot.addFilaProducto(pr);					
-				cot.totalGeneral(),md.find( "#factura" ).attr('disabled','disabled'),
-				md.find("#id_cliente").change(),rls={};	
-				
+				cot.totalGeneral(),md.find("#id_cliente").change(),rls={};					
 				if(o.duplicar==1){
-					delete o.duplicar;
-					delete o.id_cotizacion;
-					o.id_sucursal = $("#id_sucursal").val();
-				}
-							
-			}		
+					delete o.duplicar;delete o.id_cotizacion;
+				}							
+			}
 			md.find("#nvaCot").validation({extend:o,success:function(ob){
 				if(!Object.keys(cot.productos).length){
 						$.confirm({ title: 'Sin productos',content: 'No hay productos cargados a la cotizacion', type: 'orange',theme:"dark",buttons: {a: {text: 'Aceptar',btnClass: 'btn-orange'} }});
 				}else				
 					cot.guardarCotizacion(ob)
 			}});
-			md.find(".selectpicker").selectpicker('refresh');				
+			}
 		});
 	},	
 	 
@@ -152,28 +138,17 @@
     	$("input.form-control.ignore.tt-hint").val('');
     },	
     	
-	getCoincidence:function(val,dataSet){
-    	$("span.tt-dropdown-menu").hide(); 	
-    	val = $.trim(val).toLowerCase();
-		if(val!=''){
-			index = dataSet.indexOf(val);
-			coin = $.extend({},cot.prdDtSt[ index ]);				
-			cot.setPrdData(coin);
-            cot.totalProducto();
-		}
-    },    
-    
+	
     getCoincidence:function(val){
     	$("span.tt-dropdown-menu").hide(); 	
     	val = $.trim(val).toLowerCase();
-    	
 		if(val!=''){
 			coins = cot.prdDtSt.data[val];		
 			coins_list = [];
 			for(kc in coins)
 				coins_list.push( cot.prdDtSt.list[coins[kc]]);
 			if(coins_list.length > 1){
-				$.ajax({type : "POST",url : "coincidencias",dataType : "html",data : {busqueda:val,coins_list:coins_list}})
+				$.ajax({type : "POST",url :"../ventas/coincidencias",dataType : "html",data : {busqueda:val,coins_list:coins_list}})
 				.done(function(a) {					
 					$('body').append(a);  
 					$("#coin-modal button.close-modal").click(function(){cot.clearForm(),$('#coin-modal').modal('hide')})
@@ -187,7 +162,6 @@
 			}
 		}
     },
-    
     
 	setPrdData:function(dat){
     	if(dat){    		
@@ -343,12 +317,10 @@
 		$("#prtr"+producto.id_producto).remove();	
 		$("#prdCotTbl tbody").append(cot.getFilaProducto(producto));
 		cot.setEditablesProducto(producto);
-	},
-	
+	},	
 	getFilaProducto:function(producto){
 		return '<tr id="prtr'+producto.id_producto+'" class="'+( producto.existencia < producto.cantidad && producto.um!='SERV' ? 'text-danger':'')+'"><td class="bold">'+producto.clave+'</td><td class="ellipsis-td" title="'+producto.concepto+'">'+producto.concepto+'</td><td class="bold right">'+(producto.um!='SERV' ? producto.existencia+' ':'')+producto.um+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'"> '+app.number_format(producto.cantidad,2)+'</a> '+(producto.um)+'</td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">$ '+app.number_format(producto.precio,2)+'</a></td><td class="bold right"><a href="javascript:;" data-id="'+producto.id_producto+'">'+(producto.descuento)+' %</a></td><td class="bold right">$ '+app.number_format(producto.subtotal,2)+'</td><td class="bold right">$ '+app.number_format(producto.costo_promedio,2)+'</td><td class="bold right">$ '+app.number_format(producto.truput,2)+'</td><td class="bold right">$ '+app.number_format(producto.total,2)+'</td><td class="rmb-btn" ><button type="button" class="btn btn-danger" onclick="cot.quitar('+producto.id_producto+')"><i class="fa fa-times"></i></button></td>';
-	},
-	
+	},	
 	setEditablesProducto:function(cn){		
 		$("#prtr"+cn.id_producto).find('td').eq(3).find('a').editable({type: 'text',title: 'Cantidad:',
             validate: function(value) {				    	
@@ -416,8 +388,8 @@
 		cot.totalGeneral();		
 		cot.clearForm();
 	},	
-	guardarCotizacion:function(o){	
-		(Ladda.create(document.querySelector( '#nuevaCotizacion button.ladda-button' ))).start();			
+	guardarCotizacion:function(o){			
+		app.spin('#cot-modal button.ladda-button');	
 		o.observaciones = $("#observaciones").val();
 		o.condiciones = $("#condiciones").val();
 		o.productos = cot.productos;
@@ -425,9 +397,9 @@
 		o.total_descuento = cot.total_descuento; 
 		o.iva = cot.iva;
 		o.total = cot.total;		
-		$.ajax({type : "POST",url : "guardarCotizacion",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevaCotizacion').modal('hide'),cot.clear()) : app.error();})
-		.fail(function(e, a, r) {console.log(e, a, r)})
+		$.ajax({type : "POST",url : cot.request+"guardarCotizacion",dataType : "json",data : o})
+		.done(function(r) {1 == r.status ? (app.ok(),app.close('cot'),app.updateByTag('cot')) : app.error();})
+		.fail(function(e, a, r) {app.error();console.log(e, a, r)})
 	},	
 	borrarCotizacion:function(o){
 		$.confirm({ title: 'Borrar Cotizacion',content: '¿Esta seguro de querer borrar esta cotizacion?', type: 'orange',theme:"dark",
@@ -439,9 +411,9 @@
 					    buttons: {
 					    	a: {text: 'Cancelar'},
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
-					        	$.ajax({type : "POST",url : "borrarCotizacion",dataType : "json",data : o})
+					        	$.ajax({type : "POST",url : cot.request+"borrarCotizacion",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (app.ok(),cot.clear()) : app.error();
+									1 == r.status ? (app.ok(),cot.clean()) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});
@@ -455,6 +427,7 @@
 		    	a: {text: 'Syscam',btnClass: 'btn-blue', action: function(r){cot.export(t,f,type,'mem_sys.png',o); }},
 		        b: {text: 'Elecnet',btnClass: 'btn-red', action: function(r){cot.export(t,f,type,'mem_ele.png',o); }},
 		        c: {text: 'centralGPS',btnClass: 'btn-info', action: function(r){cot.export(t,f,type,'bg-cntrlgps.jpg',o);}},
+		        e: {text: 'service360',btnClass: 'btn-green', action: function(r){cot.export(t,f,type,'bg-360.jpg',o);}},
 		        d: {text: 'Cancelar',btnClass: 'btn-default'}		        
 		    }
 		});
@@ -468,8 +441,8 @@
 		            action: function () {
 		                var name = this.$content.find('.name').val();
 		                if(!name){ $.alert('Capture un nombre para el archivo'); return false;}
-		                $.ajax({type : "POST",url : type,dataType : "json",data :{id_cotizacion: t,membrete:m,nombre:name,o:o}})
-						.done(function(a) {1 == a.status ? location.href = ('download?nombre='+name+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});})
+		                $.ajax({type : "POST",url :  cot.request+type,dataType : "json",data :{id_cotizacion: t,membrete:m,nombre:name,o:o}})
+						.done(function(a) {1 == a.status ? location.href = (cot.request+'download?nombre='+name+'&type='+type) :$.confirm({title: 'Sin resultados',icon: 'fa fa-warning',content: 'El reporte solicitado no generó ningún contenido',theme:"dark",buttons:{a: {text: 'Aceptar',btnClass: 'btn-default',keys: ['enter']}}});})
 						.fail(function(t, a, e) {app.error(), console.log(t, a, e);});
 		            }
 		        },

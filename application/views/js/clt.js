@@ -1,40 +1,35 @@
 clt = {
-	init:function(){		
-		$("div.box-tools button.btn.btn-success").click(function(){clt.nuevoCliente({})});
-		$("#cltTbl").on('click','a[data-fn]',function(){d = $.extend({},$(this).data()),f = d.fn,delete d.fn ,clt[f](d)});
-		$("#srchFrm").validation({success:function(o){$("#cltTbl tbody").empty(),clt.clientesTable(o)}})
-		clt.clear({});
-	},
-	clear:function(){
-		$("#srchFrm").resetForm();
-		$("#cltTbl tbody").empty();
-		clt.clientesTable({});
-	},
-	clientesTable:function(o){
-		$(".overlay").show();
-		$.ajax({type : "POST",url : "clientesTable",dataType : "html",data : o})
-		.done(function(r) {
-			$("#cltTbl tbody").append(r),$(".overlay").hide();
-		}).fail(function(e, t, i) {console.log(e, t, i)})
-	},
-	nuevoCliente:function(o){
-		$.ajax({type:"POST",url :  "nuevoCliente",dataType : "html",data:o}).done(function(r) {
-			$('body').append(r);  
-			$('#nuevoCliente').modal({show:true,backdrop:'static'});
-			$('#nuevoCliente').on('hidden.bs.modal',function(){$(this).remove();});		
-			if(o && o.id_cliente){				
-				s = $('#nuevoCliente .modal-content').data();
-				for(i in s)
-					($("#"+i).length && $("#"+i).val(s[i]));
+	path:'../application/views/clientes/',
+	request:'../clientes/',
+	init:function(i){
+		$("body").catalogo({
+			title : 'Clientes',id_c:"clt_c",view : clt.request,post : i,
+			callback : function(i) {			
+				$("#tbl-clt").scrollTable({
+					parent : $("#catalogo-clt"),
+					source :  clt.request+"clientesTable",
+					extend : i,
+					singleFilter : $("#busqueda-clt")
+				});
 			}
-			$.validator.addMethod("rfc", function(value, element, params) {
-			    return  clt.rfcValido($.trim(value).toUpperCase()) ; 
-			}, 'El RFC es inválido');
-			$('#nuevoCliente .selectpicker').selectpicker({})
-			$("#nvoPrvFrm").validation({extend:o,rules:{rfc:{rfc:function(){ return $.trim($("#rfs").val())!='' },required:false}},success:function(ob){clt.guardarCliente(ob)}})
 		});
-	},
-	
+	},	
+	clean:function(i){$("#tbl-clt").scrollTable('clean')},
+	nuevoCliente:function(o){		
+		$("body").formModal({title : "Nuevo Cliente",id : "clt",modal :clt.request+"nuevoCliente",post : o,
+			callback : function(i) {
+				md = $('#clt-modal');				
+				if(o && o.id_cliente){				
+					s = md.find('.modal-content').data();
+					for(i in s)
+						(md.find("#"+i).length && md.find("#"+i).val(s[i]));
+				}
+				$.validator.addMethod("rfc", function(value, element, params) {return  clt.rfcValido($.trim(value).toUpperCase())}, 'El RFC es inválido');
+				md.find('.selectpicker').selectpicker({})
+				md.find("#nvoCltFrm").validation({extend:o,rules:{rfc:true},success:function(ob){clt.guardarCliente(ob)}})
+			}
+		})
+	},	
 	rfcValido: function (rfc,aceptarGenerico) {
 	    const re       = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;
 	    var   validado = rfc.match(re);	
@@ -57,11 +52,11 @@ clt = {
 	        return false;
 	    return true;
 	},
-	guardarCliente:function(o){	
-		(Ladda.create(document.querySelector( '#gNO' ))).start();					
+	guardarCliente:function(o){			
+		app.spin('#nvoCltFrm button.ladda-button');					
 		console.log(o)
-		$.ajax({type : "POST",url : "guardarCliente",dataType : "json",data : o})
-		.done(function(r) {1 == r.status ? (app.ok(),$('#nuevoCliente').modal('hide'),clt.clear()) : app.error();})
+		$.ajax({type : "POST",url : clt.request+"guardarCliente",dataType : "json",data : o})
+		.done(function(r) {1 == r.status ? (app.ok(),app.close('clt'),app.updateByTag('clt')) : app.error();})
 		.fail(function(e, a, r) {console.log(e, a, r)})
 	},
 	borrarCliente:function(o){
@@ -74,9 +69,9 @@ clt = {
 					    buttons: {
 					    	a: {text: 'Cancelar'},
 					        b: {text: 'Borrar',btnClass: 'btn-red', action: function(r){ 
-					        	$.ajax({type : "POST",url : "borrarCliente",dataType : "json",data : o})
+					        	$.ajax({type : "POST",url : clt.request+"borrarCliente",dataType : "json",data : o})
 								.done(function(r) {
-									1 == r.status ? (app.ok(),clt.clear()) : app.error();
+									1 == r.status ? (app.ok(),app.updateByTag('clt')) : app.error();
 								}).fail(function(e, t, i) {console.log(e, t, i)})
 					        }}		        
 					}});
