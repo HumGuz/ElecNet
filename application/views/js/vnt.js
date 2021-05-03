@@ -371,8 +371,8 @@ vnt = {
         }  
         vnt.total_descuento = dsc *  vnt.subtotal / 100; 
 		vnt.subtotal_descuento = vnt.subtotal - vnt.total_descuento;
-		var env = $.trim($("#costos_envio").val()), env = ( env !=''? parseFloat(env) :0 ),
-        (env == 0 && $("#costos_envio").val(0)),		
+		var env = $.trim($("#costos_envio").val()), env = ( env !=''? parseFloat(env) :0 );
+        (env == 0 && $("#costos_envio").val(0));		
 		vnt.iva = (vnt.subtotal_descuento + env) * 0.16;
 		vnt.total = (vnt.subtotal_descuento + env) * 1.16;
         $("#subtotal").html('$ ' + app.number_format(vnt.subtotal,2));	
