@@ -1,0 +1,107 @@
+<section class="content-header">
+	<h1><i class="fa fa-cart-arrow-down"></i> Compras <small></small></h1>
+	<ol class="breadcrumb">
+		<li>
+			<a href="#"><i class="fa fa-dashboard"></i> Inicio</a>
+		</li>
+		<li class="active">
+			Compras
+		</li>
+	</ol>
+</section>
+<section class="content">
+	<div class="box box-info catalog">
+		<div class="box-header">
+			<h3 class="box-title"> Lista de compras</h3>
+			<div class="box-tools pull-right">
+				<div class="input-group input-group-sm" style="width: 500px;">
+					<input type="text" name="busqueda-cmp" id="busqueda-cmp" class="form-control pull-right" placeholder="buscar....">
+					<div class="input-group-btn box-filter-parent">
+						<button type="button" class="btn btn-default filter"  title="Filtro avanzado">
+							<i class="fa fa-filter"></i><i class="fa fa-caret-down"></i>
+						</button>
+						<div class="box box-primary box-filter">
+							<div class="box-header with-border">
+								<h3 class="box-title">Filtro avanzado</h3>
+							</div>
+							<form id="srch-cmp" role="form">
+								<div class="box-body box-body-filter row">
+									<div class="form-group col-sm-12" >
+										<label for="descripcion">Busqueda</label>
+										<input type="text" class="form-control" id="busqueda" name="busqueda">
+									</div>
+									<div class="clearfix"></div>
+									<div class="form-group col-sm-12" >
+										<label for="descripcion">Clave de producto</label>
+										<input type="text" class="form-control" id="producto" name="producto">
+									</div>
+									<div class="clearfix"></div>
+									<div class="form-group col-sm-12">
+										<label for="id_proveedor">Proveedor</label>
+										<select  class="form-control selectpicker" id="id_proveedor" name="id_proveedor" data-container="body" data-live-search="true" multiple="multiple">
+											<?php
+											if (!empty($prv)) {
+												foreach ($prv as $key => $s) {
+													echo '  <option value="' . $s['id_proveedor'] . '" > [ ' . $s['clave'] . ' ] ' . $s['nombre'] . '</option> ';
+												}
+											}
+											?>
+										</select>
+									</div>
+									<div class="clearfix"></div>
+									<div class="form-group col-sm-12">
+										<label>Rango de fechas:</label>										
+										<button type="button"  class="btn btn-default ignore daterange-button">
+											<span> <i class="fa fa-calendar"></i> </span>
+											<i class="fa fa-caret-down"></i>
+										</button>						
+									</div>
+									<input type="hidden" id="fecha_inicial" name="fecha_inicial">
+									<input type="hidden" id="fecha_final" name="fecha_final">
+								</div>
+								<div class="box-footer">
+									<button type="submit" name="src-btn" class="btn btn-primary">
+										<i class="fa fa-filter"></i> Filtrar
+									</button>
+									<button type="reset" name="cmp-rst" class="btn btn-default" style="margin-left:5px">
+										<i class="fa fa-eraser"></i>
+									</button>
+								</div>
+								<div class="close-filter">
+									<span class="fa fa-caret-square-o-up"></span>
+								</div>
+							</form>
+						</div>
+						<!-- <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"  title="Nueva compra" data-fn="nuevaCompra">
+							<i class="fa fa-plus"></i>
+						</button> -->
+						<button type="button" class="btn btn-success"   title="Nueva compra" data-scr="cmp" data-fn="nuevaCompra">
+										<i class="fa fa-plus"></i>
+									</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="catalogo-cmp"  class="box-body box-body-catalogo table-responsive no-padding" data-tag="cmp" data-scr="cmp" data-fn="clean" >
+			<table id="tbl-cmp" class="table fixed">
+				<thead>
+					<tr>
+						<th width="120px">Fecha Reg.</th>
+						<th width="80px">Folio</th>
+						<th width="90px">Factura</th>
+						<th>Proveedor</th>
+						<th width="45px" class="right">Prod.</th>
+						<th width="100px"  class="right">Subtotal</th>
+						<th width="77px"  class="right">Descuento</th>
+						<th width="100px"  class="right">Iva</th>
+						<th width="100px"  class="right">Total</th>
+						<th width="30px" align="center"><span class="glyphicon glyphicon-cog"></span></th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		<div class="overlay" style="display: none">
+			<i class="fa fa-spinner fa-spin fa-2x" ></i>
+		</div>
+	</div>
+</section>

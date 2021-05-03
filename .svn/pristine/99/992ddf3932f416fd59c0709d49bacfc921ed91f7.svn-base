@@ -1,0 +1,186 @@
+<?php
+defined('BASEPATH') OR exit('No direct cotipt access allowed');
+date_default_timezone_set("America/Mexico_City");
+setlocale(LC_TIME, "es_MX.utf8");
+class Cotizaciones extends CI_Controller {
+	public $s = null;
+	function __construct() {
+		parent::__construct();
+		$this->s = $this -> session -> userdata();		
+		if(!isset($this->s['usuario']))			
+			redirect(base_url());	
+		$this -> db = $this -> load -> database($this->s["db"], TRUE);
+		$this->load->model('cotizaciones_model','cot');
+		$this->load->library('letras');
+	}
+
+			
+	function index(){		
+		$this->load->model('clientes_model','clt');		
+		$clt = $this->clt->getClientes($this->input->post());				
+		echo $this->load->view('cotizaciones/cotizaciones',array('clt'=>$clt),true);				
+	}
+	
+	function coincidencias(){		
+		echo $this->load->view('ventas/coincidencias',array('coins_list'=>$_POST['coins_list'],'busqueda'=>$_POST['busqueda']),TRUE);
+	}
+	
+	function cotizacionesTable(){
+		$cot = $this->cot->getCotizaciones($this->input->post());
+		echo $this->load->view('cotizaciones/cotizacionesTable',array('cot'=>$cot),TRUE);
+	}
+
+	function nuevaCotizacion(){
+		$this->load->model('clientes_model','clt');
+		$d = $this->input->post();
+		$attr = '';		  	
+		if($d['id_cotizacion']){
+			$cot = $this->cot->getCotizaciones($d);			
+			foreach ($cot[0] as $key => $v) {
+				$attr .= 'data-'.$key.'="'.htmlspecialchars($v).'" ';
+			}
+			$prd = $this->cot->getProductosXCotizacion($d);
+		}		
+		echo $this->load->view('cotizaciones/nuevaCotizacion',array('cot'=>$attr,'prd'=>$prd,'clt'=>$this->clt->getClientes()),TRUE);
+	}	
+	function guardarCotizacion(){
+		echo json_encode($this->cot->guardarCotizacion($this->input->post()));		
+	}		
+	function borrarCotizacion(){
+		echo json_encode($this->cot->borrarCotizacion($this->input->post()));		
+	}
+	
+	function pdf(){
+		ini_set("memory_limit", "1024M");
+		ini_set('max_execution_time', 12000);
+		ini_set('max_input_time ', 0);
+		set_time_limit(0);
+		$d = $this->input->post();
+		$cot = $this->cot->getCotizaciones($d);	
+		$prd = $this->cot->getProductosXCotizacion($d);	
+		if(!empty($prd)){
+			$this->load->library('pdf');
+			$pdf = $this->pdf->load('utf-8',array(216,279.4),0,'"Helvetica Neue",Helvetica,Arial,sans-serif',8,5,5,20,5,2,"P");
+			$html = '<html><head><style>@page {size: auto;header: html_myHeader;footer: html_myFooter;background: #ffffff url("./application/views/img/'.$d['membrete'].'") no-repeat left top;}</style></head><body>';
+			if($d['membrete']=='bg-cntrlgps.jpg'){
+				$html .= '<htmlpageheader name="myHeader" style="display:none;">													
+					<div align="right">
+						Jovanny Rodríguez Sepúlveda<br>General Manuel M Diéguez 114<br>Col. Insurgentes C.P.20287<br>Aguascalientes, Ags.<br>RFC ROSJ910907GC3
+					</div>
+					<h2 align="center"><b>'.(empty($d['o']) ? 'Cotización' :  'Catálogo de Conceptos').'</b></h2>
+					<div align="left">
+						<b>Cliente:</b> '.$cot[0]['nombre_cliente'].' '.( trim($cot[0]['direccion']) != '' ? '<br><b>Dirección:</b> '.trim($cot[0]['direccion']) : '' ).( trim($cot[0]['observaciones']) != '' && empty($d['o']) ? '<br><b>Observaciones:</b> '.trim($cot[0]['observaciones']) : '' ).'<br>
+					</div>	
+					<div align="right">
+						<br><b>Fecha de Vencimiento:</b>'.App::dateFormat($cot[0]['fecha_vencimiento']).'<br><b>Folio de Cotización</b>  '.$cot[0]['folio'].'
+					</div>													
+				</htmlpageheader>	
+				<htmlpagefooter name="myFooter" style="display:none;">							
+					<div  align="right">
+						<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+						<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
+					</div>	
+				</htmlpagefooter>							
+				'.(empty($d['o']) ? $this->getTablePDF($prd,$cot) :  $this->getProductoCard($prd,$cot)).'										
+				<div align="left">
+					<br>Dudas con la Cotizacion<br>(449) 138 8110 o al (449) 940 2690<br>'.(trim($cot[0]['condiciones'])!='' && empty($d['o']) ? '<br><b>CONDICIONES</b>: '.$cot[0]['condiciones'].'':'').'
+				</div>';			
+			}else{					
+				$html .= '<htmlpageheader name="myHeader" style="display:none;">												
+					<div align="right">
+						Fecha Vencimiento: '.App::dateFormat($cot[0]['fecha_vencimiento']).'<br>
+						Numero de Cotización: <b>'.$cot[0]['folio'].'</b> 																
+					</div>
+					<h2 align="center"><b>'.(empty($d['o']) ? 'Cotización' :  'Catálogo de Conceptos').'</b></h2>
+					<div align="left">			
+						'.($d['membrete']=='mem_ele.png' ? '<br/><br/>':'').'<b>Cliente:</b> '.$cot[0]['nombre_cliente'].( trim($cot[0]['direccion']) != '' ? '<br><b>Dirección:</b> '.trim($cot[0]['direccion']) : '' ).( trim($cot[0]['observaciones']) != '' && empty($d['o']) ? '<br><b>Observaciones:</b> '.trim($cot[0]['observaciones']) : '' ).'
+					</div>							
+				</htmlpageheader>
+				<htmlpagefooter name="myFooter" style="display:none;">						
+					<div  '.($d['membrete']=='mem_ele.png' ? 'align="right"':'').'>
+						<span style="font-size:12px;">Fecha de creación: '.App::dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+						<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
+						<br/><br/><br/><br/>'.($d['membrete']=='mem_ele.png' ? '':'<br/><br/>').'
+					</div>	
+				</htmlpagefooter>	
+				'.(empty($d['o']) ? $this->getTablePDF($prd,$cot) :  $this->getProductoCard($prd,$cot)).'		 
+				'.(trim($cot[0]['condiciones'])!=''  && empty($d['o'])? ' <div style="margin:10px" ><br><b>CONDICIONES DE VENTA</b>: '.$cot[0]['condiciones'].'</div>':'');	
+			}
+			$html .= '</body></html>';	
+			
+			$pdf->WriteHTML($html); 			
+			$pdf->Output('./application/files/'.$d['nombre'].'.pdf', 'F');
+			echo json_encode(array('status'=>1));
+		}else{
+			echo json_encode(array('status'=>2));
+		}		
+	}
+	function getProductoCard($prd,$cot){
+		
+		$html = '<table  cellpadding="5" cellspacing="0" style="font-size:12px;width:100%"><tbody> ';
+		foreach ($prd as $k => $u) {
+			if($u['um']!='SERV')
+			$html .='<tr>	
+					<td >
+						<img style="vertical-align: middle" src="./application/views/img/uploads/'.(trim($u['imagen'])!=''?$u['imagen']:'../products/product-1.jpg' ).'" width="200px" />					
+					</td>	
+					<td >						
+						<h3>'.$u['concepto'].'</h3>
+						<b>Marca:</b> '.$u['marca'].' <b>Modelo:</b> '.$u['modelo'].' <b>Dimensiones:</b> '.$u['dimensiones'].' <b>Peso:</b> '.$u['peso'].' <b>Garantia:</b> '.$u['tiempo_garantia'].'<br> 
+						<h4>$ '.number_format($u['precio'],2).' MNX.</h4>
+						<br>
+						<b>Descripción:</b> <br> '.$u['descripcion'].'
+								
+					</td>
+				</tr>';		}		
+		$html .= "</tbody> </table>";
+		return $html;	
+	}
+	function getTablePDF($prd,$cot){
+		$l = new Letras();	
+		$html = '<table  cellpadding="5" cellspacing="0" style="font-size:12px;width:100%">
+							<thead>					
+								<tr style="background-color:#333333;">	
+									<td style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF"><b>Clave</b></td>
+									<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Descripción</b></td>	
+									<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Cantidad</b></td>
+									<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Unidad</b></td>										
+									<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Precio Unitario</b></td>								
+									<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Importe</b></td>								
+								</tr>
+							</thead>						
+						     	<tbody>'; 
+		$x = 1;			
+			foreach ($prd as $k => $u) {								
+				$html .= '				
+						<tr>	
+							<td style="border-left:1px solid #d3d3d3;font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">'.$u['clave'].'</td>	
+							<td style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">'.$u['concepto'].'</td>
+							<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">'.$u['cantidad'].'</td>
+							<td align="center" style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">'.$u['um'].'</td>					
+							<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">$ '.number_format( $u['precio']   - ( $u['precio'] * $u['descuento'] / 100  ),2).'</td>								
+							<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">$ '.number_format( $u['subtotal'],2).'</td>												
+						</tr>
+				';
+				$x++;
+			}
+			$html .= '
+				<tr><td colspan="5" align="right" style="">Subtotal:</td><td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['subtotal'],2).' </td></tr>
+				<tr><td colspan="5" align="right" style="">Descuento <b>'.round($cot[0]['descuento_general']).'%</b>:</td><td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['total_descuento'],2).' </td></tr>
+				<tr><td colspan="5" align="right" style="">Gastos de envío:</td><td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['gastos_envio'],2).'</td></tr>
+				<tr><td colspan="5" align="right" style="">I.V.A:</td><td align="right" style="font-weight:bold;">$ '.number_format($cot[0]['iva'],2).'</td></tr>
+				<tr><td colspan="5" align="right" style="">Total:</td><td align="right" style="font-weight:bold">$ '.number_format($cot[0]['total'],2).'</td></tr>
+				<tr><td colspan="6" align="right" >'.($l->ValorEnLetras(round($cot[0]['total'],2),'Pesos')).'</td></tr>	</tbody> </table>';
+			return $html;	
+	}
+
+
+
+
+	function download(){			
+		$d = $this->input->get();
+		$f =$d['nombre'];			
+		App::downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
+	}	
+	
+}

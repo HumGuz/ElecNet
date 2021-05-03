@@ -1,0 +1,295 @@
+<?php
+defined('BASEPATH') OR exit('No direct vntipt access allowed');
+date_default_timezone_set("America/Mexico_City");
+setlocale(LC_TIME, "es_MX.utf8");
+class Ventas extends CI_Controller {
+	public $s = null;
+	function __construct() {
+		parent::__construct();
+		$this->s = $this -> session -> userdata();		
+		if(!isset($this->s['usuario']))			
+			redirect(base_url());	
+		$this -> db = $this -> load -> database($this->s["db"], TRUE);
+		$this->load->model('ventas_model','vnt');
+	}
+			
+	function index(){		
+		$this->load->model('clientes_model','clt');
+		$clt = $this->clt->getClientes($this->input->post());				
+	echo $this->load->view('ventas/ventas',array('clt'=>$clt),TRUE);				
+	}
+	
+	function ventasTable(){
+		$vnt = $this->vnt->getVentas($this->input->post());
+		echo $this->load->view('ventas/ventasTable',array('vnt'=>$vnt),TRUE);
+	}	
+	function getFolioCotizacion(){
+		$d = $this->input->post();
+		echo json_encode($this->vnt->getFolioCotizacion($d));
+	}	
+	
+	function nuevaVenta(){
+		$this->load->model('clientes_model','clt');
+		$d = $this->input->post();
+		$attr = '';		  	
+		if($d['id_venta']){
+			$vnt = $this->vnt->getVentas($d);			
+			foreach ($vnt[0] as $key => $v) {
+				$attr .= 'data-'.$key.'="'.htmlspecialchars($v).'" ';
+			}
+			$prd = $this->vnt->getProductosXVenta($d);
+		}elseif($d['folio']){			
+			$this->load->model('cotizaciones_model','cot');
+			$cot = $this->cot->getCotizaciones($d);
+			$pcot = $this->cot->getProductosXCotizacion(array('id_cotizacion'=>$cot[0]['id_cotizacion']));			
+		}			
+		echo $this->load->view('ventas/nuevaVenta',array('vnt'=>$attr,'pcot'=>$pcot,'prd'=>$prd,'cot'=>$cot[0],'clt'=>$this->clt->getClientes()),TRUE);
+	}		
+	function coincidencias(){		
+		echo $this->load->view('ventas/coincidencias',array('coins_list'=>$_POST['coins_list'],'busqueda'=>$_POST['busqueda']),TRUE);
+	}
+	
+	function guardarVenta(){
+		echo json_encode($this->vnt->guardarVenta($this->input->post()));		
+	}		
+	function borrarVenta(){
+		echo json_encode($this->vnt->borrarVenta($this->input->post()));		
+	}
+	
+	
+	function pdf(){
+		
+		ini_set("memory_limit", "1024M");
+		ini_set('max_execution_time', 12000);
+		ini_set('max_input_time ', 0);
+		set_time_limit(0);
+		$d = $this->input->post();
+		$this->load->library('letras');
+		$vnt = $this->vnt->getVentas($d);	
+		$prd = $this->vnt->getProductosXVenta($d);		
+		$l = new Letras();
+		
+		if(!empty($prd)){
+			$this->load->library('pdf');
+			$pdf = $this->pdf->load('utf-8',array(216,279.4),0,'"Helvetica Neue",Helvetica,Arial,sans-serif',8,5,5,20,5,2,"P");							
+				
+				if($d['membrete']=='bg-cntrlgps'){
+					$html = '
+					<html>
+						<head>
+							<style>
+								@page {
+									size: auto;
+									header: html_myHeader;
+									footer: html_myFooter;				
+									background: #ffffff url("./application/views/img/'.$d['membrete'].'.jpg") no-repeat left top;
+								}
+							</style>
+						</head>
+						<body>
+							<htmlpageheader name="myHeader" style="display:none;">										
+									<div align="right">
+										Jovanny Rodríguez Sepúlveda<br>
+										General Manuel M Diéguez 114<br>
+										Col. Insurgentes C.P.20287<br>
+										Aguascalientes, Ags.<br>
+										RFC ROSJ910907GC3
+									</div>
+									<h2 align="center"><b>Estado de Cuenta</b></h2>
+									<div align="left">
+										'.$vnt[0]['nombre_cliente'].'<br>
+										'.$vnt[0]['direccion'].'<br>
+									</div>
+									<div align="right">
+									<br>
+										<b>FACTURACIÓN:</b>'.$vnt[0]['observaciones'].'<br>
+										<b>TOTAL A PAGAR</b> $ '.number_format($vnt[0]['total'],2).'
+									</div>					
+							</htmlpageheader>
+	
+							<htmlpagefooter name="myFooter" style="display:none;">				
+								<div  align="right">
+									<span style="font-size:12px;">Fecha de creación: '.$this->app->dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+									<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
+									
+								</div>	
+							</htmlpagefooter>										
+					
+					<table  cellpadding="5" cellspacing="0" style="font-size:12px;width:100%">
+						<thead>					
+							<tr style="background-color:#bdbdbd;">	
+								<td style="border-top:1px solid #bdbdbd;border-right:1px solid #bdbdbd;"><b>Cantidad</b></td>
+								<td  style="border-top:1px solid #bdbdbd;border-right:1px solid #bdbdbd;" ><b>U Medida</b></td>	
+								<td  style="border-top:1px solid #bdbdbd;border-right:1px solid #bdbdbd;" ><b>Concepto</b></td>								
+								<td  style="border-top:1px solid #bdbdbd;border-right:1px solid #bdbdbd;" ><b>Precio Unitario</b></td>								
+								<td  style="border-top:1px solid #bdbdbd;border-right:1px solid #bdbdbd;" ><b>Importe</b></td>								
+							</tr>
+						</thead>						
+					    <tbody>
+				';			
+				$x = 1;			
+				foreach ($prd as $k => $u) {								
+					$html .= '				
+							<tr>	
+								<td align="right" style="border-left:1px solid #bdbdbd;font-weight:bold;border-bottom:1px solid #bdbdbd;border-right:1px solid #bdbdbd;">
+									'.$u['cantidad'].'
+								</td>	
+								<td align="center" style="border-bottom:1px solid #bdbdbd;border-right:1px solid #bdbdbd;">
+									'.$u['um'].'
+								</td>
+								<td  style="border-bottom:1px solid #bdbdbd;border-right:1px solid #bdbdbd;">
+									'.$u['concepto'].'
+								</td>													
+								<td align="right" style="font-weight:bold;border-bottom:1px solid #bdbdbd;border-right:1px solid #bdbdbd;">
+									$ '.number_format( $u['precio']  - ( $u['precio'] * $u['descuento'] / 100  ),2).'
+								</td>								
+								<td align="right" style="font-weight:bold;border-bottom:1px solid #bdbdbd;border-right:1px solid #bdbdbd;">
+									$ '.number_format( $u['subtotal'],2).'
+								</td>												
+							</tr>
+					';
+					$x++;
+				}
+				$html .= '
+				<tr style="background-color:#bdbdbd;">
+				<td colspan="3">Cantidad con Letra:</td>
+				<td  align="right" >Subtotal:</td>
+				<td align="right" style="font-weight:bold;">$ '.number_format($vnt[0]['subtotal'],2).' </td>
+				</tr><tr style="background-color:#bdbdbd;">
+				<td colspan="3"  style="font-weight:bold;">'.($l->ValorEnLetras(round($vnt[0]['total'],2),'Pesos')).'</td>
+				<td  align="right" >Descuento <b>'.round($vnt[0]['descuento_general']).'%</b>:</td>
+				<td align="right" style="font-weight:bold;">$ '.number_format($vnt[0]['total_descuento'],2).' </td>
+				</tr><tr style="background-color:#bdbdbd;">
+				<td colspan="4" align="right" >I.V.A:</td>
+				<td align="right" style="font-weight:bold;">$ '.number_format($vnt[0]['iva'],2).'</td>
+				</tr><tr style="background-color:#bdbdbd;">
+				<td colspan="4" align="right" >Total:</td>
+				<td align="right" style="font-weight:bold;">$ '.number_format($vnt[0]['total'],2).'</td>
+				</tr>
+				</tbody></table>
+				<div align="right">
+					<br>
+					<b>CUENTA:</b> 6402638195<br>
+					<b>CLAVE:</b> 021320064026381958<br>
+					<b>PAGOS A TARJETA EN OXXO:</b> 4910 8960 9494 0329<br>
+					<b>DATOS DE BANCO:</b> HSBC<br>
+					<b>TOTAL A PAGAR:</b> $ '.number_format($vnt[0]['total'],2).'<br>
+					<b>PAGAR ANTES DE:</b>'.$this->app->dateFormat($vnt[0]['fecha_limite_pago']).'
+				</div>	
+				Dudas con estado de Cuenta<br>
+				(449) 138 8110 o al 9904575	<br>					
+				'.(trim($vnt[0]['condiciones'])!='' ? '<b>CONDICIONES DE VENTA</b>: '.$vnt[0]['condiciones'].'':'').'
+				</body></html>';			
+			}else{
+				$html = '
+					<html>
+						<head>
+							<style>
+								@page {
+									size: auto;
+									header: html_myHeader;
+									footer: html_myFooter;				
+									background: #ffffff url("./application/views/img/'.$d['membrete'].'.png") no-repeat left top;
+								}
+							</style>
+						</head>
+						<body>
+							<htmlpageheader name="myHeader" style="display:none;">										
+									<div align="right">
+										Fecha Vencimiento: '.$this->app->dateFormat($vnt[0]['fecha_vencimiento']).'<br>
+										Numero de vntización: <b>'.$vnt[0]['folio'].'</b> 																
+									</div>
+									<h2 align="center"><b>Cotización</b></h2>
+									<div align="left">			
+									'.($d['membrete']=='mem_ele' ? '<br/><br/>':'').'						
+										<b>Cliente:</b> '.$vnt[0]['nombre_cliente'].'	
+										'.( trim($vnt[0]['observaciones']) != '' ? '<br><b>Observaciones:</b> '.trim($vnt[0]['observaciones']) : '' ).'
+									</div>							
+							</htmlpageheader>
+	
+							<htmlpagefooter name="myFooter" style="display:none;">				
+								<div  '.($d['membrete']=='mem_ele' ? 'align="right"':'').'>
+									<span style="font-size:12px;">Fecha de creación: '.$this->app->dateFormat(date('Y-m-d')).'&nbsp;&nbsp;&nbsp;</span><br>
+									<span style="font-size:16px;">Página <b>{PAGENO}</b> / {nbpg}&nbsp;&nbsp;&nbsp;</span>
+									<br/><br/><br/><br/>'.($d['membrete']=='mem_ele' ? '':'<br/><br/>').'
+								</div>	
+							</htmlpagefooter>										
+					
+					<table  cellpadding="5" cellspacing="0" style="font-size:12px;width:100%">
+						<thead>					
+							<tr style="background-color:#bdbdbd;">	
+								<td style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF"><b>Clave</b></td>
+								<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Descripción</b></td>	
+								<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Cantidad</b></td>
+								<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Unidad</b></td>										
+								<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Precio Unitario</b></td>								
+								<td  style="border-top:1px solid #333333;border-right:1px solid #333333;color:#FFFFFF" ><b>Importe</b></td>								
+							</tr>
+						</thead>						
+					    <tbody>
+				';			
+				$x = 1;			
+				foreach ($prd as $k => $u) {								
+					$html .= '				
+							<tr>	
+								<td style="border-left:1px solid #d3d3d3;font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+									'.$u['clave'].'
+								</td>	
+								<td style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+									'.$u['concepto'].'
+								</td>
+								<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+									'.$u['cantidad'].'
+								</td>
+								<td align="center" style="border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+									'.$u['um'].'
+								</td>					
+								<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+									$ '.number_format( $u['precio']   - ( $u['precio'] * $u['descuento'] / 100  ),2).'
+								</td>								
+								<td align="right" style="font-weight:bold;border-bottom:1px solid #d3d3d3;border-right:1px solid #d3d3d3;">
+									$ '.number_format( $u['total'],2).'
+								</td>												
+							</tr>
+					';
+					$x++;
+				}
+				$html .= '
+				<tr>
+				<td colspan="5" align="right" style="">Subtotal:</td>
+				<td align="right" style="font-weight:bold;">$ '.number_format($vnt[0]['subtotal'],2).' </td>
+				</tr><tr>
+				<td colspan="5" align="right" style="">Descuento <b>'.round($vnt[0]['descuento_general']).'%</b>:</td>
+				<td align="right" style="font-weight:bold;">$ '.number_format($vnt[0]['total_descuento'],2).' </td>
+				</tr><tr>
+				<td colspan="5" align="right" style="">Gastos de envío:</td>
+				<td align="right" style="font-weight:bold;">$ '.number_format($vnt[0]['gastos_envio'],2).'</td>
+				</tr><tr>
+				<td colspan="5" align="right" style="">I.V.A:</td>
+				<td align="right" style="font-weight:bold;">$ '.number_format($vnt[0]['iva'],2).'</td>
+				</tr><tr>
+				<td colspan="5" align="right" style="">Total:</td>
+				<td align="right" style="font-weight:bold">$ '.number_format($vnt[0]['total'],2).'</td>
+				</tr>
+				<tr><td colspan="6" align="right" >'.($l->ValorEnLetras(round($vnt[0]['total'],2),'Pesos')).'</td></tr>				
+				</tbody></table>			
+				'.(trim($vnt[0]['condiciones'])!='' ? ' <div style="margin:10px"><b>CONDICIONES DE VENTA</b>: '.$vnt[0]['condiciones'].'</div>':'').'
+				</body></html>';
+			}
+				
+					
+			$pdf->WriteHTML($html); 			
+			$pdf->Output('./application/files/'.$d['nombre'].'.pdf', 'F');
+			echo json_encode(array('status'=>1));
+		}else{
+			echo json_encode(array('status'=>2));
+		}		
+	}
+
+	function download(){			
+		$d = $this->input->get();
+		$f =$d['nombre'];			
+		$this->app->downloadFile('./application/files/'.$f.'.'.$d['type'],$f.'.'.$d['type']);
+	}	
+	
+}

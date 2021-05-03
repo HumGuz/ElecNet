@@ -1,0 +1,118 @@
+<div id="seccion-cot">
+	<section class="content-header">
+		<h1><i class="fa fa-file-text-o"></i> Cotizaciones <small></small></h1>
+		<ol class="breadcrumb">
+			<li>
+				<a href="#"><i class="fa fa-dashboard"></i> Inicio</a>
+			</li>
+			<li class="active">
+            Cotizaciones
+			</li>
+		</ol>
+	</section>
+	<section class="content">
+		<div class="box box-info catalog">
+			<div class="box-header">
+				<h3 class="box-title"> Lista de cotizaciones</h3>
+				<div class="box-tools" >
+					<div class="input-group input-group-sm" style="width: 350px;">
+						<input type="text" name="busqueda-cot" id="busqueda-cot" class="form-control pull-right" placeholder="buscar....">
+						<div class="input-group-btn box-filter-parent">
+									<button type="button" class="btn btn-default filter" title="Filtro avanzado">
+										<i class="fa fa-filter"></i><i class="fa fa-caret-down"></i>
+									</button>
+									<div class="box box-primary box-filter">
+										<div class="box-header with-border">
+											<h3 class="box-title">Filtro avanzado</h3>
+										</div>
+										<form id="srch-cot" role="form">
+											<div class="box-body box-body-filter row">												
+												<div class="form-group col-sm-12" >
+													<label for="descripcion">Busqueda</label>
+													<input type="text" class="form-control" id="busqueda" name="busqueda">
+												</div>												
+												<div class="clearfix"></div>			
+												<p class="margin ">Clasificación</p>
+												<div class="form-group col-sm-12">
+													<label for="id_cliente">Cliente</label>
+													<select  class="form-control selectpicker" id="id_cliente" name="id_cliente" data-container="body" data-live-search="true">
+														<?php
+															if(!empty($clt)) {
+																echo '<option value="">-- seleccione --</option>';
+																foreach($clt as $key=>$s) {
+																	echo '  <option value="'.$s['id_cliente'].'" > [ '.$s['clave'].' ] '.$s['nombre'].'</option> ';
+																}
+															}
+														?>
+													</select>
+												</div>
+												<div class="clearfix"></div>
+									<div class="form-group col-sm-12">
+										<label>Rango de fechas:</label>										
+										<button type="button"  class="btn btn-default ignore daterange-button">
+											<span> <i class="fa fa-calendar"></i> </span>
+											<i class="fa fa-caret-down"></i>
+										</button>						
+									</div>
+									<input type="hidden" id="fecha_inicial" name="fecha_inicial">
+									<input type="hidden" id="fecha_final" name="fecha_final">
+												<!-- <div class="form-group col-sm-4">
+													<label for="id_categoria_padre">Categoría</label>
+													<select  class="form-control selectpicker  categorias" id="id_categoria_padre" name="id_categoria_padre" data-container="body" data-live-search="true" data-hide-disabled="true">
+														
+													</select>
+												</div> -->
+												<!-- <div class="form-group col-sm-4">
+													<label for="id_categoria">Subcategoría</label>
+													<select  class="form-control selectpicker  categorias" id="id_categoria" name="id_categoria" data-container="body" data-live-search="true"  data-hide-disabled="true">
+														
+													</select>
+												</div> -->
+												<div class="clearfix"></div>
+											</div>
+											<div class="box-footer">
+												<button type="submit" name="prd-btn" class="btn btn-primary">
+													<i class="fa fa-filter"></i> Filtrar
+												</button>
+												<button type="reset" name="prd-rst" class="btn btn-default" style="margin-left:5px">
+													<i class="fa fa-eraser"></i>
+												</button>
+											</div>
+											<div class="close-filter">
+												<span class="fa fa-caret-square-o-up"></span>
+											</div>
+										</form>
+									</div>
+									<button type="button" class="btn btn-success"   title="Nuevo Cotización" data-scr="cot" data-fn="nuevaCotizacion">
+										<i class="fa fa-plus"></i>
+									</button>
+								</div>
+					</div>
+				</div>
+			</div>
+			<div id="catalogo-cot"  class="box-body box-body-catalogo table-responsive no-padding" data-tag="cot" data-scr="cot" data-fn="clean" >
+				<table id="tbl-cot" class="table fixed">
+					<thead>
+                    <tr>	
+                    <th width="25px">#</th>
+                	  <th width="120px">Fecha Reg.</th> 					              
+	                  <th width="80px">Folio</th>		                  
+	                  <th width="120px">Vencimiento</th>		                                       
+	                  <th>Clientes</th>
+	                  <th width="45px" class="right">Prod.</th>	 
+	                  <th width="100px"  class="right">Subtotal</th>
+	                  <th width="77px"  class="right">Descuento</th>
+	                  <th width="100px"  class="right">Envío</th>
+	                  <th width="100px"  class="right">Iva</th>
+	                  <th width="100px"  class="right">Total</th>
+	                  <th width="30px" align="center"><span class="glyphicon glyphicon-cog"></span> </th>
+	                </tr> 
+					</thead>
+				</table>
+			</div>
+			<div class="overlay" style="display: none">
+				<i class="fa fa-spinner fa-spin fa-2x" ></i>
+			</div>
+		</div>
+	</section>
+</div>
