@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <aside class="main-sidebar">
 	<!-- sidebar: style can be found in sidebar.less -->
 	<section class="sidebar" style="height: auto;">
@@ -57,64 +56,4 @@
 		</ul>
 	</section>
 	<!-- /.sidebar -->
-=======
-<aside class="main-sidebar">
-	<!-- sidebar: style can be found in sidebar.less -->
-	<section class="sidebar" style="height: auto;">
-		<!-- Sidebar user panel -->
-		<div class="user-panel">
-			<div class="pull-left image">
-				<img src="<?php echo base_url(); ?>application/views/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-			</div>
-			<div class="pull-left info">
-				<p><?php echo $this->s['usuario']['nombre'].' '.$this->s['usuario']['apellidos'] ?></p>
-				<a href="#"><i class="fa fa-circle text-success"></i> En linea</a>
-			</div>
-		</div>
-		<div class="row" style="margin:0px">
-			<div class="col-sm-12">
-				<div class="form-group">
-					<label for="descripcion">Sucursal Actual</label>
-				    <?php echo $sucursales; ?>
-				</div>
-			</div>
-		</div>
-		<ul class="sidebar-menu tree" data-widget="tree">
-			<li><a href="javascript:;"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-			<li class="header"><i class="fa fa-book"></i> Catálogos</li>
-			<li><a href="javascript:;" data-scr="scr"><i class="fa fa-building-o"></i> <span>Sucursales</span> </a></li>
-			<li><a href="javascript:;" data-scr="prd"><i class="fa fa-book"></i> Catálogo de productos </a></li>
-			<li><a href="javascript:;" data-scr="cls"><i class="glyphicon glyphicon-folder-open"></i> Clasificación de prod. y serv. </a></li>
-			<li class="treeview">
-				<a href="javascript:;"><i class="fa fa-cube"></i> <span>Control de Almacén</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
-				<ul class="treeview-menu">
-					<li><a href="javascript:;" data-scr="alm"><i class="fa fa-archive"></i> Lista de almacenes </a></li>
-					<li>
-						<a href="javascript:;" data-scr="prd" data-fn="initAlm"><i class="fa fa-cubes"></i> Productos por almacén </a>
-					</li>
-				</ul>
-			</li>
-			<li><a href="javascript:;" data-scr="srv"><i class="fa fa-cogs"></i> Servicios </a></li>
-			<li><a href="javascript:;" data-scr="clt"><i class="fa fa-users"></i> <span>Clientes</span> </a></li>
-			<li><a href="javascript:;" data-scr="prv"><i class="fa fa-truck"></i> <span>Proveedores</span> </a></li>			
-			<li class="header"><i class="fa fa-suitcase"></i> Operaciones</li>
-			<!-- <li><a href="javascript:;"><i class="fa fa-file-text"></i> <span>Ordenes de compra</span> </a></li> -->
-			<li><a href="javascript:;" data-scr="cmp"><i class="fa fa-cart-arrow-down"></i> <span>Compras</span> </a></li>
-			<li><a href="javascript:;" data-scr="cot"><i class="fa fa-file-text-o"></i> <span>Cotizaciones</span> </a></li>
-			<li><a href="javascript:;" data-scr="vnt"><i class="fa fa-money"></i> <span>Ventas</span> </a></li>
-			<li><a href="javascript:;" data-scr="prm"><i class="fa fa-address-card"></i> <span>Soporte</span> </a></li>
-			<!-- <li class="header">
-				<i class="glyphicon glyphicon-globe"></i> E-commerce
-			</li>
-			<li>
-				<a href="javascript:;"><i class="fa fa-book"></i> <span> Usuarios del Sitio</span> </a>
-			</li>
-			<li>
-				<a href="javascript:;"><i class="fa fa-file-text-o"></i> <span>Pedidos</span> </a>
-			</li> -->
-
-		</ul>
-	</section>
-	<!-- /.sidebar -->
->>>>>>> 233685e26c13ba4685a4ac8e9a5fd7caeb0a0c90
 </aside>
