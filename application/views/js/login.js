@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 lgn = {
 	init:function(){		
 			// s$('input').iCheck({ checkboxClass: 'icheckbox_square-blue', radioClass: 'iradio_square-blue', increaseArea: '20%' });
@@ -16,3 +17,23 @@ lgn = {
 };
 $(document).ready(function(){lgn.init()});
 
+=======
+lgn = {
+	init:function(){		
+			// s$('input').iCheck({ checkboxClass: 'icheckbox_square-blue', radioClass: 'iradio_square-blue', increaseArea: '20%' });
+			$("#lgnFrm").validation({
+			 	success:function(e){
+			 		$.ajax({type : "POST",url : "login/signin",dataType : "json",data : e})
+					.done(function(t) {
+						if(t.code==1252)
+							location.href = 'admin/';
+						else
+							($("#lgnFrm").validate()).showErrors(t),(t.email && setTimeout(function(){$("#pass").val('').valid()},500)) 
+					}).fail(function(e, t, i) {console.log(e, t, i)})
+			 	}	
+			 });
+	}
+};
+$(document).ready(function(){lgn.init()});
+
+>>>>>>> 233685e26c13ba4685a4ac8e9a5fd7caeb0a0c90
