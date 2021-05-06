@@ -101,7 +101,7 @@
 	    	this.options.extend = i;
 	    },
 		update:function(){
-			this._initFilter();				
+			this.options.container.find('table tbody').empty();	
 			this.getContent(this);
 		},
 	    _initFilter:function(){	    	
