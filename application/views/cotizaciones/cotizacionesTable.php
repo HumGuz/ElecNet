@@ -3,9 +3,9 @@
 		$x = 1;
 		foreach ($cot as $key => $s) {
 			echo '
-					<tr class="ellipsis-td">
+					<tr >
                       <td width="25px" align="center" class="bold">'.$x.'</td>
-                                <td width="120px" class="bold">'.App::dateFormat($s['fecha_cambio'],2).'</td>			
+                      <td width="120px" class="bold">'.App::dateFormat($s['fecha_cambio'],2).'</td>			
                       <td width="80px"  class="bold">'.$s['folio'].'</td>			
                       <td width="120px" class="bold">'.App::dateFormat($s['fecha_vencimiento']).'</td>	
                       <td title="'.$s['nombre_cliente'].'">[ '.$s['clave_cliente'].' ] '.$s['nombre_cliente'].'</td>
