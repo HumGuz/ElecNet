@@ -32,7 +32,22 @@ if(!empty($vnt)){
 		}
         
        
-	}
+}elseif(!empty($post['busqueda']) || !empty($post['id_cliente']) ||!empty($post['producto']) ||!empty($post['fecha_inicial'])) {
+
+	echo '<div class="callout callout-warning">
+			<h5>El critero de busqueda no arrojo ningun resultado</h5>
+			'.( !empty($post['busqueda']) ? '<p>Criterio de busqueda: "<b>'.$post['busqueda'].'</b>"</p> ' : '').'			
+		</div>';
+
+}else{
+
+	echo '<div class="callout callout-info">	
+		<h5>No hay resultados para mostrar.</h5>	
+  		</div>';
+
+
+}
+
 
 ?>
 

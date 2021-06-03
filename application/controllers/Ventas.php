@@ -21,7 +21,7 @@ class Ventas extends CI_Controller {
 	
 	function ventasTable(){
 		$vnt = $this->vnt->getVentas($this->input->post());
-		echo $this->load->view('ventas/ventasTable',array('vnt'=>$vnt),TRUE);
+		echo $this->load->view('ventas/ventasTable',array('vnt'=>$vnt,'post'=>$this->input->post()),TRUE);
 	}	
 	function getFolioCotizacion(){
 		$d = $this->input->post();

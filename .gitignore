@@ -1,0 +1,5 @@
+vscode/
+system/
+application/config/
+application/files/*.pdf
+application/img/*.*

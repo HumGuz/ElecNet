@@ -24,7 +24,7 @@ class Ventas_model extends CI_Model {
 			$c .= " and  date(c.fecha_entrega)  >= '".$d['fecha_inicial']."' and date(c.fecha_entrega) <= '".$d['fecha_final']."' ";	
 			
 		if($d['busqueda'])
-			$c .= " and (  c.folio like '%".$d['busqueda']."%' or c.observaciones like '%".$d['busqueda']."%' or p.clave like '%".$d['busqueda']."%' or p.nombre like '%".$d['busqueda']."%'  )  ";
+			$c .= " and (  c.folio like '%".$d['busqueda']."%' or c.observaciones like '%".$d['busqueda']."%' or pr.clave like '%".$d['busqueda']."%' or pr.nombre like '%".$d['busqueda']."%'  )  ";
 		
 		
 		
